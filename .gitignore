@@ -1,3 +1,46 @@
+# OS / editors
 .DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
 
+# Java compiled classes
 *.class
+
+# Build directories
+/build/
+/frontend/build/
+/backend/build/
+/bin/
+/out/
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+cmake-build-*/
+
+# Object files / executables
+*.o
+*.obj
+*.so
+*.a
+*.dylib
+*.exe
+*.out
+*.app
+*.dSYM/
+
+# Coverage / reports / logs
+coverage/
+*.gcda
+*.gcno
+*.lcov
+*.log
+
+# Misc
+*.pyc
+.env

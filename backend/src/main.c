@@ -2,8 +2,6 @@
 #include <stdbool.h>
 #include "header.h"
 
-extern bool checkPacketValidity();
-
 int main() {
     char exPacket1[] = "\x05\x64\x00\x00\x00\x00\x00\x00\x00\x00" ;
         // can also be written as "\x05\x64\x00..."
@@ -11,4 +9,6 @@ int main() {
     // char exPacket2[11] = 0xasl;
     
     bool vaild = checkPacketValidity(exPacket1);
+
+    return 0;
 }

@@ -5,5 +5,8 @@
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
         "lib/**/*.jar"
-    ]
+    ],
+
+    "cmake.sourceDirectory": "${workspaceFolder}/backend",
+    "cmake.buildDirectory": "${workspaceFolder}/backend/build"
 }

@@ -9,6 +9,8 @@ bool checkPacketValidity(char headerRawHex[11]) {
 
     memcpy(&header, headerRawHex, sizeof(header));   // map chars to header struct
 
+    printf("%d", header.s1);
+
     if (header.s1 == 0x05 && header.s2 == 0x64) {
         vaild = true;
         printf("Packet Vaild\n");
