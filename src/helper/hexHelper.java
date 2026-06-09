@@ -1,3 +1,5 @@
+package helper;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class hexHelper {
         hexDcn.put('E', new int[] { 1, 1, 1, 0 });
         hexDcn.put('F', new int[] { 1, 1, 1, 1 });
 
-        List<int[]> binaryOutput = new ArrayList<>();
+        List<int[]> binaryOutput = new ArrayList<int[]>();
         for (int i = 0; i < hexInput.length(); i++) {
             char c = hexInput.charAt(i);
             if (hexDcn.containsKey(c)) {
