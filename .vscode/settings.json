@@ -1,12 +1,12 @@
 {
     "java.project.sourcePaths": [
-        "src"
+        "frontend/src",
     ],
-    "java.project.outputPath": "bin",
+    "java.project.outputPath": "frontend/bin",
     "java.project.referencedLibraries": [
         "lib/**/*.jar"
     ],
 
-    "cmake.sourceDirectory": "${workspaceFolder}/backend",
+    "cmake.sourceDirectory": "${workspaceFolder}/backend/src",
     "cmake.buildDirectory": "${workspaceFolder}/backend/build"
 }
