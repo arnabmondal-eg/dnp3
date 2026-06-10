@@ -29,9 +29,11 @@ dnp3/
 |---- frontend/                                 // java based swing ui implementation
 |   |---- src/                                  // source files
 |       |---- ui/                               // window defs (parser, master, client)
+|       |   |
 |       |   |---- translatorWindow.java         // parser window
 |       |
 |       |---- helper/
+|       |   |
 |       |   |---- hexHelper.java
 |       |   |---- frameCreator.java             // simple window creator
 |       |
@@ -64,13 +66,12 @@ Contains Parser Logic.
 
 #### Manual
 Backend is compiled with CMake to make your life a little easier
-1. First cd into `backend/`
-2. Compile:
+1. Compile:
     ```bash
     cmake -S backend -B backend/build
     cmake --build backend/build --config Debug
     ```
-3. Run the built binary:
+2. Run the built binary:
     ```bash
     ./backend/build/bin/dnp3
     ```
@@ -84,12 +85,12 @@ Contains UI with Some simulated Data (for now...)
 3. Select `Clean Frontend` or `Clean All` to remove build dir
 
 #### Manual
-1. First cd into `frontend/`
-2. Compile:
+Frontend Compiled with `javac`
+1. Compile:
     ```bash
-    javac -d bin src/**/*.java
+    javac -d bin frontend/src/**/*.java
     ```
-3. Run the bult binary:
+2. Run the bult binary:
     ```bash
-    java -cp bin Main
+    java -cp frontend/bin Main
     ```
