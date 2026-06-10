@@ -3,7 +3,7 @@ This project is an attempt to simulate the **dnp3** protocol often used for comm
 
 ## Goals
 * Pure Swing UI implementiation of;
-    * Packet Analyser
+    * Packet Parser
     * Master Client
     * Child Client
 * Fast, Memory Efficient Proccesing
@@ -30,7 +30,7 @@ dnp3/
 |   |---- src/                                  // source files
 |       |---- ui/                               // window defs (parser, master, client)
 |       |   |
-|       |   |---- translatorWindow.java         // parser window
+|       |   |---- parserWindow.java         // parser window
 |       |
 |       |---- helper/
 |       |   |
