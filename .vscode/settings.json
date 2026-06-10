@@ -7,6 +7,6 @@
         "lib/**/*.jar"
     ],
 
-    "cmake.sourceDirectory": "/Users/arnabm/programming/dnp3/backend",
+    "cmake.sourceDirectory": "${workspaceFolder}/backend",
     "cmake.buildDirectory": "${workspaceFolder}/backend/build"
 }
