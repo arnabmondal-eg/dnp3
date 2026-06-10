@@ -4,22 +4,21 @@
 #include <stdbool.h>    // C23 introduces booleans nativley, but clang doesnt auto compile to 23, so lets just do this :/
 
 // checks start bytes and crc byte to determine packet validity
-bool checkPacketValidity(char headerRawHex[11]);
+bool checkHeaderValidity(char headerRawHex[]);
 
 // total 10 bytes / 3 compiler blocks (2 unsed bytes)
 typedef struct dnp3h_sd {
-    int s1:1;   // start byte 1
-    int s2:1;   // start byte 2
+    u_int8_t s1;   // start byte 1
+    u_int8_t s2;   // start byte
 
-    int len:1;   // length byte
+    u_int8_t len;   // length byte
+    u_int8_t dlc;  // data link control byte
 
-    int dlc:1;  // data link control byte
+    u_int16_t des;  // destination byte
 
-    int des:2;  // destination byte
+    u_int16_t src;  // source byte
 
-    int src:2;  // source byte
-
-    int crc:2;  // cyclic redundancy check byte
+    u_int16_t crc;  // cyclic redundancy check byte
 } dnp3h_st;
 
 #endif

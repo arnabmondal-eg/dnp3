@@ -6,7 +6,7 @@
         {
             "label": "CMake Build",
             "type": "shell",
-            "command": "cmake --build ${workspaceFolder}/backend/build",
+            "command": "cmake -S ${workspaceFolder}/backend/     -B ${workspaceFolder}/backend/build && cmake --build ${workspaceFolder}/backend/build",
             "group": {
                 "kind": "build",
                 "isDefault": true   // have to set this other wise default c/cpp compiler trys to compile source without linking other source files
@@ -54,21 +54,21 @@
         {
             "label": "Clean All",
             "type": "shell",
-            "command": "rm -rf ${workspaceFolder}/frontend/bin && rm -rf ${workspaceFolder}/backend/bin",      // clean both backend and frontend folders
+            "command": "rm -rf ${workspaceFolder}/frontend/build && rm -rf ${workspaceFolder}/backend/build",      // clean both backend and frontend folders
             "group": "none",
             "problemMatcher": []
         },
         {
             "label": "Clean Frontend",
             "type": "shell",
-            "command": "rm -rf ${workspaceFolder}/frontend/bin",
+            "command": "rm -rf ${workspaceFolder}/frontend/build",
             "group": "none",
             "problemMatcher": []
         },
         {
             "label": "Clean Backend",
             "type": "shell",
-            "command": "rm -rf ${workspaceFolder}/backend/bin",
+            "command": "rm -rf ${workspaceFolder}/backend/build",
             "group": "none",
             "problemMatcher": []
         },
