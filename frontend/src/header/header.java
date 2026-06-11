@@ -26,7 +26,7 @@ public class header {
     public header(int rawHexCode) {
     }
 
-    /**Method to check if packet is vaild. ALL dnp3 packets must start with 05-64, 
+    /**Method to check if packet is valid. ALL dnp3 packets must start with 05-64, 
      * and if they do not, they are either malformed, not a packet, or something else. */
     private boolean checkStartByte(int rawHexCode) {
         /*
