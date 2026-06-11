@@ -1,11 +1,7 @@
 #ifndef header_h
 #define header_h
 
-#include <stdbool.h>    // C23 introduces booleans nativley, but clang doesnt auto compile to 23, so lets just do this :/
 #include <stdint.h>
-
-// checks start bytes and crc byte to determine packet validity
-bool checkHeaderValidity(char headerRawHex[]);
 
 // total 10 bytes / 3 compiler blocks (2 unsed bytes)
 typedef struct dnp3h_sd {
@@ -21,5 +17,11 @@ typedef struct dnp3h_sd {
 
     uint16_t crc;  // cyclic redundancy check byte
 } dnp3h_st;
+
+extern dnp3h_st mkHeader(char []);
+// checks start bytes and crc byte to determine packet validity
+extern int checkHeaderValidity(dnp3h_st);
+
+extern void printHeader(dnp3h_st);
 
 #endif
