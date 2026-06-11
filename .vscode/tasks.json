@@ -31,17 +31,17 @@
         {
             "label": "Java Compile",
             "type": "shell",
-            "command": "javac -d bin src/**/*.java",
+            "command": "javac -d build src/*.java src/**/*.java",
             "options": {
                 "cwd": "${workspaceFolder}/frontend"    // launch shell in frontend folder
             },
             "group": "build",
-            "problemMatcher": ["$msCompile"]
+            "problemMatcher": []
         },
         {
             "label": "Run Java Frontend",
             "type": "shell",
-            "command": "java -cp bin Main",
+            "command": "java -cp build Main",
             "group": "test",
             "options": {
                 "cwd": "${workspaceFolder}/frontend"
