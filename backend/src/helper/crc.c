@@ -1,7 +1,8 @@
 #include <stdio.h>
+#include <stdint.h>
 
 // used ai to write this table (im sorry)
-static const u_int16_t dnp3_crc_table[256] = {
+static const uint16_t dnp3_crc_table[256] = {
     0x0000, 0x365E, 0x6CBC, 0x5AE2, 0xD978, 0xEF26, 0xB5C4, 0x839A,
     0xFF89, 0xC9D7, 0x9335, 0xA56B, 0x26F1, 0x10AF, 0x4A4D, 0x7C13,
     0xB26B, 0x8435, 0xDED7, 0xE889, 0x6B13, 0x5D4D, 0x07AF, 0x31F1,
@@ -44,8 +45,8 @@ static const u_int16_t dnp3_crc_table[256] = {
  * 
  * @returns Unsigned 2 Byte Integer: Computed CRC Hex
  */
-u_int16_t calculateCRC(const u_int8_t rawHexCode[], int length) {
-    u_int16_t crc = 0x0000;
+uint16_t calculateCRC(const uint8_t rawHexCode[], int length) {
+    uint16_t crc = 0x0000;
     
     for (int i = 0; i < length; i++) {
         // Compute table index and shift right to process bytes sequentially
