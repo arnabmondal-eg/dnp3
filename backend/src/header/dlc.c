@@ -1,5 +1,5 @@
 #include "dlc.h"
-#include "../helper/binaryHelper/binaryHelper.h"
+#include "binaryHelper.h"
 
 /**
  * @brief Extracts bit-by-bit information from DLC byte. 

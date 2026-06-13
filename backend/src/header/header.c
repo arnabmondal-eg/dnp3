@@ -1,7 +1,7 @@
 #include "header.h"
-#include "helper/crcHelper/crc.h"
-#include "helper/splitByteHelper/splitTwoByte.h"
-#include "helper/binaryHelper/binaryHelper.h"
+#include "crc.h"
+#include "splitTwoByte.h"
+#include "binaryHelper.h"
 
 
 
