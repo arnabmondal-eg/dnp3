@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include "header.h"
+#include "mainHeader.h"
 #include "binaryHelper.h"
 
 #define DEBUG 1
