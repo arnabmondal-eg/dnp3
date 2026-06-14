@@ -7,8 +7,8 @@ dnp3th_st mkTransportHeader(uint8_t inputHex[], int length) {
         return transportHeader_s;
     }
     
-    transportHeader_s.first = inputHex[TRANSPORT_HEADER_POSTION] & BIT_7_MASK != 0 ? 1 : 0;
-    transportHeader_s.final = inputHex[TRANSPORT_HEADER_POSTION] & BIT_6_MASK != 0 ? 1 : 0;
+    transportHeader_s.first = inputHex[TRANSPORT_HEADER_POSTION] & BIT_7_MASK;
+    transportHeader_s.final = inputHex[TRANSPORT_HEADER_POSTION] & BIT_6_MASK;
 
     // mask out first 2 bits
     transportHeader_s.segmentSequence = inputHex[TRANSPORT_HEADER_POSTION] & 0x3F;     // 0011 1111
