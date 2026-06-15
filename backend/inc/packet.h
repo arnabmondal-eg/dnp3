@@ -1,7 +1,7 @@
 #ifndef packet_h
 #define packet_h
 
-#include "../header/header.h"   // look in src/header
+#include "header.h"   // look in src/header
 
 dnp3h_st getHeader();
 
