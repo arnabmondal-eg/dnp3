@@ -33,3 +33,17 @@ void hexToBinary(uint8_t inputHexArray[], int length, char *binary) {
         // printf("\n");
     }
 }
+
+
+// void byteToBinary(uint8_t inputHex, uint8_t *binary) {
+//     int cntr = 0;
+
+//     printf("Value = %02X ->", inputHex);
+//     for(int i = 0; i < 8; i++) {
+//         binary[cntr] = (inputHex & maskArr[i]) != 0 ? 1 : 0;
+//         printf("Vlaue = %d, mask: %02X\n", inputHex, maskArr[7-i]);
+//         printf("%d ", binary[cntr]);
+//         cntr++;
+//     }
+//     printf("\n");
+// }

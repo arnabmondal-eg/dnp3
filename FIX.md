@@ -6,3 +6,4 @@
 * Fix naming
 * Organize src and inc files better maybe
 * Clarify assumptions made (ie. All input packets are arrays with values 1 byte in size)
+* Convert large byte to function code defs into pointer tables
