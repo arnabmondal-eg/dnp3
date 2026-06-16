@@ -3,10 +3,7 @@
 #include <stdint.h>
 
 // main functionality
-#include "mainHeader.h"
-#include "dlc.h"
-#include "transportHeader.h"
-#include "applicationHeader.h"
+#include "packet.h"
 
 //helpers
 #include "crc.h"
@@ -29,15 +26,13 @@ int main() {
         0x01    // ill be adding more as i add more func. to the program
     };
 
-    dnp3h_st header_s = mkHeader(reply);
-    dnp3hDLC_st headerDLC_s = mkDLC(header_s);
-    dnp3th_st thHeader_s = mkTransportHeader(reply, sizeof(reply));
-    dnp3aph_st applHeader_s = mkApplicationHeader(reply);
-    
-    printHeader(header_s);
-    printDLCData(headerDLC_s);
-    printTransportHeader(thHeader_s);
-    printApplicationHeader(applHeader_s);
+    dnp3p_st request_s = mkPacket(request, sizeof(request));
+    dnp3p_st reply_s = mkPacket(reply, sizeof(reply));
+
+    printf("\n\n-------- Request Packet --------\n\n");
+    printPacket(request_s);
+    printf("\n\n-------- Reply Packet --------\n\n");
+    printPacket(reply_s);
     
     return 0;
 }
