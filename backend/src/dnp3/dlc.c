@@ -15,12 +15,8 @@ dnp3hDLC_st mkDLC(dnp3h_st header) {
 
     dlc_s.fcv_dfcBit = header.dlc & BIT_4_MASK;    // mask bit 4
 
-    if(dlc_s.fcv_dfcBit != 0) {
-        dlc_s.fcbBit = header.dlc & BIT_5_MASK;
-    }
-    else {
-        dlc_s.fcbBit = 0;   // if response alwasy 0
-    }
+    if(dlc_s.fcv_dfcBit != 0) dlc_s.fcbBit = header.dlc & BIT_5_MASK;
+    else dlc_s.fcbBit = 0;   // if response alwasy 0
 
     dlc_s.fncCodeBits = header.dlc & DLC_FUNCTION_CODE_MASK;
 

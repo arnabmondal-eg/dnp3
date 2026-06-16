@@ -57,13 +57,11 @@ int checkHeaderValidity(dnp3h_st header_s) {
  * Prints all contents (start, length, dlc, ect...) hex, and for specific values (length, destination, source) prints decimal
 */
 void printHeader(dnp3h_st header_s) {
-    if (DEBUG) {
-        printf("\n---- Packet Header ----\n");
-        printf("Start: 0x%02X 0x%02X\n", header_s.s1, header_s.s2);
-        printf("Length: 0x%02X [%d]\n", header_s.len, header_s.len);
-        printf("Data Link Control: 0x%02X\n", header_s.dlc);
-        printf("Destination: 0x%04X [%d]\n", header_s.des, header_s.des);
-        printf("Source: 0x%04X [%d]\n", header_s.src, header_s.src);
-        printf("CRC: 0x%04X\n", header_s.crc);
-    }
+    printf("\n---- Packet Header ----\n");
+    printf("Start: 0x%02X 0x%02X\n", header_s.s1, header_s.s2);
+    printf("Length: 0x%02X [%d]\n", header_s.len, header_s.len);
+    printf("Data Link Control: 0x%02X\n", header_s.dlc);
+    printf("Destination: 0x%04X [%d]\n", header_s.des, header_s.des);
+    printf("Source: 0x%04X [%d]\n", header_s.src, header_s.src);
+    printf("CRC: 0x%04X\n", header_s.crc);
 }
