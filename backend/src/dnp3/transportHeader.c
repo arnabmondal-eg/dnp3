@@ -13,7 +13,7 @@ dnp3th_st mkTransportHeader(uint8_t inputHex[], int length) {
 }
 
 void printTransportHeader(dnp3th_st transportHeader_s) {
-    printf("\n---- TRANSPORT HEADER ----\n");
+    printf("---- TRANSPORT HEADER ----\n");
 
     if (transportHeader_s.first != 0) printf("First Packet\n");
     else printf("Not First Packet\n");
@@ -21,7 +21,7 @@ void printTransportHeader(dnp3th_st transportHeader_s) {
     if(transportHeader_s.final != 0) printf("Final Packet\n");
     else printf("Not Final Packet\n");
 
-    printf("Segment Sequence (Packet Number): %d\n\n", transportHeader_s.segmentSequence);
+    printf("Segment Sequence (Packet Number): %d\n", transportHeader_s.segmentSequence);
 }
 
 //TODO: Write getTransportHeader bit function

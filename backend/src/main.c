@@ -29,9 +29,11 @@ int main() {
     dnp3p_st request_s = mkPacket(request, sizeof(request));
     dnp3p_st reply_s = mkPacket(reply, sizeof(reply));
 
-    printf("\n\n-------- Request Packet --------\n\n");
+    freopen("log/log.txt", "w", stdout);   // that was increadibly easy
+
+    printf("-------- Request Packet --------\n");
     printPacket(request_s);
-    printf("\n\n-------- Reply Packet --------\n\n");
+    printf("\n\n-------- Reply Packet --------\n");
     printPacket(reply_s);
     
     return 0;

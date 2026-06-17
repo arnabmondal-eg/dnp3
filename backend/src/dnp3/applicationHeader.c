@@ -43,7 +43,7 @@ dnp3aph_st mkApplicationHeader(uint8_t hexInput[]) {
 }
 
 void printApplicationHeader(dnp3aph_st applHeader_s) {
-    printf("\n---- Application Header ----\n");
+    printf("---- Application Header ----\n");
 
     // Application Control Byte
 

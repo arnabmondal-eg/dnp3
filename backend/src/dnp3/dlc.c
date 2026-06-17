@@ -29,10 +29,9 @@ dnp3hDLC_st mkDLC(dnp3h_st header) {
  * @param dlc_s DLC Struct to print
  */
 void printDLCData(dnp3hDLC_st dlc_s) {
-    printf("\n---- DLC DATA ----\n");
+    printf("---- DLC Data ----\n");
     // 1. Determine direction
     if (dlc_s.dirBit != 0) {      // bit on
-        printf("From Primary\n");
     }
     else {      // bit off
         printf("Secondary\n");
@@ -100,7 +99,6 @@ void printDLCData(dnp3hDLC_st dlc_s) {
                 printf("No Matching Code!\n");     // error: no matching code
         }
     }
-    printf("\n");
 }
 
 //TODO: Add bit extraction function
