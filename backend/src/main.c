@@ -3,8 +3,7 @@
 #include <stdint.h>
 
 // main functionality
-// #include "packet.h"
-#include "objectHeader.h"
+#include "packet.h"
 
 //helpers
 #include "crc.h"
@@ -19,7 +18,7 @@ int main() {
     };
 
     uint8_t reply[] = {
-        0x05, 0x64, 0x77, 0x44, 0x01, 
+        0x05, 0x64, 0x77, 0x44, 0x01,
         0x00, 0x49, 0x03, 0x67, 0x21,
         0xCC, 0xC9, 0x81, 0x00, 0x00,
         0x1e, 0x02, 0x01, 0x01, 0x00,
@@ -28,18 +27,18 @@ int main() {
         0x01, 0x98
     };
 
-    // dnp3p_st request_s = mkPacket(request, sizeof(request));
-    // dnp3p_st reply_s = mkPacket(reply, sizeof(reply));
+    dnp3p_st request_s = mkPacket(request, sizeof(request));
+    dnp3p_st reply_s = mkPacket(reply, sizeof(reply));
 
-    // freopen("log/log.txt", "w", stdout);   // that was increadibly easy
+    if(freopen("log/log.txt", "w", stdout) == NULL) {
+        printf("Error Occurred while writing to file\nCreate log/ folder if missing");
+        return 0;
+    }
 
-    // printf("-------- Request Packet --------\n");
-    // printPacket(request_s);
-    // printf("\n\n-------- Reply Packet --------\n");
-    // printPacket(reply_s);
-
-    dnp3objh_st objH_s = mkObjectHeader(reply);
-    printObjectHeader(objH_s);
+    printf("-------- Request Packet --------\n");
+    printPacket(request_s);
+    printf("\n\n-------- Reply Packet --------\n");
+    printPacket(reply_s);
 
     
     return 0;

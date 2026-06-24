@@ -13,9 +13,9 @@
 #define TRANSPORT_HEADER_POSTION 10
 
 typedef struct dnp3th_sd {
-    uint8_t segmentSequence:4;
-    uint8_t final:1;
+    uint8_t segmentSequence:6;
     uint8_t first:1;
+    uint8_t final:1;
 } dnp3th_st;
 
 dnp3th_st mkTransportHeader(uint8_t [], int);

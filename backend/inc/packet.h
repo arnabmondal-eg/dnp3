@@ -8,6 +8,7 @@
 #include "dlc.h"
 #include "transportHeader.h"
 #include "applicationHeader.h"
+#include "objectHeader.h"
 
 typedef struct dnp3p_sd {
     //TODO: Add other portions of packet
@@ -17,6 +18,7 @@ typedef struct dnp3p_sd {
     dnp3hDLC_st dlc_s;
     dnp3th_st transportHeader_s;
     dnp3aph_st applicationHeader_s;
+    dnp3objh_st objectHeader_s;
 } dnp3p_st;
 
 dnp3p_st mkPacket(uint8_t [], int packetSize);

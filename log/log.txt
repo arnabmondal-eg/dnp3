@@ -1,0 +1,68 @@
+-------- Request Packet --------
+---- Packet Header ----
+Start: 0x05 0x64
+Length: 0x0D [13]
+Data Link Control: 0xC4
+Destination: 0x00C8 [200]
+Source: 0x0001 [1]
+CRC: 0x786E
+---- DLC Data ----
+Primary to Secondary
+Ignore FCB Bit
+Primary Function Code: Unconfirmed User Data
+---- TRANSPORT HEADER ----
+First Packet
+Final Packet
+Segment Sequence (Packet Number): 25
+---- Application Header ----
+First: 01
+First Fragment
+Final Fragment
+Application Not Confrimed
+Not Unsolicited
+Fragment Sequence: 000A [10]
+Application Function Code: READ
+---- Object Header ----
+Group: [30]
+Variation: 2
+Prefix: [0] No Index; Packed
+Range Code: [0] 1-Octect Start & Stop Indices
+Range Size: 8
+Range: 2F01
+
+
+-------- Reply Packet --------
+---- Packet Header ----
+Start: 0x05 0x64
+Length: 0x77 [119]
+Data Link Control: 0x44
+Destination: 0x0001 [1]
+Source: 0x0349 [841]
+CRC: 0x2167
+---- DLC Data ----
+Secondary
+Primary to Secondary
+Ignore FCB Bit
+Primary Function Code: Unconfirmed User Data
+---- TRANSPORT HEADER ----
+First Packet
+Final Packet
+Segment Sequence (Packet Number): 12
+---- Application Header ----
+First: 01
+First Fragment
+Final Fragment
+Application Not Confrimed
+Not Unsolicited
+Fragment Sequence: 0009 [9]
+Application Function Code: RESPONSE
+Internal Indications:
+-- INN 1 --
+-- INN 2 --
+---- Object Header ----
+Group: [30]
+Variation: 2
+Prefix: [0] No Index; Packed
+Range Code: [1] 2-Octect Start & Stop Indices
+Range Size: 8
+Range: 220001
