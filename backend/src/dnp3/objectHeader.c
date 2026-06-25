@@ -5,8 +5,7 @@ dnp3objh_st mkObjectHeader(uint8_t hexInput[]) {
     dnp3objh_st objectHeader_s = {0};
     int shiftAmnt = 0;
     
-    dnp3h_st mainHeader_s = mkHeader(hexInput); // use just to read dir bit from dlc 
-        dnp3hDLC_st dlc_s = mkDLC(mainHeader_s);
+    dnp3hDLC_st dlc_s = mkDLC(hexInput);
 
     int dir = dlc_s.dirBit != 0 ? 1 : 0;
 

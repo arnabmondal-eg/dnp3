@@ -6,10 +6,12 @@ Data Link Control: 0xC4
 Destination: 0x00C8 [200]
 Source: 0x0001 [1]
 CRC: 0x786E
----- DLC Data ----
-Primary to Secondary
-Ignore FCB Bit
-Primary Function Code: Unconfirmed User Data
+---- DLC ----
+Direction: [1] From Master
+Primarity: [1] Initiating
+Frame Count: [0]
+Frame Count Valid: [0] No
+Primary Function Code: [0x4] Unconfirmed User Data
 ---- TRANSPORT HEADER ----
 First Packet
 Final Packet
@@ -39,11 +41,12 @@ Data Link Control: 0x44
 Destination: 0x0001 [1]
 Source: 0x0349 [841]
 CRC: 0x2167
----- DLC Data ----
-Secondary
-Primary to Secondary
-Ignore FCB Bit
-Primary Function Code: Unconfirmed User Data
+---- DLC ----
+Direction: [0] From Outstation
+Primarity: [1] Initiating
+Frame Count: [0]
+Frame Count Valid: [0] No
+Primary Function Code: [0x4] Unconfirmed User Data
 ---- TRANSPORT HEADER ----
 First Packet
 Final Packet

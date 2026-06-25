@@ -6,7 +6,7 @@ dnp3p_st mkPacket(uint8_t hexInput[], int packetSize) {
     packet_s.hexInput = hexInput;
 
     packet_s.header_s = mkHeader(hexInput);
-    packet_s.dlc_s = mkDLC(packet_s.header_s);
+    packet_s.dlc_s = mkDLC(hexInput);
     packet_s.transportHeader_s = mkTransportHeader(hexInput, packetSize);
     packet_s.applicationHeader_s = mkApplicationHeader(hexInput);
     packet_s.objectHeader_s = mkObjectHeader(hexInput);

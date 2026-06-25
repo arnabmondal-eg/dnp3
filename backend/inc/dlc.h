@@ -3,11 +3,14 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
 
 #include "mainHeader.h"
 #include "binaryHelper.h"
 
 #define DEBUG 1
+
+#define DLC_START 3
 
 // dlc defs: primary to secondary function codes; PRM = 1
 // src: dnp3 spec v4 data link layer rev. 2007 02 03
@@ -22,20 +25,17 @@
 #define DLC_LINK_STATUS 0x0B   // status of link (respond type)
 #define DLC_NOT_SUPPORTED 0x0F
 
-// dlc mask
-#define DLC_FUNCTION_CODE_MASK 0x0F
-
 typedef struct dnp3hDLC_sd {
-    uint8_t dirBit;     // wether from primary or secondary
-    uint8_t prmBit;     // wether inital or response
-    uint8_t fcbBit;     // alternates to track message sequence
-    uint8_t fcv_dfcBit; // either dfc or fcv depending on packet prm
-    uint8_t fncCodeBits;    // 4 bits
+    uint8_t fncCodeBits:4;    // 4 bits
+    uint8_t fcv_dfcBit:1; // either dfc or fcv depending on packet prm
+    uint8_t fcbBit:1;     // alternates to track message sequence
+    uint8_t prmBit:1;     // wether inital or response
+    uint8_t dirBit:1;     // wether from primary or secondary
 
     int response;
 } dnp3hDLC_st;
 
-dnp3hDLC_st mkDLC(dnp3h_st);
+dnp3hDLC_st mkDLC(uint8_t[]);
 
 void printDLCData(dnp3hDLC_st);
 

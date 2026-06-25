@@ -4,21 +4,12 @@
 /**
  * @brief Extracts bit-by-bit information from DLC byte. 
  * 
- * @param header 
+ * @param hexInput Hexs to parse from
  */
-dnp3hDLC_st mkDLC(dnp3h_st header) {
+dnp3hDLC_st mkDLC(uint8_t hexInput[]) {
     dnp3hDLC_st dlc_s;
 
-    dlc_s.dirBit = header.dlc & BIT_7_MASK;  // mask out bit 7
-
-    dlc_s.prmBit = header.dlc & BIT_6_MASK;  // mask out bit 6
-
-    dlc_s.fcv_dfcBit = header.dlc & BIT_4_MASK;    // mask bit 4
-
-    if(dlc_s.fcv_dfcBit != 0) dlc_s.fcbBit = header.dlc & BIT_5_MASK;
-    else dlc_s.fcbBit = 0;   // if response alwasy 0
-
-    dlc_s.fncCodeBits = header.dlc & DLC_FUNCTION_CODE_MASK;
+    memcpy(&dlc_s, &hexInput[DLC_START], 1);    // copy 1 byte over
 
     return dlc_s;
 }
@@ -29,75 +20,65 @@ dnp3hDLC_st mkDLC(dnp3h_st header) {
  * @param dlc_s DLC Struct to print
  */
 void printDLCData(dnp3hDLC_st dlc_s) {
-    printf("---- DLC Data ----\n");
-    // 1. Determine direction
-    if (dlc_s.dirBit != 0) {      // bit on
-    }
-    else {      // bit off
-        printf("Secondary\n");
-    }
+    const char *PRIMARY_FNC_CODES[16] = {
+        "Reset Link States", 
+        "", 
+        "Test Link States", "Confirmed User Data", "Unconfirmed User Data",
+        "", "", "", "", 
+        "Request Link Status",
+         "", "", "", "", "", "",
+    };
 
-    // 2. Determine primarity (initiation vs responding)
-    if (dlc_s.prmBit != 0) {      // bit on
-        printf("Primary to Secondary\n");
-        dlc_s.response = 0;
-    }
-    else {      // bit off
-        printf("Secondary to Primary\n");
-        dlc_s.response = 1;
-    }
+    const char *SECONDARY_FNC_CODES[16] = {
+        "Acknowledge", "Negative Acknowledge",
+        "", "", "", "", "", "", "", "", "", 
+        "Link Status",
+        "", "", "", 
+        "Not Supported"
+    };
+    printf("---- DLC ----\n");
 
-    // 3. Examine FCV bit
-    if(dlc_s.fcv_dfcBit != 0) {
-        // 3a. Check FCB Bit
-        printf("Examine FCB Bit\n");
-        printf("FCB: %d\n", dlc_s.fcbBit != 0 ? 1 : 0);
+    printf("Direction: [%d] %s\n", 
+        dlc_s.dirBit, 
+        dlc_s.dirBit == 1 ? "From Master" : "From Outstation"
+    );
+
+    printf("Primarity: [%d] %s\n",
+        dlc_s.prmBit, 
+        dlc_s.prmBit == 1 ? "Initiating" : "Responding"
+    );
+
+    printf("%s: [%d]\n",
+        dlc_s.prmBit == 1 ? "Frame Count" : "Zero-Bit",
+        dlc_s.fcbBit
+    );
+
+    // bit 4
+    if (dlc_s.prmBit) {
+        printf("Frame Count Valid: [%d] %s\n",
+            dlc_s.fcv_dfcBit,
+            dlc_s.fcv_dfcBit == 1 ? "Yes" : "No"
+        );
     }
     else {
-        printf("Ignore FCB Bit\n");
+        printf("Data Flow Control: [%d] %s\n",
+            dlc_s.fcv_dfcBit,
+            dlc_s.fcv_dfcBit == 1 ? "Receive Buffer Full" : "Recieve Buffer Availible"
+        );
     }
 
-    // 4. Check Function Code
-    if (dlc_s.response == 0) {
-        printf("Primary Function Code: ");
-        switch(dlc_s.fncCodeBits) {
-            case DLC_RESET_LINK_STATES:
-                printf("Rest Link States\n");
-                break;
-            case DLC_TEST_LINK_STATES:
-                printf("Test Link States\n");
-                break;
-            case DLC_CONFIRMED_USER_DATA:
-                printf("Confirmed User Data\n");
-                break;
-            case DLC_UNCONFIRMED_USER_DATA:
-                printf("Unconfirmed User Data\n");
-                break;
-            case DLC_REQUEST_LINK_STATUS:
-                printf("Request Link Status\n");
-                break;
-            default:
-                printf("No Matching Code!\n");     // error: no matching code
-        }
+    //function codes
+    if(dlc_s.prmBit) {
+        printf("Primary Function Code: [0x%01X] %s\n", 
+            dlc_s.fncCodeBits,
+            PRIMARY_FNC_CODES[dlc_s.fncCodeBits] != "\0" ? PRIMARY_FNC_CODES[dlc_s.fncCodeBits] : "No Matching Function Code\n"
+        );
     }
     else {
-        printf("Secondary Function Code: ");
-        switch(dlc_s.fncCodeBits) {
-            case DLC_ACK:
-                printf("Acknowledge\n");
-                break;
-            case DLC_NACK:
-                printf("Not Acknowledge\n");
-                break;
-            case DLC_LINK_STATUS:
-                printf("Link Status\n");
-                break;
-            case DLC_NOT_SUPPORTED:
-                printf("Not Supported\n");
-                break;
-            default:
-                printf("No Matching Code!\n");     // error: no matching code
-        }
+        printf("Secondary Function Code: [0x%01X] %s\n", 
+            dlc_s.fncCodeBits,
+            SECONDARY_FNC_CODES[dlc_s.fncCodeBits] != "\0" ? SECONDARY_FNC_CODES[dlc_s.fncCodeBits] : "No Matching Function Code\n"
+        );
     }
 }
 
