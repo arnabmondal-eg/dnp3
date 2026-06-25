@@ -1,5 +1,7 @@
 # dnp3 Parser
-This project is an attempt to simulate the **dnp3** protocol often used for communication in **SCADA** systems. This project is still in its early stages, so little to no functionality is still implemented.
+This project is an attempt to simulate the **dnp3** protocol often used for communication in **SCADA** systems. This project is still in its early stages, only part of the spec is implemented. 
+
+There are no plans to impelemtent the entire spec however, as this protol is far to large. Only specifc, commonly used parts will be implemented, such that a common packet can be parsed succesfuly.
 
 ## Goals
 * Pure Swing UI implementiation of;
@@ -7,43 +9,50 @@ This project is an attempt to simulate the **dnp3** protocol often used for comm
     * Master Client
     * Child Client
 * Fast, Memory Efficient Proccesing
+* Most of spec (much will have to be skipped however)
 
 ## Project Structure
 ```
-dnp3/
-|---- .vscode/
-|   |                                           // settings/configs for vscode
-|   |---- settings.json                         // contains information on source dirs
-|   |---- tasks.json                            // runnable tasks (compile, clean, ...)
-|
-|---- backend/                                  // c based backend
-|   |---- src/                                  // source files
-|   |   |
-|   |   |---- main.c                            // main backend invocation
-|   |   |
-|   |   |---- header.h                          // header typedef
-|   |   |---- header.c                          // implementation of header struct
-|   |   
-|   |---- CMakeLists.txt                        // compile instructionns for cmake
-|
-|---- frontend/                                 // java based swing ui implementation
-|   |---- src/                                  // source files
-|       |---- ui/                               // window defs (parser, master, client)
-|       |   |
-|       |   |---- parserWindow.java         // parser window
-|       |
-|       |---- helper/
-|       |   |
-|       |   |---- hexHelper.java
-|       |   |---- frameCreator.java             // simple window creator
-|       |
-|       |---- Main.java                         // main frontend invocation
-|
-|---- CMakeLists.text                           // cmake defs
+dnp3/                                                             
+│                                                                 
+├──── .vscode/           // settings and configurations for vscode
+│                                                                 
+├───┬ backend/           // all parser logic (C)                  
+│   │                                                             
+│   ├──── build/         // build files, binaries, etc.           
+│   │                                                             
+│   ├──── inc/           // header files                          
+│   │                                                             
+│   └───┬ src/           // source files                          
+│       │                                                         
+│       ├──── dnp3/      // struct implementations                
+│       │                                                         
+│       ├──── helper/    // helper functions                      
+│       │                                                         
+│       └──── main.c     // backend start                         
+│                                                                 
+├───┬ frontend/          // all ui (Java Swing)                   
+│   │                                                             
+│   ├──── build/                                                  
+│   │                                                             
+│   └───┐ src/                                                    
+│       │                                                         
+│       ├──── ui/        // window create                         
+│       │                                                         
+│       ├──── helper/    // helper functions                      
+│       │                                                         
+│       └──── Main.java  // frontend start                        
+│                                                                 
+└──── log/               // logs from backend                     
 ```
 ## Curently Implmented
-* Partial Packet Viewer UI
-* Header Datastructure thing...
+* Parser UI (not hooked up to backend)
+* Parsing of dnp3:
+    * Header
+    * DLC
+    * Transport Header
+    * Application Header
+    * First Object Header
 
 ## Usage
 The easiest method to run either the frontend or backend is to open the repo in VsCode and use the built in tasks. Manual Methods are also avalible.
