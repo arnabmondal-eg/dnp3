@@ -71,13 +71,13 @@ void printDLCData(dnp3hDLC_st dlc_s) {
     if(dlc_s.prmBit) {
         printf("Primary Function Code: [0x%01X] %s\n", 
             dlc_s.fncCodeBits,
-            PRIMARY_FNC_CODES[dlc_s.fncCodeBits] != "\0" ? PRIMARY_FNC_CODES[dlc_s.fncCodeBits] : "No Matching Function Code\n"
+            strcmp(PRIMARY_FNC_CODES[dlc_s.fncCodeBits], "\0") ? PRIMARY_FNC_CODES[dlc_s.fncCodeBits] : "No Matching Function Code\n"
         );
     }
     else {
         printf("Secondary Function Code: [0x%01X] %s\n", 
             dlc_s.fncCodeBits,
-            SECONDARY_FNC_CODES[dlc_s.fncCodeBits] != "\0" ? SECONDARY_FNC_CODES[dlc_s.fncCodeBits] : "No Matching Function Code\n"
+            strcmp(SECONDARY_FNC_CODES[dlc_s.fncCodeBits], "\0") ? SECONDARY_FNC_CODES[dlc_s.fncCodeBits] : "No Matching Function Code\n"
         );
     }
 }
