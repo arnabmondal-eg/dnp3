@@ -1,7 +1,16 @@
-#ifndef header_h
-#define header_h
+#ifndef dlc_h
+#define dlc_h
 
+#include <stdio.h>
 #include <stdint.h>
+#include <string.h>
+
+#include "mainHeader.h"
+#include "binaryHelper.h"
+
+#define DEBUG 1
+
+#define DLC_START 3
 
 // dlc defs: primary to secondary function codes; PRM = 1
 // src: dnp3 spec v4 data link layer rev. 2007 02 03
@@ -16,30 +25,21 @@
 #define DLC_LINK_STATUS 0x0B   // status of link (respond type)
 #define DLC_NOT_SUPPORTED 0x0F
 
-// dlc mask
-#define DLC_FUNCTION_CODE_MASK 0x0F
+typedef struct dnp3hDLC_sd {
+    uint8_t fncCodeBits:4;    // 4 bits
+    uint8_t fcv_dfcBit:1; // either dfc or fcv depending on packet prm
+    uint8_t fcbBit:1;     // alternates to track message sequence
+    uint8_t prmBit:1;     // wether inital or response
+    uint8_t dirBit:1;     // wether from primary or secondary
 
-// total 10 bytes / 3 compiler blocks (2 unsed bytes)
-typedef struct dnp3h_sd {
-    uint8_t s1;   // start byte 1
-    uint8_t s2;   // start byte
+    int response;
+} dnp3hDLC_st;
 
-    uint8_t len;   // length byte
-    uint8_t dlc;  // data link control byte
+dnp3hDLC_st mkDLC(uint8_t[]);
 
-    uint16_t des;  // destination byte
+void printDLCData(dnp3hDLC_st);
 
-    uint16_t src;  // source byte
+int getDLCBit(int, dnp3hDLC_st);
 
-    uint16_t crc;  // cyclic redundancy check byte
-} dnp3h_st;
-
-extern dnp3h_st mkHeader(uint8_t []);
-// checks start bytes and crc byte to determine packet validity
-extern int checkHeaderValidity(dnp3h_st);
-
-extern void extractDLC(dnp3h_st);
-
-extern void printHeader(dnp3h_st);
 
 #endif

@@ -12,7 +12,7 @@ file(GLOB_RECURSE SRCS CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
 
 add_executable(dnp3 ${SRCS})
 
-target_include_directories(dnp3 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_include_directories(dnp3 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/inc)
 target_compile_options(dnp3 PRIVATE -Wall -Wextra -O2 -g)
 
 install(TARGETS dnp3 RUNTIME DESTINATION bin)
