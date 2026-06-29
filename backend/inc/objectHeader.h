@@ -5,7 +5,6 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "mainHeader.h"
 #include "dlc.h"
 
 #define OBJECT_HEADER_1_START 15

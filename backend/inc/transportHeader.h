@@ -18,7 +18,7 @@ typedef struct dnp3th_sd {
     uint8_t final:1;
 } dnp3th_st;
 
-dnp3th_st mkTransportHeader(uint8_t [], int);
+dnp3th_st mkTransportHeader(uint8_t []);
 void printTransportHeader(dnp3th_st);
 int getTransportHeaderBit(dnp3th_st);
 

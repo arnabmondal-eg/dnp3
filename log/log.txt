@@ -37,7 +37,7 @@ Range: 2F01
 ---- Packet Header ----
 Start: 0x05 0x64
 Length: 0x77 [119]
-Data Link Control: 0x41
+Data Link Control: 0x44
 Destination: 0x0001 [1]
 Source: 0x0349 [841]
 CRC: 0x2167
@@ -46,8 +46,7 @@ Direction: [0] From Outstation
 Primarity: [1] Initiating
 Frame Count: [0]
 Frame Count Valid: [0] No
-Primary Function Code: [0x1] No Matching Function Code
-
+Primary Function Code: [0x4] Unconfirmed User Data
 ---- TRANSPORT HEADER ----
 First Packet
 Final Packet
