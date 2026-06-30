@@ -2,7 +2,6 @@
 * Fix all warnings and notes from compiler
 * Rewrite all mk Structs to check size of packet
 * Add comments to more things
-* Fix naming
 * Organize src and inc files better maybe
 * Clarify assumptions made (ie. All input packets are arrays with values 1 byte in size)
 
@@ -15,3 +14,4 @@
 * June 29, 2026
     * Error in Trasnport Header and other logic resulting in unintilized return
         * Temp fix
+    * Fix naming

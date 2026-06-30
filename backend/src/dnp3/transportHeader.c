@@ -1,7 +1,7 @@
 #include "transportHeader.h"
 
-dnp3th_st mkTransportHeader(uint8_t inputHex[]) {
-    dnp3th_st transportHeader_s;
+transportHeader_st mkTransportHeader(uint8_t inputHex[]) {
+    transportHeader_st transportHeader_s;
     // if(length <= 10) {
     //     if (DEBUG) printf("Provided Input Too Small! Transport Header Returned Uninitilized!\n");
     //     return transportHeader_s;
@@ -12,7 +12,7 @@ dnp3th_st mkTransportHeader(uint8_t inputHex[]) {
     return transportHeader_s;
 }
 
-void printTransportHeader(dnp3th_st transportHeader_s) {
+void printTransportHeader(transportHeader_st transportHeader_s) {
     printf("---- TRANSPORT HEADER ----\n");
 
     if (transportHeader_s.first != 0) printf("First Packet\n");

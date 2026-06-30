@@ -11,7 +11,7 @@
 #define QUALIFER_START 17
 #define RANGE_START 18
 
-typedef struct dnp3objh_sd {
+typedef struct objectHeader_sd {
     uint8_t group;
     uint8_t variation;
 
@@ -19,9 +19,9 @@ typedef struct dnp3objh_sd {
     uint8_t qualRangeCode:4;
 
     uint64_t range;     // can be upto 8 octetes so we might need this
-} dnp3objh_st;
+} objectHeader_st;
 
-dnp3objh_st mkObjectHeader(uint8_t[]);
-void printObjectHeader(dnp3objh_st);
+objectHeader_st mkObjectHeader(uint8_t[]);
+void printObjectHeader(objectHeader_st);
 
 #endif

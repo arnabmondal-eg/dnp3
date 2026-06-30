@@ -11,7 +11,7 @@
 
 #define DLC_START 3
 
-typedef struct dnp3hDLC_sd {
+typedef struct dlc_sd {
     uint8_t fncCodeBits:4;    // 4 bits
     uint8_t fcv_dfcBit:1; // either dfc or fcv depending on packet prm
     uint8_t fcbBit:1;     // alternates to track message sequence
@@ -19,13 +19,13 @@ typedef struct dnp3hDLC_sd {
     uint8_t dirBit:1;     // wether from primary or secondary
 
     int response;
-} dnp3hDLC_st;
+} dlc_st;
 
-dnp3hDLC_st mkDLC(uint8_t[]);
+dlc_st mkDLC(uint8_t[]);
 
-void printDLCData(dnp3hDLC_st);
+void printDLCData(dlc_st);
 
-int getDLCBit(int, dnp3hDLC_st);
+int getDLCBit(int, dlc_st);
 
 
 #endif

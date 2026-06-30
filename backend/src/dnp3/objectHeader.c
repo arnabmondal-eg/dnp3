@@ -1,11 +1,11 @@
 #include "objectHeader.h"
 
-dnp3objh_st mkObjectHeader(uint8_t hexInput[]) {
+objectHeader_st mkObjectHeader(uint8_t hexInput[]) {
     const int RANGE_SIZE[12] = {2, 4, 8, 2, 4, 8, 0, 1, 2, 4, 0, 0};  // 10 is not a range code, 11 is undefined
-    dnp3objh_st objectHeader_s = {0};
+    objectHeader_st objectHeader_s = {0};
     int shiftAmnt = 0;
     
-    dnp3hDLC_st dlc_s = mkDLC(hexInput);
+    dlc_st dlc_s = mkDLC(hexInput);
 
     int dir = dlc_s.dirBit != 0 ? 1 : 0;
 
@@ -23,7 +23,7 @@ dnp3objh_st mkObjectHeader(uint8_t hexInput[]) {
     return objectHeader_s;
 }
 
-void printObjectHeader(dnp3objh_st objHeader_s) {
+void printObjectHeader(objectHeader_st objHeader_s) {
     static const char PREFIX[7][22] = {
         "No Index; Packed", "1-Octect Index", "2-Octect Index", 
         "4-Octect Index", "1-Octect; Object Size", 

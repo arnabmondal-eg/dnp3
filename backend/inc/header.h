@@ -13,7 +13,7 @@
 
 
 // total 10 bytes / 3 compiler blocks (2 unsed bytes)
-typedef struct dnp3h_sd {
+typedef struct header_sd {
     uint8_t s1;   // start byte 1
     uint8_t s2;   // start byte
 
@@ -25,12 +25,12 @@ typedef struct dnp3h_sd {
     uint16_t src;  // source byte
 
     uint16_t crc;  // cyclic redundancy check byte
-} dnp3h_st;
+} header_st;
 
-dnp3h_st mkHeader(uint8_t [], int, int*);
+header_st mkHeader(uint8_t [], int, int*);
 // checks start bytes and crc byte to determine packet validity
-int checkHeaderValidity(dnp3h_st);
+int checkHeaderValidity(header_st);
 
-void printHeader(dnp3h_st);
+void printHeader(header_st);
 
 #endif

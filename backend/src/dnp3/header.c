@@ -4,10 +4,10 @@
  * @brief Creates a dnp3 Header data type
  * 
  * @param hexInput Hex Sequence to Transform
- * @return dnp3h_st New var
+ * @return header_st New var
  */
-dnp3h_st mkHeader(uint8_t hexInput[], int inputSize, int *packetValidity) {
-    dnp3h_st header_s = {0};
+header_st mkHeader(uint8_t hexInput[], int inputSize, int *packetValidity) {
+    header_st header_s = {0};
 
     if (inputSize < 10) *packetValidity = 0;
     else *packetValidity = 1;
@@ -22,7 +22,7 @@ dnp3h_st mkHeader(uint8_t hexInput[], int inputSize, int *packetValidity) {
  * 
  * @returns Boolean: Based on 2 Checks; Start Byte and CRC Byte Check
  */
-int checkHeaderValidity(dnp3h_st header_s) {
+int checkHeaderValidity(header_st header_s) {
     int valid = 0;     // assume invalid
 
     // check for start bytes
@@ -48,7 +48,7 @@ int checkHeaderValidity(dnp3h_st header_s) {
     return valid;
 }
 
-void printHeader(dnp3h_st header_s) {
+void printHeader(header_st header_s) {
     printf("---- Packet Header ----\n");
     printf("Start: 0x%02X 0x%02X\n", header_s.s1, header_s.s2);
     printf("Length: 0x%02X [%d]\n", header_s.len, header_s.len);

@@ -22,10 +22,10 @@ const char INN2_RESPONSES[8][17] = {
     "ALREADY EXECU", "BAD CONFIG", "RESERVED", "RESERVED"
 };
 
-dnp3aph_st mkApplicationHeader(uint8_t hexInput[]) {
-    dnp3aph_st applHeader_s;
+applicationHeader_st mkApplicationHeader(uint8_t hexInput[]) {
+    applicationHeader_st applHeader_s;
         
-    dnp3hDLC_st dlc_s = mkDLC(hexInput);
+    dlc_st dlc_s = mkDLC(hexInput);
 
     int dir = dlc_s.dirBit != 0 ? 1 : 0;
     
@@ -41,7 +41,7 @@ dnp3aph_st mkApplicationHeader(uint8_t hexInput[]) {
     return applHeader_s;
 }
 
-void printApplicationHeader(dnp3aph_st applHeader_s) {
+void printApplicationHeader(applicationHeader_st applHeader_s) {
     printf("---- Application Header ----\n");
 
     // Application Control Byte
