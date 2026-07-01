@@ -31,7 +31,7 @@ Prefix: [0] No Index; Packed
 Range Code: [0] 1-Octect Start & Stop Indices
 Range Size: 8
 Range: 2F01
-
+Data 1: 0
 
 -------- Reply Packet --------
 ---- Packet Header ----
@@ -69,3 +69,4 @@ Prefix: [0] No Index; Packed
 Range Code: [1] 2-Octect Start & Stop Indices
 Range Size: 8
 Range: 220001
+Data 1: 0

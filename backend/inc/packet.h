@@ -9,6 +9,7 @@
 #include "transportHeader.h"
 #include "applicationHeader.h"
 #include "objectHeader.h"
+#include "data.h"
 
 typedef struct dnp3p_sd {
     //TODO: Add other portions of packet
@@ -19,6 +20,7 @@ typedef struct dnp3p_sd {
     transportHeader_st transportHeader_s;
     applicationHeader_st applicationHeader_s;
     objectHeader_st objectHeader_s;
+    void *data_s;
 
     int packetValidity;
 } dnp3p_st;
