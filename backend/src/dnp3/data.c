@@ -18,7 +18,7 @@ void* mkData(uint8_t hexInput[], void *dataAdress) {
 
     if (objHeader_s.group == 1) {
         if (objHeader_s.variation == 1) {
-            int startIndex = objHeader_s.range;
+            // int startIndex = objHeader_s.range;
         }
     }
 

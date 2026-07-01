@@ -18,7 +18,12 @@ typedef struct objectHeader_sd {
     uint8_t qualPrefix:4;
     uint8_t qualRangeCode:4;
 
-    uint64_t range;     // can be upto 8 octetes so we might need this
+    // uint64_t range;     // can be upto 8 octetes so we might need this
+
+    uint32_t rangeStart;
+    uint32_t rangeStop;
+
+    int numberOfPoints; 
 } objectHeader_st;
 
 objectHeader_st mkObjectHeader(uint8_t[]);

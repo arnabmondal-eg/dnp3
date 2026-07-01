@@ -13,7 +13,14 @@
  * Group, Variation (0x): 01 01
  */
 typedef struct data0101_sd {
-    uint8_t data:1;     // packed format is very effecient :)
+    uint8_t data7:1;     // packed format is very effecient :)
+    uint8_t data6:1;     // packed format is very effecient :)
+    uint8_t data5:1;     // packed format is very effecient :)
+    uint8_t data4:1;     // packed format is very effecient :)
+    uint8_t data3:1;     // packed format is very effecient :)
+    uint8_t data2:1;     // packed format is very effecient :)
+    uint8_t data1:1;     // packed format is very effecient :)
+    uint8_t data0:1;     // packed format is very effecient :)
 } data0101_st;
 
 /**
