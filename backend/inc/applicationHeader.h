@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "dlc.h" 
+#include "packet.h"
 #include "binaryHelper.h"
 
 // position in an input packet (assuming each index is 1 byte long)
@@ -28,7 +29,7 @@ typedef struct applicationHeader_sd {
     
 } applicationHeader_st;
 
-applicationHeader_st mkApplicationHeader(uint8_t []);
+applicationHeader_st mkApplicationHeader(dnp3p_st*);
 void printApplicationHeader(applicationHeader_st);
 void getApplicationHeaderBit(applicationHeader_st);
 

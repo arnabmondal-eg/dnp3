@@ -15,6 +15,8 @@ typedef struct dnp3p_sd {
     //TODO: Add other portions of packet
     uint8_t *hexInput;
 
+    int caretPosition;
+
     header_st header_s;
     dlc_st dlc_s;
     transportHeader_st transportHeader_s;

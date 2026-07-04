@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "binaryHelper.h"
+#include "packet.h"
 
 #define DEBUG 1
 
@@ -18,7 +19,7 @@ typedef struct transportHeader_sd {
     uint8_t final:1;
 } transportHeader_st;
 
-transportHeader_st mkTransportHeader(uint8_t []);
+transportHeader_st mkTransportHeader(dnp3p_st*);
 void printTransportHeader(transportHeader_st);
 int getTransportHeaderBit(transportHeader_st);
 

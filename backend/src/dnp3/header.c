@@ -1,27 +1,17 @@
 #include "header.h"
+#include "packet.h"
 
-/**
- * @brief Creates a dnp3 Header data type
- * 
- * @param hexInput Hex Sequence to Transform
- * @return header_st New var
- */
-header_st mkHeader(uint8_t hexInput[], int inputSize, int *packetValidity) {
+header_st mkHeader(dnp3p_st *packet_s) {
     header_st header_s = {0};
+    uint8_t hexInput[] = *packet_s -> hexInput;
 
-    if (inputSize < 10) *packetValidity = 0;
-    else *packetValidity = 1;
     memcpy(&header_s, hexInput, sizeof(header_s));
+
+    packet_s -> caretPosition += SIZEOFHEADER;
 
     return header_s;
 }
 
-/**
- * Checks Header Portion of Packet for Validity
- * @param hexInput Chacter Array: The Header to Check
- * 
- * @returns Boolean: Based on 2 Checks; Start Byte and CRC Byte Check
- */
 int checkHeaderValidity(header_st header_s) {
     int valid = 0;     // assume invalid
 
