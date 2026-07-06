@@ -28,7 +28,7 @@ typedef struct applicationHeader_sd {
     
 } applicationHeader_st;
 
-applicationHeader_st mkApplicationHeader(uint8_t []);
+applicationHeader_st mkApplicationHeader(uint8_t [], int*);
 void printApplicationHeader(applicationHeader_st);
 void getApplicationHeaderBit(applicationHeader_st);
 

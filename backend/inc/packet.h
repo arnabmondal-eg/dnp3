@@ -23,6 +23,7 @@ typedef struct dnp3p_sd {
     void *data_s;
 
     int packetValidity;
+    int caretPosition;
 } dnp3p_st;
 
 dnp3p_st mkPacket(uint8_t [], int packetSize);

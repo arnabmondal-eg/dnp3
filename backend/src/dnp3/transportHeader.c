@@ -1,13 +1,14 @@
 #include "transportHeader.h"
 
-transportHeader_st mkTransportHeader(uint8_t inputHex[]) {
+transportHeader_st mkTransportHeader(uint8_t inputHex[], int *caretPosition) {
     transportHeader_st transportHeader_s;
     // if(length <= 10) {
     //     if (DEBUG) printf("Provided Input Too Small! Transport Header Returned Uninitilized!\n");
     //     return transportHeader_s;
     // }
 
-    memcpy(&transportHeader_s, &inputHex[TRANSPORT_HEADER_POSTION], 1);
+    memcpy(&transportHeader_s, &inputHex[*caretPosition], 1);
+    *caretPosition += 1;
 
     return transportHeader_s;
 }

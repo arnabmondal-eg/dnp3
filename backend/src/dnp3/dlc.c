@@ -6,10 +6,11 @@
  * 
  * @param hexInput Hexs to parse from
  */
-dlc_st mkDLC(uint8_t hexInput[]) {
+dlc_st mkDLC(uint8_t hexInput[], int *caretPosition) {
     dlc_st dlc_s;
 
-    memcpy(&dlc_s, &hexInput[DLC_START], 1);    // copy 1 byte over
+    memcpy(&dlc_s, &hexInput[*caretPosition], 1);    // copy 1 byte over
+    *caretPosition += 1;
 
     return dlc_s;
 }

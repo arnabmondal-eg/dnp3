@@ -22,19 +22,22 @@ const char INN2_RESPONSES[8][17] = {
     "ALREADY EXECU", "BAD CONFIG", "RESERVED", "RESERVED"
 };
 
-applicationHeader_st mkApplicationHeader(uint8_t hexInput[]) {
+applicationHeader_st mkApplicationHeader(uint8_t hexInput[], int *caretPosition) {
     applicationHeader_st applHeader_s;
-        
-    dlc_st dlc_s = mkDLC(hexInput);
+    
+    uint8_t temp;
+    dlc_st dlc_s = mkDLC(hexInput, &temp);
 
     int dir = dlc_s.dirBit != 0 ? 1 : 0;
     
     if(dir == 1) {
-        memcpy(&applHeader_s, &hexInput[APPLHDR_START], 2);
+        memcpy(&applHeader_s, &hexInput[*caretPosition], 2);
+        *caretPosition += 2;
         applHeader_s.innActive = 0;
     }
     else {
-        memcpy(&applHeader_s, &hexInput[APPLHDR_START], 4);    // if rtu to main, get inn bytes
+        memcpy(&applHeader_s, &hexInput[*caretPosition], 4);    // if rtu to main, get inn bytes
+        *caretPosition +=2;
         applHeader_s.innActive = 1;
     }
 

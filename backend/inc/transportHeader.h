@@ -18,7 +18,7 @@ typedef struct transportHeader_sd {
     uint8_t final:1;
 } transportHeader_st;
 
-transportHeader_st mkTransportHeader(uint8_t []);
+transportHeader_st mkTransportHeader(uint8_t [], int*);
 void printTransportHeader(transportHeader_st);
 int getTransportHeaderBit(transportHeader_st);
 

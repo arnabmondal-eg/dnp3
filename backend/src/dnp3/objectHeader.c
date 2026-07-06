@@ -1,29 +1,33 @@
 #include "objectHeader.h"
 
-objectHeader_st mkObjectHeader(uint8_t hexInput[]) {
+objectHeader_st mkObjectHeader(uint8_t hexInput[], int *caretPosition) {
     const int RANGE_SIZE[12] = {2, 4, 8, 1, 2, 4, 0, 1, 2, 4, 0, 0};  // 10 is not a range code, 11 is undefined
     objectHeader_st objectHeader_s = {0};
     int shiftAmnt = 0;
-    
-    dlc_st dlc_s = mkDLC(hexInput);
+
+    int temp;    
+    dlc_st dlc_s = mkDLC(hexInput, &temp);
 
     int dir = dlc_s.dirBit != 0 ? 1 : 0;
 
     // no inn bytes in applheader
     if(dir) shiftAmnt = 2;  // if from primary, shift by 2 as there are no inn bytes
 
-    memcpy(&objectHeader_s, &hexInput[OBJECT_HEADER_1_START-shiftAmnt], 2); // set group and variation
+    memcpy(&objectHeader_s, &hexInput[*caretPosition], 2); // set group and variation
+        *caretPosition += 2;
     
-    objectHeader_s.qualPrefix = hexInput[QUALIFER_START-shiftAmnt] >> 4;    // capture first 4 bits
-    objectHeader_s.qualRangeCode = hexInput[QUALIFER_START-shiftAmnt];      // capture last 4 bits
+    objectHeader_s.qualPrefix = hexInput[*caretPosition] >> 4;    // capture first 4 bits
+    objectHeader_s.qualRangeCode = hexInput[*caretPosition];      // capture last 4 bits
     
     //fill range bytes
     // memcpy(&objectHeader_s.range, &hexInput[RANGE_START-shiftAmnt], RANGE_SIZE[objectHeader_s.qualRangeCode]);
 
     // start index
     if(objectHeader_s.qualRangeCode <= 3) {
-        memcpy(&objectHeader_s.rangeStart, &hexInput[RANGE_START - shiftAmnt], RANGE_SIZE[objectHeader_s.qualRangeCode]/2);
-        memcpy(&objectHeader_s.rangeStop, &hexInput[RANGE_START - shiftAmnt + (RANGE_SIZE[objectHeader_s.qualRangeCode]/2)], RANGE_SIZE[objectHeader_s.qualRangeCode]/2);
+        memcpy(&objectHeader_s.rangeStart, &hexInput[*caretPosition], RANGE_SIZE[objectHeader_s.qualRangeCode]/2);
+            *caretPosition += RANGE_SIZE[objectHeader_s.qualRangeCode]/2;
+        memcpy(&objectHeader_s.rangeStop, &hexInput[*caretPosition], RANGE_SIZE[objectHeader_s.qualRangeCode]/2);
+            *caretPosition += RANGE_SIZE[objectHeader_s.qualRangeCode]/2;
         
         objectHeader_s.numberOfPoints = objectHeader_s.rangeStop - objectHeader_s.rangeStart + 1;
         
@@ -36,7 +40,8 @@ objectHeader_st mkObjectHeader(uint8_t hexInput[]) {
         // printf("Range Stop: %02x\n", objectHeader_s.rangeStop);
     }
     else {
-        memcpy(&objectHeader_s.rangeStart, &hexInput[RANGE_START - shiftAmnt], RANGE_SIZE[objectHeader_s.qualRangeCode]);
+        memcpy(&objectHeader_s.rangeStart, &hexInput[*caretPosition], RANGE_SIZE[objectHeader_s.qualRangeCode]);
+            *caretPosition += RANGE_SIZE[objectHeader_s.qualRangeCode];
         
         objectHeader_s.numberOfPoints = objectHeader_s.rangeStart;
         

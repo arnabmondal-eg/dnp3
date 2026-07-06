@@ -1,7 +1,8 @@
 #include "data.h"
 
 void* mkData(uint8_t hexInput[], void *dataAdress) {
-    objectHeader_st objHeader_s = mkObjectHeader(hexInput);
+    int temp;
+    objectHeader_st objHeader_s = mkObjectHeader(hexInput, &temp);
     int startIndex = 0;
     int endIndex = 0;
     int indexArr[2] = {startIndex, endIndex};

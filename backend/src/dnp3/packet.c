@@ -5,11 +5,12 @@ dnp3p_st mkPacket(uint8_t hexInput[], int packetSize) {
 
     packet_s.hexInput = hexInput;
 
-    packet_s.header_s = mkHeader(hexInput, packetSize, &packet_s.packetValidity);
-    packet_s.dlc_s = mkDLC(hexInput);
-    packet_s.transportHeader_s = mkTransportHeader(hexInput);
-    packet_s.applicationHeader_s = mkApplicationHeader(hexInput);
-    packet_s.objectHeader_s = mkObjectHeader(hexInput);
+    packet_s.header_s = mkHeader(hexInput, &packet_s.caretPosition);
+    packet_s.dlc_s = mkDLC(hexInput, &packet_s.caretPosition);
+    packet_s.transportHeader_s = mkTransportHeader(hexInput, &packet_s.caretPosition);
+    packet_s.applicationHeader_s = mkApplicationHeader(hexInput, &packet_s.caretPosition);
+    packet_s.objectHeader_s = mkObjectHeader(hexInput, &packet_s.caretPosition);
+    printf("Carret Pose: %d\n", packet_s.caretPosition);
     // packet_s.data_s = mkData(hexInput, &packet_s.data_s);
 
     return packet_s;

@@ -26,7 +26,7 @@ typedef struct objectHeader_sd {
     int numberOfPoints; 
 } objectHeader_st;
 
-objectHeader_st mkObjectHeader(uint8_t[]);
+objectHeader_st mkObjectHeader(uint8_t[], int*);
 void printObjectHeader(objectHeader_st);
 
 #endif

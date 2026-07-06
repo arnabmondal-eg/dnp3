@@ -6,12 +6,11 @@
  * @param hexInput Hex Sequence to Transform
  * @return header_st New var
  */
-header_st mkHeader(uint8_t hexInput[], int inputSize, int *packetValidity) {
+header_st mkHeader(uint8_t hexInput[], int *caretPosition) {
     header_st header_s = {0};
 
-    if (inputSize < 10) *packetValidity = 0;
-    else *packetValidity = 1;
     memcpy(&header_s, hexInput, sizeof(header_s));
+    *caretPosition += sizeof(header_s);
 
     return header_s;
 }

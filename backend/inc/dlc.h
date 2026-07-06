@@ -21,7 +21,7 @@ typedef struct dlc_sd {
     int response;
 } dlc_st;
 
-dlc_st mkDLC(uint8_t[]);
+dlc_st mkDLC(uint8_t[], int*);
 
 void printDLCData(dlc_st);
 
