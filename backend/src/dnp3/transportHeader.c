@@ -1,14 +1,13 @@
 #include "transportHeader.h"
 
-transportHeader_st mkTransportHeader(dnp3p_st *packet_s) {
+transportHeader_st mkTransportHeader(uint8_t inputHex[]) {
     transportHeader_st transportHeader_s;
-    uint8_t *hexInput[] = packet_s -> hexInput;
     // if(length <= 10) {
     //     if (DEBUG) printf("Provided Input Too Small! Transport Header Returned Uninitilized!\n");
     //     return transportHeader_s;
     // }
 
-    memcpy(&transportHeader_s, &hexInput[TRANSPORT_HEADER_POSTION], 1);
+    memcpy(&transportHeader_s, &inputHex[TRANSPORT_HEADER_POSTION], 1);
 
     return transportHeader_s;
 }

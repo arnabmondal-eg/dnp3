@@ -1,8 +1,8 @@
+#include "applicationHeader.h"
 
 extern void byteToBinary(uint8_t input, char *binary);
 
 const char APP_FUNCTION_CODES[37][30]= {
-    #include "applicationHeader.h"
     "CONFIRM", "READ", "WRITE", "SELECT", "OPERATE", 
     "DIRECT OPERATE", "DIRECT OPERATE_NO_ACK", "IMMEDIATE FREEZE", "IMMEDIATE FREEZE_NO_ACK", "FREEZE CLEAR", 
     "FREEZE CLEAR_NO ACK", "FREEZE AT TIME", "FREEZE_AT_TIME_NO_ACK", "COLD RESTART", "WARM RESTART", 
@@ -22,12 +22,12 @@ const char INN2_RESPONSES[8][17] = {
     "ALREADY EXECU", "BAD CONFIG", "RESERVED", "RESERVED"
 };
 
-applicationHeader_st mkApplicationHeader(dnp3p_st *packet_s) {
+applicationHeader_st mkApplicationHeader(uint8_t hexInput[]) {
     applicationHeader_st applHeader_s;
-    uint8_t *hexInput[] = packet_s -> hexInput;
         
-    dlc_st *dlc_s = &(packet_s -> dlc_s);
-    int dir = dlc_s -> dirBit != 0 ? 1 : 0;
+    dlc_st dlc_s = mkDLC(hexInput);
+
+    int dir = dlc_s.dirBit != 0 ? 1 : 0;
     
     if(dir == 1) {
         memcpy(&applHeader_s, &hexInput[APPLHDR_START], 2);

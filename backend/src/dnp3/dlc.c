@@ -1,15 +1,24 @@
 #include "dlc.h"
 #include "binaryHelper.h"
 
-dlc_st mkDLC(dnp3p_st *packet_s) {
+/**
+ * @brief Extracts bit-by-bit information from DLC byte. 
+ * 
+ * @param hexInput Hexs to parse from
+ */
+dlc_st mkDLC(uint8_t hexInput[]) {
     dlc_st dlc_s;
-    uint8_t *hexInput = packet_s -> hexInput;
 
     memcpy(&dlc_s, &hexInput[DLC_START], 1);    // copy 1 byte over
 
     return dlc_s;
 }
 
+/**
+ * @brief Prints Data extracted from DLC bytes of DNP3 Header
+ * 
+ * @param dlc_s DLC Struct to print
+ */
 void printDLCData(dlc_st dlc_s) {
     const char *PRIMARY_FNC_CODES[16] = {
         "Reset Link States", 

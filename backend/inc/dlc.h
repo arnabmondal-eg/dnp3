@@ -6,7 +6,6 @@
 #include <string.h>
 
 #include "binaryHelper.h"
-#include "packet.h"
 
 #define DEBUG 1
 
@@ -22,7 +21,7 @@ typedef struct dlc_sd {
     int response;
 } dlc_st;
 
-dlc_st mkDLC(dnp3p_st*);
+dlc_st mkDLC(uint8_t[]);
 
 void printDLCData(dlc_st);
 
