@@ -1,6 +1,3 @@
-#ifndef packet_h
-#define packet_h
-
 #include <stdio.h>
 #include <stdint.h>
 
@@ -11,6 +8,10 @@
 #include "objectHeader.h"
 #include "data.h"
 
+#ifndef packet_h
+#define packet_h
+
+
 typedef struct dnp3p_sd {
     //TODO: Add other portions of packet
     uint8_t *hexInput;
@@ -20,7 +21,6 @@ typedef struct dnp3p_sd {
     transportHeader_st transportHeader_s;
     applicationHeader_st applicationHeader_s;
     objectHeader_st objectHeader_s;
-    void *data_s;
 
     int packetValidity;
     int caretPosition;

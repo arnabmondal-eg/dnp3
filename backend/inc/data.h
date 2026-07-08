@@ -39,8 +39,10 @@ typedef struct data0102_sd {
     uint8_t online:1;
 } data0102_st;
 
+
+
 // modifys mem adress (for that speed)
-void* mkData(uint8_t[], void*);
+void printData(uint8_t[], int*);
 void mkData0101(uint8_t, data0101_st*);
 void mkData0102(uint8_t, data0102_st*);
 

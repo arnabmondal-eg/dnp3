@@ -1,14 +1,16 @@
 #include "objectHeader.h"
 
-objectHeader_st mkObjectHeader(uint8_t hexInput[], int *caretPosition) {
+objectHeader_st mkObjectHeader(uint8_t hexInput[], int *caretPosition) 
+{
     const int RANGE_SIZE[12] = {2, 4, 8, 1, 2, 4, 0, 1, 2, 4, 0, 0};  // 10 is not a range code, 11 is undefined
     objectHeader_st objectHeader_s = {0};
     int shiftAmnt = 0;
 
-    int temp;    
-    dlc_st dlc_s = mkDLC(hexInput, &temp);
+    // int temp;    
+    // dlc_st dlc_s = mkDLC(hexInput, &temp);
 
-    int dir = dlc_s.dirBit != 0 ? 1 : 0;
+    // int dir = dlc_s.dirBit != 0 ? 1 : 0;
+    int dir = 1;
 
     // no inn bytes in applheader
     if(dir) shiftAmnt = 2;  // if from primary, shift by 2 as there are no inn bytes
@@ -86,8 +88,8 @@ void printObjectHeader(objectHeader_st objHeader_s) {
     printf("Prefix: [%01X] %s\n", objHeader_s.qualPrefix, PREFIX[objHeader_s.qualPrefix]);
     printf("Range Code: [%01X] %s\n", objHeader_s.qualRangeCode, RANGE_CODE[objHeader_s.qualRangeCode]);
 
-    printf("Range Size: %lu\n", objHeader_s.numberOfPoints);
     printf("Range Start: %02x\n", objHeader_s.rangeStart);
     printf("Range Stop: %02x\n", objHeader_s.rangeStop);
+    printf("Number of Points: %lu\n", objHeader_s.numberOfPoints);
 }
 

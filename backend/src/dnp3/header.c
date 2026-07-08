@@ -1,4 +1,5 @@
 #include "header.h"
+#include "packet.h"
 
 /**
  * @brief Creates a dnp3 Header data type
@@ -13,6 +14,15 @@ header_st mkHeader(uint8_t hexInput[], int *caretPosition) {
     *caretPosition += sizeof(header_s);
 
     return header_s;
+}
+
+void mkHeader1(uint8_t hexInput[], dnp3p_st *packet_sp) {
+   // header_st header_s = {0};
+
+    memcpy(&packet_sp->header_s, hexInput, sizeof(header_st));
+    packet_sp->caretPosition += sizeof(header_st);
+
+    return;
 }
 
 /**

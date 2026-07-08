@@ -7,6 +7,7 @@
 
 #include "dlc.h" 
 #include "binaryHelper.h"
+#include "dlc.h"
 
 // position in an input packet (assuming each index is 1 byte long)
 #define APPLHDR_START 11
@@ -28,7 +29,7 @@ typedef struct applicationHeader_sd {
     
 } applicationHeader_st;
 
-applicationHeader_st mkApplicationHeader(uint8_t [], int*);
+applicationHeader_st mkApplicationHeader(uint8_t [], int*, dlc_st*);
 void printApplicationHeader(applicationHeader_st);
 void getApplicationHeaderBit(applicationHeader_st);
 
