@@ -34,7 +34,7 @@ applicationHeader_st mkApplicationHeader(uint8_t hexInput[], int *caretPosition,
     }
     else {
         memcpy(&applHeader_s, &hexInput[*caretPosition], 4);    // if rtu to main, get inn bytes
-        *caretPosition +=2;
+        *caretPosition += 4;
         applHeader_s.innActive = 1;
     }
 

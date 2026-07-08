@@ -42,7 +42,7 @@ typedef struct data0102_sd {
 
 
 // modifys mem adress (for that speed)
-void printData(uint8_t[], int*);
+void printData(uint8_t[], int*, objectHeader_st*);
 void mkData0101(uint8_t, data0101_st*);
 void mkData0102(uint8_t, data0102_st*);
 

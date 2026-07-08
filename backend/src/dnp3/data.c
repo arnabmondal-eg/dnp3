@@ -1,8 +1,7 @@
 #include "data.h"
 
-void printData(uint8_t hexInput[], int *caretPosition) {
+void printData(uint8_t hexInput[], int *caretPosition, objectHeader_st *objectHeader_sp) {
     int temp = 0;
-    objectHeader_st objHeader_s = mkObjectHeader(hexInput, &temp);
 
     int startIndex = 0;
     int endIndex = 0;
@@ -14,30 +13,30 @@ void printData(uint8_t hexInput[], int *caretPosition) {
     int i = 0;
     int j = 0;
     
-    switch (objHeader_s.group) {
+    switch (objectHeader_sp -> group) {
         
         case 1: /* Object Group 1 */
         
-            datapoints = objHeader_s.numberOfPoints;
+            datapoints = objectHeader_sp -> numberOfPoints;
 
-            if (objHeader_s.variation == 1) {
+            if (objectHeader_sp -> variation == 1) {
                 data0101_sp = (data0101_st *) &hexInput[*caretPosition];
-                printf("~~~~ Values of Data ~~~~");
+                printf("---- Values of Data ----\n");
                 for (i = 0; i < datapoints / 8; i++) {
-                    printf("~~ Group %d ~~", i);
+                    printf("-- Group %d --\n", i);
                     printf(
-                        "pt1: %d, pt2: %d, pt3: %d, pt4: %d",
+                        "pt1: %d, pt2: %d, pt3: %d, pt4: %d\n",
                         data0101_sp->data0, data0101_sp->data1, data0101_sp->data2, data0101_sp->data3
                     );
                     printf(
-                        "pt5: %d, pt6: %d, pt7: %d, pt8: %d",
+                        "pt5: %d, pt6: %d, pt7: %d, pt8: %d\n",
                         data0101_sp->data4, data0101_sp->data5, data0101_sp->data6, data0101_sp->data7
                     );
                     data0101_sp = data0101_sp + sizeof(data0101_st);
                 } 
             }
             
-            else if(objHeader_s.variation == 2) {
+            else if(objectHeader_sp -> variation == 2) {
                 
             }
             break;

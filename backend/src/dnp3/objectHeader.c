@@ -20,7 +20,7 @@ objectHeader_st mkObjectHeader(uint8_t hexInput[], int *caretPosition)
     
     objectHeader_s.qualPrefix = hexInput[*caretPosition] >> 4;    // capture first 4 bits
     objectHeader_s.qualRangeCode = hexInput[*caretPosition];      // capture last 4 bits
-    
+        *caretPosition += 1;
     //fill range bytes
     // memcpy(&objectHeader_s.range, &hexInput[RANGE_START-shiftAmnt], RANGE_SIZE[objectHeader_s.qualRangeCode]);
 

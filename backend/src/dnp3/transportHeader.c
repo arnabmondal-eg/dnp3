@@ -7,6 +7,7 @@ transportHeader_st mkTransportHeader(uint8_t inputHex[], int *caretPosition) {
     //     return transportHeader_s;
     // }
 
+    printf("Transp Header: %04X\n", inputHex[*caretPosition]);
     memcpy(&transportHeader_s, &inputHex[*caretPosition], 1);
     *caretPosition += 1;
 

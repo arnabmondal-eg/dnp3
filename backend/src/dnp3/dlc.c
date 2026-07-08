@@ -8,8 +8,7 @@
  */
 dlc_st mkDLC(uint8_t hexInput[], int *caretPosition) {
     dlc_st dlc_s;
-    memcpy(&dlc_s, &hexInput[*caretPosition], 1);    // copy 1 byte over
-    *caretPosition += 1;
+    memcpy(&dlc_s, &hexInput[*caretPosition-6], 1);    // copy 1 byte over
 
     return dlc_s;
 }
