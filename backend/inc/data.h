@@ -40,6 +40,33 @@ typedef struct data0102_sd {
 } data0102_st;
 
 
+typedef struct data3001_sd {
+    int32_t value;
+    
+    uint8_t online:1;
+    uint8_t restart:1;
+    uint8_t commLost:1;
+    uint8_t remoteForced:1;
+    uint8_t localForced:1;
+    uint8_t overRange:1;
+    uint8_t referenceErr:1;
+    uint8_t reserved:1;     // always 0
+} data3001_st;
+
+typedef struct data3002_sd {
+    int16_t value;
+
+    uint8_t online:1;
+    uint8_t restart:1;
+    uint8_t commLost:1;
+    uint8_t remoteForced:1;
+    uint8_t localForced:1;
+    uint8_t overRange:1;
+    uint8_t referenceErr:1;
+    uint8_t reserved:1;     // always 0
+} data3002_st;
+
+
 
 // modifys mem adress (for that speed)
 void printData(uint8_t[], int*, objectHeader_st*);
