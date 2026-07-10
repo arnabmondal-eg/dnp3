@@ -1,11 +1,11 @@
-#ifndef data_h
-#define data_h
-
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
 
 #include "objectHeader.h"
+
+#ifndef data_h
+#define data_h
 
 /**
  * @brief Binary Input, Packed Format

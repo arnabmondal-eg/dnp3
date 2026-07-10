@@ -1,11 +1,11 @@
-#ifndef transportHeader_h
-#define transportHeader_h
-
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 
 #include "binaryHelper.h"
+
+#ifndef transportHeader_h
+#define transportHeader_h
 
 #define DEBUG 1
 

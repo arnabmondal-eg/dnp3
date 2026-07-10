@@ -11,7 +11,6 @@
 #ifndef packet_h
 #define packet_h
 
-
 typedef struct dnp3p_sd {
     //TODO: Add other portions of packet
     uint8_t *hexInput;

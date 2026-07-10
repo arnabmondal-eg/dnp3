@@ -1,11 +1,11 @@
-#ifndef dlc_h
-#define dlc_h
-
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 
 #include "binaryHelper.h"
+
+#ifndef dlc_h
+#define dlc_h
 
 #define DEBUG 1
 

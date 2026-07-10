@@ -1,11 +1,11 @@
-#ifndef objectHeader_h
-#define objectHeader_h
-
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 
 #include "dlc.h"
+
+#ifndef objectHeader_h
+#define objectHeader_h
 
 #define OBJECT_HEADER_1_START 15
 #define QUALIFER_START 17

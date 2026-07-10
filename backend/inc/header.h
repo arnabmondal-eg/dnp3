@@ -1,6 +1,3 @@
-#ifndef header_h
-#define header_h
-
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -9,8 +6,10 @@
 #include "splitTwoByte.h"
 #include "binaryHelper.h"
 
-#define DEBUG 1
+#ifndef header_h
+#define header_h
 
+#define DEBUG 1
 
 // total 10 bytes / 3 compiler blocks (2 unsed bytes)
 typedef struct header_sd {

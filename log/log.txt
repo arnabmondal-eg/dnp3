@@ -36,7 +36,7 @@ Number of Points: 47
 ---- Values of Data ----
 Point #0: -22928
 	Flags (RE OR LF RF CL R ON): 1 1 1 1 1 1 1
-Point #1: 28496
+Point #1: 27592
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
 Point #2: 0
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
@@ -44,15 +44,15 @@ Point #3: -13934
 	Flags (RE OR LF RF CL R ON): 1 1 0 0 1 0 1
 Point #4: -2382
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
-Point #5: 28496
+Point #5: 27592
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
 Point #6: -2382
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
 Point #7: 0
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #8: 28496
+Point #8: 27592
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
-Point #9: 28496
+Point #9: 27592
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
 Point #10: 0
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
@@ -171,7 +171,7 @@ Number of Points: 47
 Point #0: -2047
 	Flags (RE OR LF RF CL R ON): 1 0 1 1 1 0 0
 Point #1: -1
-	Flags (RE OR LF RF CL R ON): 0 0 1 1 1 1 1
+	Flags (RE OR LF RF CL R ON): 1 0 0 1 0 0 1
 Point #2: 0
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
 Point #3: 0

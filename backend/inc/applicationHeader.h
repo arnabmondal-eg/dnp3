@@ -1,6 +1,3 @@
-#ifndef applicationHeader_h
-#define applicationHeader_h
-
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
@@ -8,6 +5,9 @@
 #include "dlc.h" 
 #include "binaryHelper.h"
 #include "dlc.h"
+
+#ifndef applicationHeader_h
+#define applicationHeader_h
 
 // position in an input packet (assuming each index is 1 byte long)
 #define APPLHDR_START 11
