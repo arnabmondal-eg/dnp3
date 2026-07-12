@@ -22,7 +22,7 @@ void printPacket(dnp3p_st packet_s) {
     printTransportHeader(packet_s.transportHeader_s);
     printApplicationHeader(packet_s.applicationHeader_s);
     printObjectHeader(packet_s.objectHeader_s);
-    printData(packet_s.hexInput, &packet_s.caretPosition, &packet_s.objectHeader_s);
+    if(packet_s.dlc_s.dirBit != 1) printData(packet_s.hexInput, &packet_s.caretPosition, &packet_s.objectHeader_s);
 
     // printf("Data 1: %d", ((data0101_st*)packet_s.data_s)->data);
 

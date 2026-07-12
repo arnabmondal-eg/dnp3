@@ -12,8 +12,7 @@ Primarity: [1] Initiating
 Frame Count: [0]
 Frame Count Valid: [0] No
 Primary Function Code: [0x8] No Matching Function Code
-
----- TRANSPORT HEADER ----
+---- Transport Header ----
 First Packet
 Final Packet
 Segment Sequence (Packet Number): 25
@@ -31,104 +30,8 @@ Variation: 2
 Prefix: [0] No Index; Packed
 Range Code: [0] 1-Octect Start & Stop Indices
 Range Start: 01
-Range Stop: 2f
-Number of Points: 47
----- Values of Data ----
-Data Point: 47, Carret Pose: 18
-Point #0: [0000] 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #1: [0000] 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #2: [F241] 62017
-	Flags (RE OR LF RF CL R ON): 1 0 0 0 0 0 0
-Point #3: [0001] 1
-	Flags (RE OR LF RF CL R ON): 1 1 1 0 0 1 1
-Point #4: [6000] 24576
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #5: [6DD8] 28120
-	Flags (RE OR LF RF CL R ON): 1 1 0 1 0 1 0
-Point #6: [0000] 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
-Point #7: [6405] 25605
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #8: [C8C4] 51396
-	Flags (RE OR LF RF CL R ON): 0 0 0 1 1 0 1
-Point #9: [0001] 1
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #10: [0078] 120
-	Flags (RE OR LF RF CL R ON): 1 1 0 1 1 1 0
-Point #11: [00C8] 200
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #12: [0000] 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #13: [0000] 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #14: [0000] 0
-	Flags (RE OR LF RF CL R ON): 1 0 1 1 0 0 1
-Point #15: [01CA] 458
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #16: [0000] 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #17: [0000] 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #18: [0002] 2
-	Flags (RE OR LF RF CL R ON): 0 0 1 1 1 1 0
-Point #19: [0001] 1
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #20: [2F00] 12032
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #21: [0000] 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #22: [0000] 0
-	Flags (RE OR LF RF CL R ON): 0 1 0 1 1 1 1
-Point #23: [0000] 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #24: [5A00] 23040
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #25: [0000] 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #26: [D8E9] 55529
-	Flags (RE OR LF RF CL R ON): 1 1 1 0 0 0 0
-Point #27: [0001] 1
-	Flags (RE OR LF RF CL R ON): 1 1 0 1 1 0 1
-Point #28: [0500] 1280
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #29: [4455] 17493
-	Flags (RE OR LF RF CL R ON): 1 1 0 0 1 0 0
-Point #30: [4900] 18688
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
-Point #31: [2167] 8551
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 1 1
-Point #32: [0100] 256
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #33: [0000] 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #34: [0000] 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #35: [00CC] 204
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #36: [C900] 51456
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #37: [0000] 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
-Point #38: [0000] 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
-Point #39: [021E] 542
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #40: [0100] 256
-	Flags (RE OR LF RF CL R ON): 0 0 1 0 0 0 0
-Point #41: [0000] 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #42: [0000] 0
-	Flags (RE OR LF RF CL R ON): 0 1 0 0 0 1 0
-Point #43: [0022] 34
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #44: [0000] 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #45: [0000] 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #46: [0000] 0
-	Flags (RE OR LF RF CL R ON): 0 0 1 0 1 1 0
+Range Stop: 22
+Number of Points: 34
 
 
 -------- Reply Packet --------
@@ -145,7 +48,7 @@ Primarity: [0] Responding
 Zero-Bit: [0]
 Data Flow Control: [0] Recieve Buffer Availible
 Secondary Function Code: [0x1] Negative Acknowledge
----- TRANSPORT HEADER ----
+---- Transport Header ----
 First Packet
 Final Packet
 Segment Sequence (Packet Number): 12

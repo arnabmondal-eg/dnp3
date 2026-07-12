@@ -10,7 +10,7 @@ transportHeader_st mkTransportHeader(uint8_t inputHex[], int *caretPosition) {
 }
 
 void printTransportHeader(transportHeader_st transportHeader_s) {
-    printf("---- TRANSPORT HEADER ----\n");
+    printf("---- Transport Header ----\n");
 
     if (transportHeader_s.first != 0) printf("First Packet\n");
     else printf("Not First Packet\n");
