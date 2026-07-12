@@ -16,6 +16,7 @@ void printData(uint8_t hexInput[], int *caretPosition, objectHeader_st *objectHe
     
     int i = 0;
     int j = 0;
+
     
     printf("---- Values of Data ----\n");
     datapoints = objectHeader_sp -> numberOfPoints;
@@ -44,7 +45,6 @@ void printData(uint8_t hexInput[], int *caretPosition, objectHeader_st *objectHe
             
             else if(objectHeader_sp -> variation == 2) {
                 data0102_sp = (data0102_st *) &hexInput[*caretPosition];
-
                 for(i = 0; i < datapoints; i++) {
                     printf("Point #%d: %d\n", i, data0102_sp -> state);
                     printf(
@@ -77,17 +77,19 @@ void printData(uint8_t hexInput[], int *caretPosition, objectHeader_st *objectHe
         }
 
         else if(objectHeader_sp -> variation == 2) {
-            data3002_sp = (data3002_st *) &hexInput[*caretPosition];
-
+            printf("Data Point: %d, Carret Pose: %d\n", datapoints, *caretPosition);
+            
+            
             for(i =0; i < datapoints; i++) {
-                printf("Point #%d: %d\n", i, data3002_sp -> value);
+                data3002_sp = (data3002_st *) &hexInput[*caretPosition];
+
+                printf("Point #%d: [%04X] %d\n", i, data3002_sp->value, data3002_sp->value);
                 printf(
                     "\tFlags (RE OR LF RF CL R ON): %d %d %d %d %d %d %d\n", 
                     data3002_sp->referenceErr, data3002_sp->overRange, data3002_sp->localForced, 
                     data3002_sp->remoteForced, data3002_sp->commLost, data3002_sp->restart, data3002_sp->online
                 );
-                data3002_sp = data3002_sp + sizeof(data3001_st);
-                *caretPosition += 1;
+                *caretPosition = *caretPosition + 3; //sizeof(data3001_st);
             }
         }
     }

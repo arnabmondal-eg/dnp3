@@ -1,139 +1,9 @@
--------- Request Packet --------
----- Packet Header ----
-Start: 0x05 0x64
-Length: 0x0D [13]
-Data Link Control: 0xC4
-Destination: 0x00C8 [200]
-Source: 0x0001 [1]
-CRC: 0x786E
----- DLC ----
-Direction: [1] From Master
-Primarity: [1] Initiating
-Frame Count: [0]
-Frame Count Valid: [0] No
-Primary Function Code: [0x8] No Matching Function Code
-
----- TRANSPORT HEADER ----
-First Packet
-Final Packet
-Segment Sequence (Packet Number): 25
----- Application Header ----
-First: 01
-First Fragment
-Final Fragment
-Application Not Confrimed
-Not Unsolicited
-Fragment Sequence: 000A [10]
-Application Function Code: READ
----- Object Header ----
-Group: [30]
-Variation: 2
-Prefix: [0] No Index; Packed
-Range Code: [0] 1-Octect Start & Stop Indices
-Range Start: 01
-Range Stop: 2f
-Number of Points: 47
----- Values of Data ----
-Point #0: -22928
-	Flags (RE OR LF RF CL R ON): 1 1 1 1 1 1 1
-Point #1: 27592
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
-Point #2: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #3: -13934
-	Flags (RE OR LF RF CL R ON): 1 1 0 0 1 0 1
-Point #4: -2382
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
-Point #5: 27592
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
-Point #6: -2382
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
-Point #7: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #8: 27592
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
-Point #9: 27592
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
-Point #10: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #11: 6
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #12: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #13: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #14: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #15: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #16: -2382
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
-Point #17: -2382
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
-Point #18: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #19: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #20: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #21: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #22: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #23: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #24: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #25: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #26: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #27: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #28: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #29: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #30: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #31: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #32: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #33: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #34: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #35: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #36: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #37: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #38: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #39: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #40: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #41: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #42: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #43: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #44: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #45: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #46: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
 
 
 -------- Reply Packet --------
 ---- Packet Header ----
 Start: 0x05 0x64
-Length: 0x77 [119]
+Length: 0x55 [85]
 Data Link Control: 0x44
 Destination: 0x0001 [1]
 Source: 0x0349 [841]
@@ -165,100 +35,75 @@ Variation: 2
 Prefix: [0] No Index; Packed
 Range Code: [1] 2-Octect Start & Stop Indices
 Range Start: 01
-Range Stop: 2f
-Number of Points: 47
+Range Stop: 22
+Number of Points: 34
 ---- Values of Data ----
-Point #0: -2047
-	Flags (RE OR LF RF CL R ON): 1 0 1 1 1 0 0
-Point #1: -1
-	Flags (RE OR LF RF CL R ON): 1 0 0 1 0 0 1
-Point #2: 0
+Data Point: 34, Carret Pose: 22
+Point #0: [5C40] 23616
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #1: [3388] 13192
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #2: [39A8] 14760
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #3: [5C28] 23592
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #4: [19A0] 6560
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #5: [19D8] 6616
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #6: [0000] 0
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #7: [0070] 112
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #8: [00A8] 168
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #9: [0012] 18
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #10: [0600] 1536
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #11: [0084] 132
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #12: [00A1] 161
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #13: [0000] 0
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #14: [0016] 22
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #15: [0014] 20
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #16: [0680] 1664
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #17: [7483] 29827
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #18: [1820] 6176
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #19: [4897] 18583
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #20: [796D] 31085
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #21: [7756] 30550
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #22: [07CC] 1996
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
+Point #23: [0001] 1
+	Flags (RE OR LF RF CL R ON): 0 0 0 0 1 1 1
+Point #24: [1200] 4608
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #3: 0
+Point #25: [0000] 0
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #4: 13461
-	Flags (RE OR LF RF CL R ON): 1 0 0 1 0 0 0
-Point #5: 0
+Point #26: [0000] 0
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #6: 0
+Point #27: [FFFD] 65533
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #7: 0
+Point #28: [00FF] 255
+	Flags (RE OR LF RF CL R ON): 1 1 1 1 1 1 1
+Point #29: [0000] 0
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #8: 0
+Point #30: [FF2A] 65322
+	Flags (RE OR LF RF CL R ON): 1 1 0 0 0 0 0
+Point #31: [0001] 1
+	Flags (RE OR LF RF CL R ON): 1 1 0 1 1 0 0
+Point #32: [0500] 1280
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #9: 0
-	Flags (RE OR LF RF CL R ON): 0 1 0 1 0 0 0
-Point #10: 0
-	Flags (RE OR LF RF CL R ON): 1 0 0 1 0 0 0
-Point #11: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #12: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #13: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #14: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #15: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #16: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #17: 0
-	Flags (RE OR LF RF CL R ON): 0 0 1 1 0 0 0
-Point #18: 0
-	Flags (RE OR LF RF CL R ON): 0 1 0 1 1 1 1
-Point #19: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #20: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #21: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #22: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #23: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #24: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #25: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #26: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #27: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #28: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #29: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #30: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #31: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #32: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #33: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #34: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #35: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #36: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #37: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #38: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #39: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #40: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #41: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #42: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #43: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #44: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #45: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #46: 0
-	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
+Point #33: [4455] 17493
+	Flags (RE OR LF RF CL R ON): 1 1 0 0 1 0 0

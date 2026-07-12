@@ -26,7 +26,6 @@ typedef struct dnp3p_sd {
 } dnp3p_st;
 
 dnp3p_st mkPacket(uint8_t [], int packetSize);
-
 void printPacket(dnp3p_st);
 
 #endif
