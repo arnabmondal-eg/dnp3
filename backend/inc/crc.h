@@ -7,6 +7,10 @@
 #define CRC_REG_CHUNK 16
 
 
-int calculateCRC(uint8_t rawHex[], int length);
+uint16_t calculateCRC(uint8_t*, int);
+
+int getPacketSize(uint8_t []);
+
+void removeCRC(uint8_t [], uint8_t []);
 
 #endif

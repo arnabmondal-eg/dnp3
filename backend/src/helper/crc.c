@@ -1,7 +1,5 @@
-#include <stdio.h>
-#include <stdint.h>
+#include "crc.h"
 
-// used ai to write this table (im sorry)
 static const uint16_t dnp3_crc_table[256] = {
     0x0000, 0x365E, 0x6CBC, 0x5AE2, 0xD978, 0xEF26, 0xB5C4, 0x839A,
     0xFF89, 0xC9D7, 0x9335, 0xA56B, 0x26F1, 0x10AF, 0x4A4D, 0x7C13,
@@ -37,22 +35,66 @@ static const uint16_t dnp3_crc_table[256] = {
     0x91AF, 0xA7F1, 0xFD13, 0xCB4D, 0x48D7, 0x7E89, 0x246B, 0x1235
 };
 
-/**
- * Calculates the CRC checksum for a given set of Hex rawHexCode
- * 
- * @param rawHexCode Unsigned 1 Byte Int: The Data for CRC Byte to be generated
- * @param length Integer: The length data for CRC byte to be generated
- * 
- * @returns Unsigned 2 Byte Integer: Computed CRC Hex
- */
-uint16_t calculateCRC(const uint8_t rawHexCode[], int length) {
+int getPacketSize(uint8_t input[]) {
+    int decSize = 0;
+    int trueSize = 0;
+    int numberOfCRC = 0;
+
+    decSize = input[2];
+    numberOfCRC = (decSize - 5) / 16;
+    if (decSize > 5) trueSize = (numberOfCRC * 18) + 10 + ((decSize - 5) % 16) + 2;
+    else trueSize = 10;
+
+    // each crc "block" has 2 crc bytes, 10 from header, any left over
+
+    return trueSize;
+}
+
+uint16_t calculateCRC(uint8_t hexInput[], int length) {
     uint16_t crc = 0x0000;
     
     for (int i = 0; i < length; i++) {
         // Compute table index and shift right to process bytes sequentially
-        crc = (crc >> 8) ^ dnp3_crc_table[(crc ^ rawHexCode[i]) & 0xFF];
+        crc = (crc >> 8) ^ dnp3_crc_table[(crc ^ hexInput[i]) & 0xFF];
     }
     
     // Invert output
     return crc ^ 0xFFFF;
+}
+
+void removeCRC(uint8_t in[], uint8_t out[]) {
+    /* 2 Byte CRC in last 2 bytes of header, after, every 16 bytes is 2 byte crc */
+    int length = 0;
+    int groups = 0;
+    int remaining = 0;
+    int outPose = 0;
+    int inPose = 0;
+    int i = 0;
+    int j = 0;
+
+    length = getPacketSize(in);
+    groups = ((length - 10) / 18);      // number of data-crc blocks
+
+    for (i = 0; i < 10; i++) {
+        out[i] = in[i];     // get all of header(including 2 crc bytes)
+        //TODO: Update when crc parsing in header changed
+    }
+    outPose = 10;
+    inPose = 10;
+
+    if (length > 10){    
+        for(i = 0; i < groups; i++) {
+            for(j = 0; j < 16; j++) {
+                out[outPose++] = in[inPose++];
+            }
+            inPose += 2;
+        }
+
+        remaining = (length - 10) % 18;         // Handles case of landing excatly
+        if (remaining > 2) remaining -= 2;      // on or after CRC Boundary
+
+        for (i = 0; i < remaining; i++) {
+            out[outPose++] = in[inPose++];
+        }
+    }
 }
