@@ -2,14 +2,10 @@
 
 transportHeader_st mkTransportHeader(uint8_t inputHex[], int *caretPosition) {
     transportHeader_st transportHeader_s;
-    // if(length <= 10) {
-    //     if (DEBUG) printf("Provided Input Too Small! Transport Header Returned Uninitilized!\n");
-    //     return transportHeader_s;
-    // }
 
-    printf("Transp Header: %04X\n", inputHex[*caretPosition]);
     memcpy(&transportHeader_s, &inputHex[*caretPosition], 1);
     *caretPosition += 1;
+
     return transportHeader_s;
 }
 
@@ -24,5 +20,3 @@ void printTransportHeader(transportHeader_st transportHeader_s) {
 
     printf("Segment Sequence (Packet Number): %d\n", transportHeader_s.segmentSequence);
 }
-
-//TODO: Write getTransportHeader bit function

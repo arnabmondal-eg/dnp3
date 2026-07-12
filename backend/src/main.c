@@ -41,18 +41,13 @@ int main() {
         0x07, 0x87
     };
 
-    printf("Packet Size: %d\n", getPacketSize(reply));
+    uint8_t cleanedRequest[getPacketSize(request)];
+    removeCRC(request, cleanedRequest);
 
     uint8_t cleanedReply[getPacketSize(reply)];
     removeCRC(reply, cleanedReply);
 
-    for(int i = 0; i < getPacketSize(reply); i++) {
-        printf("0x%02X  ", cleanedReply[i]);
-
-        if (i % 5 == 0 && i != 0) printf("\n");
-    }
-
-    // dnp3p_st request_s = mkPacket(request, sizeof(request));
+    dnp3p_st request_s = mkPacket(cleanedRequest, sizeof(request));
     dnp3p_st reply_s = mkPacket(cleanedReply, sizeof(reply));
 
     if(freopen("log/log.txt", "w", stdout) == NULL) {
@@ -61,8 +56,8 @@ int main() {
         return 0;
     }
 
-    // printf("-------- Request Packet --------\n");
-    // printPacket(request_s);
+    printf("-------- Request Packet --------\n");
+    printPacket(request_s);
     printf("\n\n-------- Reply Packet --------\n");
     printPacket(reply_s);
 
