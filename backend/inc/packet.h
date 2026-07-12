@@ -1,28 +1,31 @@
-#ifndef packet_h
-#define packet_h
-
 #include <stdio.h>
 #include <stdint.h>
 
-#include "mainHeader.h"
+#include "header.h"
 #include "dlc.h"
 #include "transportHeader.h"
 #include "applicationHeader.h"
 #include "objectHeader.h"
+#include "data.h"
+
+#ifndef packet_h
+#define packet_h
 
 typedef struct dnp3p_sd {
     //TODO: Add other portions of packet
     uint8_t *hexInput;
 
-    dnp3h_st header_s;    // header portion of packet
-    dnp3hDLC_st dlc_s;
-    dnp3th_st transportHeader_s;
-    dnp3aph_st applicationHeader_s;
-    dnp3objh_st objectHeader_s;
+    header_st header_s;
+    dlc_st dlc_s;
+    transportHeader_st transportHeader_s;
+    applicationHeader_st applicationHeader_s;
+    objectHeader_st objectHeader_s;
+
+    int packetValidity;
+    int caretPosition;
 } dnp3p_st;
 
 dnp3p_st mkPacket(uint8_t [], int packetSize);
-
 void printPacket(dnp3p_st);
 
 #endif

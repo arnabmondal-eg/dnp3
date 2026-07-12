@@ -8,5 +8,6 @@
     ],
 
     "cmake.sourceDirectory": "${workspaceFolder}/backend",
-    "cmake.buildDirectory": "${workspaceFolder}/backend/build"
+    "cmake.buildDirectory": "${workspaceFolder}/backend/build",
+    "C_Cpp.default.compilerPath": "/usr/bin/clang++",
 }

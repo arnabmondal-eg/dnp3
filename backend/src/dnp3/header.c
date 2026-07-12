@@ -1,31 +1,37 @@
-#include "mainHeader.h"
-#include "crc.h"
-#include "splitTwoByte.h"
-#include "binaryHelper.h"
-
-
+#include "header.h"
+#include "packet.h"
 
 /**
  * @brief Creates a dnp3 Header data type
  * 
- * @param headerRawHex Hex Sequence to Transform
- * @return dnp3h_st New var
+ * @param hexInput Hex Sequence to Transform
+ * @return header_st New var
  */
-dnp3h_st mkHeader(uint8_t headerRawHex[]) {
-    dnp3h_st header_s;
+header_st mkHeader(uint8_t hexInput[], int *caretPosition) {
+    header_st header_s = {0};
 
-    memcpy(&header_s, headerRawHex, sizeof(header_s));
+    memcpy(&header_s, hexInput, sizeof(header_s));
+    *caretPosition += sizeof(header_s);
 
     return header_s;
 }
 
+void mkHeader1(uint8_t hexInput[], dnp3p_st *packet_sp) {
+   // header_st header_s = {0};
+
+    memcpy(&packet_sp->header_s, hexInput, sizeof(header_st));
+    packet_sp->caretPosition += sizeof(header_st);
+
+    return;
+}
+
 /**
  * Checks Header Portion of Packet for Validity
- * @param headerRawHex Chacter Array: The Header to Check
+ * @param hexInput Chacter Array: The Header to Check
  * 
  * @returns Boolean: Based on 2 Checks; Start Byte and CRC Byte Check
  */
-int checkHeaderValidity(dnp3h_st header_s) {
+int checkHeaderValidity(header_st header_s) {
     int valid = 0;     // assume invalid
 
     // check for start bytes
@@ -51,12 +57,7 @@ int checkHeaderValidity(dnp3h_st header_s) {
     return valid;
 }
 
-/** ~Asthetic~ Print. Just for testing. 
- * @param header_s The header_s to be decomposed and printed
- * 
- * Prints all contents (start, length, dlc, ect...) hex, and for specific values (length, destination, source) prints decimal
-*/
-void printHeader(dnp3h_st header_s) {
+void printHeader(header_st header_s) {
     printf("---- Packet Header ----\n");
     printf("Start: 0x%02X 0x%02X\n", header_s.s1, header_s.s2);
     printf("Length: 0x%02X [%d]\n", header_s.len, header_s.len);

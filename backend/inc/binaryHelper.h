@@ -1,7 +1,7 @@
+#include <stdint.h>
+
 #ifndef binaryHelper_h
 #define binaryHelper_h
-
-#include <stdint.h>
 
 #define BIT_7_MASK 0x80
 #define BIT_6_MASK 0x40

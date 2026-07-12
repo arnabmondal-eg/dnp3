@@ -6,10 +6,9 @@
  * 
  * @param hexInput Hexs to parse from
  */
-dnp3hDLC_st mkDLC(uint8_t hexInput[]) {
-    dnp3hDLC_st dlc_s;
-
-    memcpy(&dlc_s, &hexInput[DLC_START], 1);    // copy 1 byte over
+dlc_st mkDLC(uint8_t hexInput[], int *caretPosition) {
+    dlc_st dlc_s;
+    memcpy(&dlc_s, &hexInput[*caretPosition-6], 1);    // copy 1 byte over
 
     return dlc_s;
 }
@@ -19,7 +18,7 @@ dnp3hDLC_st mkDLC(uint8_t hexInput[]) {
  * 
  * @param dlc_s DLC Struct to print
  */
-void printDLCData(dnp3hDLC_st dlc_s) {
+void printDLCData(dlc_st dlc_s) {
     const char *PRIMARY_FNC_CODES[16] = {
         "Reset Link States", 
         "", 

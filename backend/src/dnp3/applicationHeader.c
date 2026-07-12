@@ -17,31 +17,31 @@ const char INN1_RESPONSES[8][15] = {
     "ALL STATIONS", "CLASS 1", "CLASS 2", "CLASS 3", 
     "NEED TIME", "LOCAL", "DEVICE TROUBLE", "RESTART"
 };
-const char INN2_RESPONSES[8][15] = {
+const char INN2_RESPONSES[8][17] = {
     "BAD FUNCTION", "OBJECT UNKNOWN", "OUT OF RANGE", "BUFFER OVERFLOW", 
     "ALREADY EXECU", "BAD CONFIG", "RESERVED", "RESERVED"
 };
 
-dnp3aph_st mkApplicationHeader(uint8_t hexInput[]) {
-    dnp3aph_st applHeader_s;
-        
-    dnp3hDLC_st dlc_s = mkDLC(hexInput);
+applicationHeader_st mkApplicationHeader(uint8_t hexInput[], int *caretPosition, dlc_st *dlc_sp) {
+    applicationHeader_st applHeader_s;
 
-    int dir = dlc_s.dirBit != 0 ? 1 : 0;
+    int dir = dlc_sp -> dirBit != 0 ? 1 : 0;
     
     if(dir == 1) {
-        memcpy(&applHeader_s, &hexInput[APPLHDR_START], 2);
+        memcpy(&applHeader_s, &hexInput[*caretPosition], 2);
+        *caretPosition += 2;
         applHeader_s.innActive = 0;
     }
     else {
-        memcpy(&applHeader_s, &hexInput[APPLHDR_START], 4);    // if rtu to main, get inn bytes
+        memcpy(&applHeader_s, &hexInput[*caretPosition], 4);    // if rtu to main, get inn bytes
+        *caretPosition += 4;
         applHeader_s.innActive = 1;
     }
 
     return applHeader_s;
 }
 
-void printApplicationHeader(dnp3aph_st applHeader_s) {
+void printApplicationHeader(applicationHeader_st applHeader_s) {
     printf("---- Application Header ----\n");
 
     // Application Control Byte

@@ -1,0 +1,80 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdint.h>
+
+#include "objectHeader.h"
+
+#ifndef data_h
+#define data_h
+
+/**
+ * @brief Binary Input, Packed Format
+ * 
+ * Group, Variation (0x): 01 01
+ */
+typedef struct data0101_sd {
+    uint8_t data7:1;     // packed format is very effecient :)
+    uint8_t data6:1;     // packed format is very effecient :)
+    uint8_t data5:1;     // packed format is very effecient :)
+    uint8_t data4:1;     // packed format is very effecient :)
+    uint8_t data3:1;     // packed format is very effecient :)
+    uint8_t data2:1;     // packed format is very effecient :)
+    uint8_t data1:1;     // packed format is very effecient :)
+    uint8_t data0:1;     // packed format is very effecient :)
+} data0101_st;
+
+/**
+ * @brief Binary Input, With Flags
+ * 
+ * Group, Varriation (0x): 01 02
+ */
+typedef struct data0102_sd {
+    uint8_t state:1;
+    uint8_t reserved:1;     // always 0
+    uint8_t chatterFiler:1;
+    uint8_t localForced:1;
+    uint8_t remoteForced:1;
+    uint8_t commLost:1;
+    uint8_t restart:1;
+    uint8_t online:1;
+} data0102_st;
+
+
+typedef struct data3001_sd {
+    uint8_t online:1;
+    uint8_t restart:1;
+    uint8_t commLost:1;
+    uint8_t remoteForced:1;
+    uint8_t localForced:1;
+    uint8_t overRange:1;
+    uint8_t referenceErr:1;
+    uint8_t reserved:1;     // always 0
+    
+    int32_t value;
+} data3001_st;
+
+typedef struct data3002_sd {
+
+    uint32_t online:1;
+    uint32_t restart:1;
+    uint32_t commLost:1;
+    uint32_t remoteForced:1;
+    uint32_t localForced:1;
+    uint32_t overRange:1;
+    uint32_t referenceErr:1;
+    uint32_t reserved:1;     // always 0
+    
+    uint32_t value:16;
+
+    uint32_t spare;
+
+} data3002_st;
+
+
+
+// modifys mem adress (for that speed)
+void printData(uint8_t[], int*, objectHeader_st*);
+void mkData0101(uint8_t, data0101_st*);
+void mkData0102(uint8_t, data0102_st*);
+
+#endif
