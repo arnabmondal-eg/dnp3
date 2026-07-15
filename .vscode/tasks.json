@@ -6,7 +6,7 @@
         {
             "label": "CMake Build",
             "type": "shell",
-            "command": "cmake -S ${workspaceFolder}/backend/     -B ${workspaceFolder}/backend/build && cmake --build ${workspaceFolder}/backend/build",
+            "command": "cmake -B backend/build && cmake --build backend/build",
             "group": {
                 "kind": "build",
                 "isDefault": true   // have to set this other wise default c/cpp compiler trys to compile source without linking other source files
@@ -14,17 +14,17 @@
             "problemMatcher": ["$gcc"]
 
         },
-        {
-            "label": "CMake Run Binary",
-            "type": "shell",
-            "command": "${workspaceFolder}/backend/build/bin/dnp3",  // TODO: Change name to dnp3Backend. Have to change in CMake as well
-            "dependsOn": "CMake Build",
-            "group": {
-                "kind": "test",
-                "isDefault": true
-            },
-            "problemMatcher": "$gcc"
-        },
+        // {
+        //     "label": "CMake Run Binary",
+        //     "type": "shell",
+        //     "command": "${workspaceFolder}/backend/build/bin/dnp3",  
+        //     "dependsOn": "CMake Build",
+        //     "group": {
+        //         "kind": "test",
+        //         "isDefault": true
+        //     },
+        //     "problemMatcher": "$gcc"
+        // },
 
         // frontend compile and run commmands
         // requires jdk (i think... pretty sure though)

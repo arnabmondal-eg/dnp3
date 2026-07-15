@@ -119,15 +119,15 @@ Point #21: [7756] 30550
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
 Point #22: [07CC] 1996
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 1
-Point #23: [0000] 0
+Point #23: [0005] 5
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 1 1 1
-Point #24: [1200] 4608
+Point #24: [5000] 20480
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
 Point #25: [0000] 0
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
 Point #26: [0000] 0
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
-Point #27: [0008] 8
+Point #27: [0010] 16
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
 Point #28: [0000] 0
 	Flags (RE OR LF RF CL R ON): 0 0 0 0 0 0 0
