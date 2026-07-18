@@ -10,6 +10,6 @@
 
 #define PORT 48188  // https://www.random.org/ (0-65535)
 
-void mkdnp3Request(int, struct sockaddr_in*, uint8_t[], int);
+void replydnp3(int*, int*, struct sockaddr_in *, char []);
 
 #endif
