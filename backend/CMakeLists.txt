@@ -24,6 +24,8 @@ target_include_directories(dnp3_parser
 
 target_compile_options(dnp3_parser PRIVATE
     -g
+    -Wall
+    -Wextra
 )
 
 # Parser Executable

@@ -1,17 +1,17 @@
 #include "packet.h"
 
-dnp3p_st mkPacket(uint8_t hexInput[], int packetSize) {
+dnp3p_st mkPacket(uint8_t input[]) {
     dnp3p_st packet_s = {0};
 
-    packet_s.hexInput = hexInput;
+    packet_s.hexInput = input;
 
 
-    packet_s.header_s = mkHeader(hexInput, &packet_s.caretPosition);
+    packet_s.header_s = mkHeader(input, &packet_s.caretPosition);
     //mkHeader1(hexInput, &packet_s);
-    packet_s.dlc_s = mkDLC(hexInput, &packet_s.caretPosition);
-    packet_s.transportHeader_s = mkTransportHeader(hexInput, &packet_s.caretPosition);
-    packet_s.applicationHeader_s = mkApplicationHeader(hexInput, &packet_s.caretPosition, &packet_s.dlc_s);
-    packet_s.objectHeader_s = mkObjectHeader(hexInput, &packet_s.caretPosition);
+    packet_s.dlc_s = mkDLC(input, &packet_s.caretPosition);
+    packet_s.transportHeader_s = mkTransportHeader(input, &packet_s.caretPosition);
+    packet_s.applicationHeader_s = mkApplicationHeader(input, &packet_s.caretPosition, &packet_s.dlc_s);
+    packet_s.objectHeader_s = mkObjectHeader(input, &packet_s.caretPosition);
 
     return packet_s;
 }

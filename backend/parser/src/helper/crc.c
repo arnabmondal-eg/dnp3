@@ -35,21 +35,6 @@ static const uint16_t dnp3_crc_table[256] = {
     0x91AF, 0xA7F1, 0xFD13, 0xCB4D, 0x48D7, 0x7E89, 0x246B, 0x1235
 };
 
-int getPacketSize(uint8_t input[]) {
-    int decSize = 0;
-    int trueSize = 0;
-    int numberOfCRC = 0;
-
-    decSize = input[2];
-    numberOfCRC = (decSize - 5) / 16;
-    if (decSize > 5) trueSize = (numberOfCRC * 18) + 10 + ((decSize - 5) % 16) + 2;
-    else trueSize = 10;
-
-    // each crc "block" has 2 crc bytes, 10 from header, any left over
-
-    return trueSize;
-}
-
 uint16_t calculateCRC(uint8_t hexInput[], int length) {
     uint16_t crc = 0x0000;
     

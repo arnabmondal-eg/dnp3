@@ -1,5 +1,7 @@
 #include <stdint.h>
 
+#include "rawPacketHelper.h"
+
 #ifndef crc_h
 #define crc_h
 
@@ -8,9 +10,6 @@
 
 
 uint16_t calculateCRC(uint8_t*, int);
-
-int getPacketSize(uint8_t []);
-
 void removeCRC(uint8_t [], uint8_t []);
 
 #endif

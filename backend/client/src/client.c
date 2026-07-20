@@ -1,8 +1,48 @@
 #include "client.h"
 
-int main(int args, char **argv) {
-    uint8_t reply[] = {
+void mkdnp3Request(int port, struct sockaddr_in *server, uint8_t request[]) {
+    FILE *fptr;
+    int sock;
+    int length;
 
+    // get packetsize
+    length = getPacketSize(request);
+
+    // setup logging
+    fptr = fopen("log/clog.txt", "a");
+
+    // setup socket
+    sock = socket(AF_INET, SOCK_STREAM, 0);
+
+    // attempt to connect to server
+    printf("Attempting to Connect to Server (Port: %d)...\n", port);
+    if(connect(sock, (struct sockaddr*)server, sizeof(*server)) == -1) {      // deref should give correct size
+        printf("Connection Failed!\n");
+
+        close(sock);
+        return;
+    }
+
+    printf("Connected to Server\n");
+
+    printf("Sending Request...\n");
+    send(sock, request, length, 0);
+
+    printf("Successfuly Sent %d Bytes\n", length);
+
+    close(sock);
+    return;
+}
+
+int main(int args, char **argv) {
+    uint8_t request[] = {
+        0x05, 0x64, 0x0D, 0xC4, 0xC8, 
+        0x00, 0x01, 0x00, 0x6E, 0x78, 
+        0xD9, 0xCA, 0x01, 0x1E, 0x02, 
+        0x00, 0x01, 0x22, 0x70, 0xA6
+    };
+
+    uint8_t reply[] = {
         0x05, 0x64, 0x55, 0x44, 0x01,
         0x00, 0x49, 0x03, 0x67, 0x21,
         0xCC, 0xC9, 0x81, 0x00, 0x00,
@@ -26,45 +66,23 @@ int main(int args, char **argv) {
         0x07, 0x87
     };
     struct sockaddr_in server;
-
-    mkdnp3Request(PORT, &server, reply, sizeof(reply));
-}
-
-void mkdnp3Request(int port, struct sockaddr_in *server, uint8_t request[], int length) {
-    FILE *fptr;
-    int sock;
-
-    // setup logging
-    fptr = fopen("log/clog.txt", "a");
-
-    // setup socket
-    sock = socket(AF_INET, SOCK_STREAM, 0);
+    char* end;
+    int port = args >= 2 ? strtol(argv[1], &end, 0) : PORT;
+    char* address = args >= 3 ? argv[2] : "127.0.0.1";
 
     // setup server
-    server->sin_family = AF_INET;
-    server->sin_port = htons(port);
+    server.sin_family = AF_INET;
+    server.sin_port = htons(port);
 
-    inet_pton(AF_INET, "0", server);    // dont need mem adress as server is pntr type
-
-    printf("Attempting to Connect to Server (Port: %d)...\n", port);
-    connect(sock, (struct sockaddr*)server, sizeof(*server));
-    // fprintf(fptr,"Attempting to Connect to Server (Port: %d)...\n", port);
-    // if(connect(sock, (struct sockaddr*)server, sizeof(*server))) {      // deref should give correct size
-    //     printf("Connection Failed!\n");
-
-    //     close(sock);
-    //     return;
-    // }
-
-    printf("Connected to Server\n");
-
-    printf("Sending Request...\n");
-    for(int i = 0; i < length; i++){
-        send(sock, (void*) request[i], 2, 0);
+    // setup server address
+    if (inet_pton(AF_INET, address, &server.sin_addr) <= 0) {
+        printf("Invalid Address\n");
+        return -1;
     }
 
-    printf("Successfuly Sent %d Bytes\n", length);
+    mkdnp3Request(port, &server, request);
+    printf("\n");
+    mkdnp3Request(port, &server, reply);
 
-    close(sock);
-    return;
+    return 0;
 }

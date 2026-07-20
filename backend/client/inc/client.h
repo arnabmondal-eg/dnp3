@@ -7,9 +7,12 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <stdint.h>
+#include <stdlib.h>
+
+#include "rawPacketHelper.h"
 
 #define PORT 48188  // https://www.random.org/ (0-65535)
 
-void mkdnp3Request(int, struct sockaddr_in*, uint8_t[], int);
+void mkdnp3Request(int, struct sockaddr_in*, uint8_t[]);
 
 #endif
