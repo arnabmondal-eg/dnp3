@@ -47,8 +47,8 @@ int main() {
     uint8_t cleanedReply[getPacketSize(reply)];
     removeCRC(reply, cleanedReply);
 
-    dnp3p_st request_s = mkPacket(cleanedRequest);
-    dnp3p_st reply_s = mkPacket(cleanedReply);
+    dnp3p_st request_s = mkPacketAuto(cleanedRequest);
+    dnp3p_st reply_s = mkPacketAuto(cleanedReply);
 
     if(freopen("log/log.txt", "w", stdout) == NULL) {
 

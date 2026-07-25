@@ -10,7 +10,7 @@ void replydnp3(int *server_sock, int *client_sock, struct sockaddr_in *server, u
     printf("Packet:\n");
     printRawPacket(buffer);
     
-    dnp3p_st packet = mkPacket(buffer);
+    dnp3p_st packet = mkPacketAuto(buffer);
     // printPacket(packet);
 
     return;
