@@ -1,15 +1,18 @@
 #include "client.h"
 
+static FILE *fptr;
+
 void sendPacket(int sock, uint8_t request[]) {
+    fprintf(fptr, "Sending Request...\n");
 
-    printf("Connected to Server\n");
+    if(send(sock, request, getPacketSize(request), 0) == -1) {
+        perror("client [sendPacket]");
+        fprintf(fptr, "client [sendPacket]: %s\n", strerror(errno));
+        return;
+    }
 
-    printf("Sending Request...\n");
-    send(sock, request, getPacketSize(request), 0);
+    fprintf(fptr, "Successfuly Sent %d Bytes\n", getPacketSize(request));
 
-    printf("Successfuly Sent %d Bytes\n", getPacketSize(request));
-
-    // close(sock);
     return;
 }
 
@@ -23,30 +26,40 @@ void recivePacket(int server_sock, uint8_t buffer[]) {
     FD_ZERO(&read_fds);
     FD_SET(server_sock, &read_fds);
 
-    printf("Waiting for Select...\n");
+    fprintf(fptr, "Waiting for Data...\n");
     ret = select(server_sock+1, &read_fds, NULL, NULL, NULL); //wait till data is sent
 
     if(ret == 0) {
-        printf("Socket Timed Out\n");
+        errno = 110;
+        perror("client [recivePacket]");
+        fprintf(fptr, "client [recivePacket]: %s", strerror(errno));
         return;
     }
     else if(ret < 0) {
-        printf("Select Error: %d\n", ret);
+        perror("client [recievePacket]");
+        printf("client [recievePacket]: %s", strerror(errno));
         return;
     }
     else {
-        printf("Select Return: %d\n", ret);
+        // fprintf(fptr, "Select Return: %d\n", ret);
         if(FD_ISSET(server_sock, &read_fds)) {
-            printf("Socket is Ready for Reading\n");
+            fprintf(fptr, "Socket is Ready for Reading\n");
         }
         else {
-            printf("Socket is not Ready for Reading\n");
+            fprintf(fptr, "Socket is not Ready for Reading\n");
             return;
         }
     }
     
     // First Read 10 bytes and then read remaining if any left
     recvSize = recv(server_sock, &buffer[0], 10, 0);
+    if(recvSize == -1) {
+        perror("client [recivePacket]");
+        printf("client [recievePacket]: %s", strerror(errno));
+    }
+    else if(recvSize == 0) {
+        fprintf(fptr, "client [recievePacket]: 0 Bytes Recived\n");   // could be shutdown of socket or no data
+    }
 
     // printf("Recived %d Bytes\n", recvSize);
     // printf("Packet:\n");
@@ -69,6 +82,8 @@ void recivePacket(int server_sock, uint8_t buffer[]) {
 }
 
 int main(int args, char **argv) {
+    errno = 0;
+    
     uint8_t requestBuffer[296];
     uint8_t replyBuffer[296];
     uint8_t request1[] = {
@@ -101,46 +116,77 @@ int main(int args, char **argv) {
         0x07, 0x87
     };
     
-    FILE *fptr;
+    time_t currentTime;
+
+    FILE *temp_fptr;
+
     int sock;
     int length;
     struct sockaddr_in server;
     char* end;
-    int port = args >= 2 ? strtol(argv[1], &end, 0) : PORT;
-    char* address = args >= 3 ? argv[2] : "127.0.0.1";
+    int port = 0;
+    char* address = {0};
 
     header_st header_s = {0};
 
     int input = 0;
     int src = 0;
     int des = 1;
+    
+    // setup logging
+    fptr = fopen("log/client_log.txt", "a");
+    if(fptr == NULL) {
+        perror("client [main]");
+
+        return -1;
+    }
+    // append time and date to file
+    time(&currentTime);
+    fprintf(fptr, "\nStarted Client %s\n", ctime(&currentTime));
+
+    if (args >= 2) {
+        port = strtol(argv[1], &end, 0);
+        fprintf(fptr, "Using Custom Port: %d\n", port);
+    }
+    else {
+        port = PORT;
+    }
+
+    // check and set custom address
+    if (args >= 3) {
+        address = argv[2];
+        fprintf(fptr, "Using Custom Server Adress: %s\n", address);
+    }
+    else {
+        address = "127.0.0.1";
+    }
 
     // setup server
     server.sin_family = AF_INET;
     server.sin_port = htons(port);
 
     // setup server address
-    if (inet_pton(AF_INET, address, &server.sin_addr) <= 0) {
-        printf("Invalid Address\n");
+    int addrStatus =  inet_pton(AF_INET, address, &server.sin_addr);
+    if (addrStatus <= 0) {
+        if(addrStatus == 0) errno = 14;
+        perror("client [main]");
+        fprintf(fptr, "client [main]: %s\n", strerror(errno));
+
         return -1;
     }
-
-    errno = 0;
-
-    // setup logging
-    fptr = fopen("log/client_log.txt", "a");
+    
 
     // setup socket
     sock = socket(AF_INET, SOCK_STREAM, 0);
 
     // attempt to connect to server
-    fprintf(fptr, "Attempting to Connect to Server (Port: %d)...\n", port);
+    fprintf(fptr, "Attempting to Connect to Server...\n");
 
     if(connect(sock, (struct sockaddr *)&server, sizeof(server)) == -1) {      // deref should give correct size
         
-        fprintf(fptr,"Connection Failed!\n");
         errno = 111;
-        perror("client [sendPacket]");
+        perror("client [main]");
+        fprintf(fptr,"client [main]: %s\n", strerror(errno));
 
         close(sock);
         return 0;
@@ -160,12 +206,21 @@ int main(int args, char **argv) {
             case 1:
                 header_s = dnp3Lib_mkResetLink(des, src);
                 sendPacket(sock, (uint8_t *) &header_s);
-                printf("Client Sent: \n");
+                fprintf(fptr, "Client Sent: \n");
+
+                // change stream
+                temp_fptr = stdout;
+                stdout = fptr;
                 printRawPacket((uint8_t *) &header_s);
+                stdout = temp_fptr;
 
                 recivePacket(sock, requestBuffer);
-                printf("Client Recived: \n");
+                fprintf(fptr, "Client Recived: \n");
+
+                temp_fptr = stdout;
+                stdout = fptr;
                 printRawPacket(requestBuffer);
+                stdout = temp_fptr;
             break;
 
             case 2:
@@ -183,6 +238,8 @@ int main(int args, char **argv) {
     }
 
     close(sock);
+
+    fclose(fptr);
 
     // sendPacket(port, &server, request1);
     // printf("\n");

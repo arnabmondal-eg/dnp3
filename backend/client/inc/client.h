@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <sys/select.h>
+#include <time.h>
 
 #include "rawPacketHelper.h"
 #include "freqPackets.h"
