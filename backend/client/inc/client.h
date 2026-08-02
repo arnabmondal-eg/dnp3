@@ -1,6 +1,3 @@
-#ifndef client_h
-#define client_h
-
 #include <arpa/inet.h>
 #include <stdio.h>
 #include <string.h>
@@ -8,11 +5,17 @@
 #include <unistd.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <sys/select.h>
 
 #include "rawPacketHelper.h"
+#include "freqPackets.h"
+#include "packet.h"
+
+#ifndef client_h
+#define client_h
 
 #define PORT 48188  // https://www.random.org/ (0-65535)
 
-void mkdnp3Request(int, struct sockaddr_in*, uint8_t[]);
+void sendPacket(int, uint8_t[]);
 
 #endif

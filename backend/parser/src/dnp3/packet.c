@@ -64,7 +64,11 @@ dnp3p_st dnp3lib_mkpacket_manual(int destination, int source, int group, int var
         }
     }
     else {
-        int checkInt = max(startIndex, stopIndex);
+        int checkInt = (int) stopIndex;
+        if(startIndex > stopIndex) {
+            checkInt = startIndex;
+        }
+
         // 1 octect start and stop indices (total range size = 2)
         if(checkInt > 0 && checkInt < 2 * UINT8_MAX) {
             packet_s.objectHeader_s.qualRangeCode = 0;

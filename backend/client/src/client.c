@@ -1,47 +1,82 @@
 #include "client.h"
 
-void mkdnp3Request(int port, struct sockaddr_in *server, uint8_t request[]) {
-    FILE *fptr;
-    int sock;
-    int length;
-
-    // get packetsize
-    length = getPacketSize(request);
-
-    // setup logging
-    fptr = fopen("log/clog.txt", "a");
-
-    // setup socket
-    sock = socket(AF_INET, SOCK_STREAM, 0);
-
-    // attempt to connect to server
-    printf("Attempting to Connect to Server (Port: %d)...\n", port);
-    if(connect(sock, (struct sockaddr*)server, sizeof(*server)) == -1) {      // deref should give correct size
-        printf("Connection Failed!\n");
-
-        close(sock);
-        return;
-    }
+void sendPacket(int sock, uint8_t request[]) {
 
     printf("Connected to Server\n");
 
     printf("Sending Request...\n");
-    send(sock, request, length, 0);
+    send(sock, request, getPacketSize(request), 0);
 
-    printf("Successfuly Sent %d Bytes\n", length);
+    printf("Successfuly Sent %d Bytes\n", getPacketSize(request));
 
-    close(sock);
+    // close(sock);
+    return;
+}
+
+void recivePacket(int server_sock, uint8_t buffer[]) {
+    header_st *header_sp = {0};
+    ssize_t recvSize = 0;
+    int packetLength = 0;
+    fd_set read_fds;
+    int ret = 0;
+
+    FD_ZERO(&read_fds);
+    FD_SET(server_sock, &read_fds);
+
+    printf("Waiting for Select...\n");
+    ret = select(server_sock+1, &read_fds, NULL, NULL, NULL); //wait till data is sent
+
+    if(ret == 0) {
+        printf("Socket Timed Out\n");
+        return;
+    }
+    else if(ret < 0) {
+        printf("Select Error: %d\n", ret);
+        return;
+    }
+    else {
+        printf("Select Return: %d\n", ret);
+        if(FD_ISSET(server_sock, &read_fds)) {
+            printf("Socket is Ready for Reading\n");
+        }
+        else {
+            printf("Socket is not Ready for Reading\n");
+            return;
+        }
+    }
+    
+    // First Read 10 bytes and then read remaining if any left
+    recvSize = recv(server_sock, &buffer[0], 10, 0);
+
+    // printf("Recived %d Bytes\n", recvSize);
+    // printf("Packet:\n");
+    // printRawPacket(buffer);
+
+    packetLength = getPacketSize(buffer);
+
+    if(packetLength == 10) {
+        return;
+    } 
+    else {
+        recvSize = recv(server_sock, &buffer[10], packetLength-10, 0);
+    }
+
+    // printf("Recived %d Bytes, Wanted %d Bytes\n", recvSize, packetLength-10);
+    // printf("Packet:\n");
+    // printRawPacket(buffer);
+
     return;
 }
 
 int main(int args, char **argv) {
-    uint8_t request[] = {
+    uint8_t requestBuffer[296];
+    uint8_t replyBuffer[296];
+    uint8_t request1[] = {
         0x05, 0x64, 0x0D, 0xC4, 0xC8, 
         0x00, 0x01, 0x00, 0x6E, 0x78, 
         0xD9, 0xCA, 0x01, 0x1E, 0x02, 
         0x00, 0x01, 0x22, 0x70, 0xA6
     };
-
     uint8_t reply[] = {
         0x05, 0x64, 0x55, 0x44, 0x01,
         0x00, 0x49, 0x03, 0x67, 0x21,
@@ -65,10 +100,20 @@ int main(int args, char **argv) {
         0x77, 0x01, 0xCC, 0xFA, 0x16,
         0x07, 0x87
     };
+    
+    FILE *fptr;
+    int sock;
+    int length;
     struct sockaddr_in server;
     char* end;
     int port = args >= 2 ? strtol(argv[1], &end, 0) : PORT;
     char* address = args >= 3 ? argv[2] : "127.0.0.1";
+
+    header_st header_s = {0};
+
+    int input = 0;
+    int src = 0;
+    int des = 1;
 
     // setup server
     server.sin_family = AF_INET;
@@ -80,9 +125,68 @@ int main(int args, char **argv) {
         return -1;
     }
 
-    mkdnp3Request(port, &server, request);
-    printf("\n");
-    mkdnp3Request(port, &server, reply);
+    errno = 0;
+
+    // setup logging
+    fptr = fopen("log/client_log.txt", "a");
+
+    // setup socket
+    sock = socket(AF_INET, SOCK_STREAM, 0);
+
+    // attempt to connect to server
+    fprintf(fptr, "Attempting to Connect to Server (Port: %d)...\n", port);
+
+    if(connect(sock, (struct sockaddr *)&server, sizeof(server)) == -1) {      // deref should give correct size
+        
+        fprintf(fptr,"Connection Failed!\n");
+        errno = 111;
+        perror("client [sendPacket]");
+
+        close(sock);
+        return 0;
+    }
+
+    while(input != 4) {
+        printf("Choose Request Type: \n");
+        printf("1. Reset Link\n");
+        printf("2. Analog Read\n");
+        printf("3. Digital Read\n");
+        printf("4. End\n");
+        printf(": ");
+        scanf("%d", &input);
+
+        switch(input) {
+
+            case 1:
+                header_s = dnp3Lib_mkResetLink(des, src);
+                sendPacket(sock, (uint8_t *) &header_s);
+                printf("Client Sent: \n");
+                printRawPacket((uint8_t *) &header_s);
+
+                recivePacket(sock, requestBuffer);
+                printf("Client Recived: \n");
+                printRawPacket(requestBuffer);
+            break;
+
+            case 2:
+                
+            break;
+            
+            case 3:
+
+            break;
+
+            case 4:
+            default:
+            break;
+        }
+    }
+
+    close(sock);
+
+    // sendPacket(port, &server, request1);
+    // printf("\n");
+    // sendPacket(port, &server, reply);
 
     return 0;
 }

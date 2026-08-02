@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <errno.h>
+#include <math.h>
 
 #include "header.h"
 #include "dlc.h"
@@ -24,14 +25,15 @@
 
 typedef struct dnp3p_sd {
     //TODO: Add other portions of packet
-    uint8_t *hexInput;
-
+    
     header_st header_s;
     dlc_st dlc_s;
     transportHeader_st transportHeader_s;
     applicationHeader_st applicationHeader_s;
     objectHeader_st objectHeader_s;
-
+    
+    uint8_t *hexInput;
+    
     int packetValidity;
     int caretPosition;
 } dnp3p_st;
