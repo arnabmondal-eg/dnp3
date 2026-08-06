@@ -3,15 +3,16 @@
 static FILE *fptr;
 
 void sendPacket(int sock, uint8_t request[]) {
-    fprintf(fptr, "Sending Request...\n");
+    log_info(fptr, INFO_FILE, "Sending Request...\n");
+    // fprintf(fptr, "Sending Request...\n");
 
     if(send(sock, request, getPacketSize(request), 0) == -1) {
-        perror("client [sendPacket]");
-        fprintf(fptr, "client [sendPacket]: %s\n", strerror(errno));
+        log_err(errno, "client/sendPacket", fptr);
         return;
     }
 
-    fprintf(fptr, "Successfuly Sent %d Bytes\n", getPacketSize(request));
+    log_info(fptr, INFO_FILE, "Successfuly Sent %d Bytes\n", getPacketSize(request));
+    // fprintf(fptr, "Successfuly Sent %d Bytes\n", getPacketSize(request));
 
     return;
 }
@@ -26,27 +27,32 @@ void recivePacket(int server_sock, uint8_t buffer[]) {
     FD_ZERO(&read_fds);
     FD_SET(server_sock, &read_fds);
 
-    fprintf(fptr, "Waiting for Data...\n");
+    log_info(fptr, INFO_FILE, "Waiting for Data...\n");
+    // fprintf(fptr, "Waiting for Data...\n");
     ret = select(server_sock+1, &read_fds, NULL, NULL, NULL); //wait till data is sent
 
     if(ret == 0) {
         errno = 110;
-        perror("client [recivePacket]");
-        fprintf(fptr, "client [recivePacket]: %s", strerror(errno));
+        log_err(errno, "client/recievePacket", fptr);
+        // perror("client [recivePacket]");
+        // fprintf(fptr, "client [recivePacket]: %s", strerror(errno));
         return;
     }
     else if(ret < 0) {
-        perror("client [recievePacket]");
-        printf("client [recievePacket]: %s", strerror(errno));
+        log_err(errno, "client/recievePacket", fptr);
+        // perror("client [recievePacket]");
+        // printf("client [recievePacket]: %s", strerror(errno));
         return;
     }
     else {
         // fprintf(fptr, "Select Return: %d\n", ret);
         if(FD_ISSET(server_sock, &read_fds)) {
-            fprintf(fptr, "Socket is Ready for Reading\n");
+            log_info(fptr, INFO_FILE, "Socket is Ready for Reading\n");
+            // fprintf(fptr, "Socket is Ready for Reading\n");
         }
         else {
-            fprintf(fptr, "Socket is not Ready for Reading\n");
+            log_info(fptr, INFO_FILE, "Socket is not Ready for Reading\n");
+            // fprintf(fptr, "Socket is not Ready for Reading\n");
             return;
         }
     }
@@ -54,11 +60,15 @@ void recivePacket(int server_sock, uint8_t buffer[]) {
     // First Read 10 bytes and then read remaining if any left
     recvSize = recv(server_sock, &buffer[0], 10, 0);
     if(recvSize == -1) {
-        perror("client [recivePacket]");
-        printf("client [recievePacket]: %s", strerror(errno));
+        log_err(errno, "client/recievePacket", fptr);
+
+        // perror("client [recivePacket]");
+        // printf("client [recievePacket]: %s", strerror(errno));
     }
     else if(recvSize == 0) {
-        fprintf(fptr, "client [recievePacket]: 0 Bytes Recived\n");   // could be shutdown of socket or no data
+        // fprintf(fptr, "client [recievePacket]: 0 Bytes Recived\n");   // could be shutdown of socket or no data
+        errno  = 61;
+        log_warn(errno, "client/recievePacket", fptr);
     }
 
     // printf("Recived %d Bytes\n", recvSize);
@@ -116,7 +126,7 @@ int main(int args, char **argv) {
         0x07, 0x87
     };
     
-    time_t currentTime;
+    // time_t currentTime;
 
     FILE *temp_fptr;
 
@@ -136,17 +146,17 @@ int main(int args, char **argv) {
     // setup logging
     fptr = fopen("log/client_log.txt", "a");
     if(fptr == NULL) {
-        perror("client [main]");
+        log_err(errno, "client [main]", fptr);
 
         return -1;
     }
-    // append time and date to file
-    time(&currentTime);
-    fprintf(fptr, "\nStarted Client %s\n", ctime(&currentTime));
+
+    log_program_start("Client", fptr);
 
     if (args >= 2) {
         port = strtol(argv[1], &end, 0);
-        fprintf(fptr, "Using Custom Port: %d\n", port);
+        log_info(fptr, INFO_BOTH, "Using Custom Port: %d\n", port);
+        // fprintf(fptr, "Using Custom Port: %d\n", port);
     }
     else {
         port = PORT;
@@ -155,7 +165,8 @@ int main(int args, char **argv) {
     // check and set custom address
     if (args >= 3) {
         address = argv[2];
-        fprintf(fptr, "Using Custom Server Adress: %s\n", address);
+        log_info(fptr, INFO_BOTH, "Using Custom Server Adress: %s\n", address);
+        // fprintf(fptr, "Using Custom Server Adress: %s\n", address);
     }
     else {
         address = "127.0.0.1";
@@ -169,8 +180,8 @@ int main(int args, char **argv) {
     int addrStatus =  inet_pton(AF_INET, address, &server.sin_addr);
     if (addrStatus <= 0) {
         if(addrStatus == 0) errno = 14;
-        perror("client [main]");
-        fprintf(fptr, "client [main]: %s\n", strerror(errno));
+        
+        log_err(errno, "client/main", fptr);
 
         return -1;
     }
@@ -180,13 +191,15 @@ int main(int args, char **argv) {
     sock = socket(AF_INET, SOCK_STREAM, 0);
 
     // attempt to connect to server
-    fprintf(fptr, "Attempting to Connect to Server...\n");
+    log_info(fptr, INFO_BOTH, "Attempting to Connect to Server...\n");
+    // fprintf(fptr, "Attempting to Connect to Server...\n");
 
     if(connect(sock, (struct sockaddr *)&server, sizeof(server)) == -1) {      // deref should give correct size
         
-        errno = 111;
-        perror("client [main]");
-        fprintf(fptr,"client [main]: %s\n", strerror(errno));
+        // perror("client [main]");
+        // fprintf(fptr,"client [main]: %s\n", strerror(errno));
+
+        log_err(errno, "client [main]", fptr);
 
         close(sock);
         return 0;
@@ -206,7 +219,8 @@ int main(int args, char **argv) {
             case 1:
                 header_s = dnp3Lib_mkResetLink(des, src);
                 sendPacket(sock, (uint8_t *) &header_s);
-                fprintf(fptr, "Client Sent: \n");
+                // fprintf(fptr, "Client Sent: \n");
+                log_info(fptr, INFO_FILE, "Client Sent: \n");
 
                 // change stream
                 temp_fptr = stdout;
@@ -215,7 +229,8 @@ int main(int args, char **argv) {
                 stdout = temp_fptr;
 
                 recivePacket(sock, requestBuffer);
-                fprintf(fptr, "Client Recived: \n");
+                // fprintf(fptr, "Client Recived: \n");
+                log_info(fptr, INFO_FILE, "Client Recieved: \n");
 
                 temp_fptr = stdout;
                 stdout = fptr;

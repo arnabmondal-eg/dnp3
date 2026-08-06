@@ -11,6 +11,7 @@
 #include "rawPacketHelper.h"
 #include "freqPackets.h"
 #include "packet.h"
+#include "log.h"
 
 #ifndef client_h
 #define client_h
