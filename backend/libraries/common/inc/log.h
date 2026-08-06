@@ -2,6 +2,7 @@
 #include <errno.h>
 #include <time.h>
 #include <string.h>
+#include <stdarg.h>
 
 #define LOG_ERR    "\033[31m"
 #define LOG_WARN "\033[33m"
@@ -23,6 +24,6 @@ void log_program_crash(const char*, FILE*);
 
 void log_err(int, const char*, FILE*);
 void log_warn(int, const char*, FILE*);
-void log_info(const char*, FILE*, int);
+void log_info(FILE*, int, const char*, ...);
 
 #endif

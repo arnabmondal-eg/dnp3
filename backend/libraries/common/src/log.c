@@ -1,5 +1,10 @@
 #include "log.h"
 
+static void log_vprint(FILE *stream, const char *message, va_list args) {
+    log_timestamp(stream);
+    vfprintf(stream, message, args);
+}
+
 void log_timestamp(FILE *fptr) {
     time_t currentTime;
     struct tm *t;
@@ -80,37 +85,29 @@ void log_warn(int val_errno, const char *message, FILE *fptr) {
 }
 
 /* Log Info to File, Console, or Both*/
-void log_info(const char *message, FILE *fptr, int type) {
+void log_info(FILE *fptr, int type, const char *message, ...) {
     //TODO: Allow this to accepts args like printf
+    va_list parameters;
+    va_start(parameters, message);
 
-    switch (type) {
-    case INFO_CONSOLE:
+    if (type == INFO_CONSOLE || type == INFO_BOTH) {
+        va_list console_cpy;
+        va_copy(console_cpy, parameters);
 
-        log_timestamp(stdout);
-        fprintf(stdout, "%s\n", message);
+        log_vprint(stdout, message, console_cpy);
 
-        break;
-    case INFO_FILE:
-
-        if (fptr != NULL){
-            log_timestamp(fptr);
-            fprintf(fptr, "%s\n", message);
-        }
-
-        break;
-    
-    case INFO_BOTH:
-    default:
-    
-        log_timestamp(stdout);
-        fprintf(stdout, "%s\n", message);
-
-        if (fptr != NULL) {
-            log_timestamp(fptr);
-            fprintf(fptr, "%s\n", message);
-        }
-
-        break;
+        va_end(console_cpy);
     }
+    else if((type == INFO_FILE || type == INFO_BOTH) && fptr != NULL) {
+        va_list file_cpy;
+        va_copy(file_cpy, parameters);
+
+        log_vprint(fptr, message, file_cpy);
+
+        va_end(file_cpy);
+    }
+
+    va_end(parameters);
+
     return;
 }
