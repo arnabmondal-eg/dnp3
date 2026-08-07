@@ -43,6 +43,11 @@ target_include_directories(dnp3_common
         libraries/common/inc
 )
 
+target_link_libraries(dnp3_common
+    PRIVATE
+        dnp3_logging
+)
+
 # Network Library
 file(GLOB_RECURSE NETWORK_SRC
     CONFIGURE_DPENDS
@@ -56,6 +61,11 @@ add_library(dnp3_network STATIC
 target_include_directories(dnp3_network
     PUBLIC
         libraries/network/inc
+)
+
+target_link_libraries(dnp3_network
+    PRIVATE
+        dnp3_logging
 )
 
 # Parser Library
@@ -73,6 +83,11 @@ target_include_directories(dnp3_parser
         libraries/parser/inc
 )
 
+target_link_libraries(dnp3_parser
+    PRIVATE
+        dnp3_logging
+)
+
 # Parser Executable
 add_executable(parser
     parser-app/src/main.c
@@ -80,6 +95,7 @@ add_executable(parser
 
 target_link_libraries(parser
     PRIVATE
+        dnp3_logging
         dnp3_parser
 )
 
@@ -99,6 +115,7 @@ target_include_directories(client PRIVATE
 
 target_link_libraries(client
     PRIVATE
+        dnp3_logging
         dnp3_parser
         dnp3_network
         dnp3_common
@@ -120,6 +137,7 @@ target_include_directories(server PRIVATE
 
 target_link_libraries(server
     PRIVATE
+        dnp3_logging
         dnp3_parser
         dnp3_network
         dnp3_common

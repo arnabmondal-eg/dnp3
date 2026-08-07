@@ -1,6 +1,9 @@
 #include "server.h"
 
-static FILE *fptr;
+#define LOG_STRING_RECIVEPACKET "serve/recievePacket"
+#define LOG_STRING_SENDREPLY "serve/sendReply"
+#define LOG_STRING_PROCESSDLC "serve/processDLC"
+#define LOG_STRING_MAIN "serve/main"
 
 void recivePacket(int server_sock, uint8_t buffer[]) {
     header_st *header_sp = {0};
@@ -12,27 +15,25 @@ void recivePacket(int server_sock, uint8_t buffer[]) {
     FD_ZERO(&read_fds);
     FD_SET(server_sock, &read_fds);
 
-    fprintf(fptr, "Waiting for Data...\n");
+    log_info(INFO_CONSOLE, "Waiting for Data...\n");
     ret = select(server_sock+1, &read_fds, NULL, NULL, NULL); //wait till data is sent
 
     if(ret == 0) {
         errno = 110;
-        perror("server [recivePacket]");
-        fprintf(fptr, "server [recivePacket]: %s", strerror(errno));
+        log_err(errno, LOG_STRING_RECIVEPACKET);
         return;
     }
     else if(ret < 0) {
-        perror("server [recievePacket]");
-        fprintf(fptr, "server [recievePacket]: %s", strerror(errno));
+        log_err(errno, LOG_STRING_RECIVEPACKET);
         return;
     }
     else {
         // fprintf(fptr, "Select Return: %d\n", ret);
         if(FD_ISSET(server_sock, &read_fds)) {
-            fprintf(fptr, "Socket is Ready for Reading\n");
+            log_info(INFO_CONSOLE, "Socket is Ready for Reading\n");
         }
         else {
-            fprintf(fptr, "Socket is not Ready for Reading\n");
+            log_warn(errno, LOG_STRING_RECIVEPACKET);
             return;
         }
     }
@@ -40,16 +41,12 @@ void recivePacket(int server_sock, uint8_t buffer[]) {
     // First Read 10 bytes and then read remaining if any left
     recvSize = recv(server_sock, &buffer[0], 10, 0);
     if(recvSize == -1) {
-        perror("server [recivePacket]");
-        fprintf(fptr, "server [recievePacket]: %s", strerror(errno));
+        log_err(errno, LOG_STRING_RECIVEPACKET);
     }
     else if(recvSize == 0) {
-        fprintf(fptr, "server [recievePacket]: 0 Bytes Recived\n");   // could be shutdown of socket or no data
+        errno = 61;
+        log_warn(errno, LOG_STRING_RECIVEPACKET);
     }
-
-    // printf("Recived %d Bytes\n", recvSize);
-    // printf("Packet:\n");
-    // printRawPacket(buffer);
 
     packetLength = getPacketSize(buffer);
 
@@ -60,10 +57,6 @@ void recivePacket(int server_sock, uint8_t buffer[]) {
         recvSize = recv(server_sock, &buffer[10], packetLength-10, 0);
     }
 
-    // printf("Recived %d Bytes, Wanted %d Bytes\n", recvSize, packetLength-10);
-    // printf("Packet:\n");
-    // printRawPacket(buffer);
-
     return;
 }
 
@@ -72,8 +65,7 @@ void sendReply(int client_sock, uint8_t response[]) {
 
     sendStatus = send(client_sock, response, getPacketSize(response), 0);
     if(sendStatus == -1) {
-        perror("server [sendReply]");
-        fprintf(fptr, "server [sendReply]: %s\n", strerror(errno));
+        log_err(errno, LOG_STRING_SENDREPLY);
     }
 
     return;
@@ -113,20 +105,17 @@ int main(int args, char** argv) {
     time_t currentTime;
 
     // setup logging
-    fptr = fopen("log/server_log.txt", "a");
-    if(fptr == NULL) {
-        perror("server [main]");
+    if(log_init("log/server_log.txt") == -1) {
         return -1;
-    }
+    };
 
     // append time and date  to file
-    time(&currentTime);
-    fprintf(fptr, "\nStarted Server %s\n", ctime(&currentTime));
+    log_program_start("Server");
 
     // check and set custom port
     if(args >= 2) {
         port = strtol(argv[1], &end, 0);
-        fprintf(fptr, "Using Custom Port: %d\n", port);
+        log_info(INFO_BOTH, "Using Custom Port: %d\n", port);
     }
     else {
         port = PORT;
@@ -135,8 +124,7 @@ int main(int args, char** argv) {
    // setup server socket
     server_sock = socket(AF_INET, SOCK_STREAM, 0);
     if(server_sock == -1) {
-        perror("server [main]");
-        fprintf(fptr, "server [main]: %s\n", strerror(errno));
+        log_err(errno, LOG_STRING_MAIN);
     }
 
     // configure server
@@ -146,16 +134,15 @@ int main(int args, char** argv) {
 
     // bind socket to port
     if(bind(server_sock, (struct sockaddr*)&server, sizeof(server)) == -1) {
-        perror("server [main]");
-        fprintf(fptr, "server [main]: %s\n", strerror(errno));
+        log_err(errno, LOG_STRING_MAIN);
     }
 
     // start listening
     listen(server_sock, 1);
-    fprintf(fptr, "Server listening on port %d...\n", port);
+    log_info(INFO_BOTH, "Server listening on port %d...\n", port);
 
     client_sock = accept(server_sock, NULL, NULL);  // allocate the cliet port (i think)
-    fprintf(fptr, "Client Connected\n");
+    log_info(INFO_BOTH, "Client Connected\n");
     
     for(int i = 0; i<2; i++) {
         recivePacket(client_sock, buffer);
@@ -163,7 +150,7 @@ int main(int args, char** argv) {
         sendReply(client_sock, responseBuffer);
     }
 
-    fclose(fptr);
+    log_program_terminate("Server");
     
     close(server_sock);
     close(client_sock);

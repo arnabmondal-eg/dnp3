@@ -6,11 +6,11 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <sys/select.h>
-#include <time.h>
 
 #include "packet.h"
 #include "freqPackets.h"
 #include "rawPacketHelper.h"
+#include "log.h"
 
 #ifndef server_h
 #define server_h

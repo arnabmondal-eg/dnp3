@@ -16,14 +16,18 @@
 #ifndef log_h
 #define log_h
 
-void log_timestamp(FILE*);
+static void log_timestamp(FILE*);
+static void log_vprintf(FILE *, const char *, va_list);
 
-void log_program_start(const char*, FILE*);
-void log_program_terminate(const char*, FILE*);
-void log_program_crash(const char*, FILE*);
+int log_init(const char *);
+FILE* log_get_file();
 
-void log_err(int, const char*, FILE*);
-void log_warn(int, const char*, FILE*);
-void log_info(FILE*, int, const char*, ...);
+void log_program_start(const char*);
+void log_program_terminate(const char*);
+void log_program_crash(const char*);
+
+void log_err(int, const char*);
+void log_warn(int, const char*);
+void log_info(int, const char*, ...);
 
 #endif
