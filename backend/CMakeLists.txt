@@ -13,6 +13,21 @@ add_compile_options(
     -Wextra
 )
 
+# Logging Library
+file(GLOB_RECURSE LOGGING_SRC
+    CONFIGURE_DEPENDS
+    libraries/logging/src/*.c
+)
+
+add_library(dnp3_logging STATIC
+    ${LOGGING_SRC}
+)
+
+target_include_directories(dnp3_logging
+    PUBLIC
+        libraries/logging/inc
+)
+
 # Common Library
 file(GLOB_RECURSE COMMON_SRC
     CONFIGURE_DEPENDS
