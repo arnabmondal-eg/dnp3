@@ -1,0 +1,22 @@
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+#include <errno.h>
+#include <poll.h>
+
+#include "log.h"
+#include "packet.h"
+#include "freqPackets.h"
+#include "rawPacketHelper.h"
+
+#define COMMON_MAX_CONNECTIONS 128
+
+#ifndef common_h
+#define common_h
+
+int init_connection(int, int[]);
+int send_packet(const int, const uint8_t []);
+int recieve_packet(const int, uint8_t []);
+int interpret_packet(uint8_t [], uint8_t []);
+
+#endif

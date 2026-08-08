@@ -88,13 +88,13 @@ void log_err(int val_errno, const char *message) {
 }
 
 /* Log Warrning to File and Console*/
-void log_warn(int val_errno, const char *message) {
+void log_warn(int val_errno, const char *message_source) {
     log_timestamp(stderr);
-    fprintf(stderr, LOG_WARN "%s: %s\n" LOG_RESET, message, strerror(val_errno));    // console
+    fprintf(stderr, LOG_WARN "[%s/WARN]: %s\n" LOG_RESET, message_source, strerror(val_errno));    // console
 
     if (log_file != NULL) {
         log_timestamp(log_file);
-        fprintf(log_file, "%s: %s", message, strerror(val_errno));    // file
+        fprintf(log_file, "%s: %s", message_source, strerror(val_errno));    // file
     }
 
     fflush(stderr);
