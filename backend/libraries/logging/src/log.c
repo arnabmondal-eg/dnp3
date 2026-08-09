@@ -25,6 +25,12 @@ static void log_timestamp(FILE *stream) {
     }
 }
 
+/**
+ * @brief Setups logging
+ * 
+ * @param file_path Path to log file
+ * @return int -1 on error, 0 else
+ */
 int log_init(const char *file_path) {
     log_file = fopen(file_path, "a");
 
@@ -40,6 +46,11 @@ FILE* log_get_file() {
     return log_file;
 }
 
+/**
+ * @brief Logs program start time and date
+ * 
+ * @param message Name of program
+ */
 void log_program_start(const char *message) {
     time_t currentTime;
     time(&currentTime);
@@ -50,6 +61,11 @@ void log_program_start(const char *message) {
     return;
 }
 
+/**
+ * @brief Logs Program end time and date
+ * 
+ * @param message Name of program
+ */
 void log_program_terminate(const char *message) {
     time_t currentTime;
     time(&currentTime);
@@ -64,10 +80,12 @@ void log_program_terminate(const char *message) {
 
 void log_program_crash(const char *message) {}
 
-
-/* TODO: Add ANSI Color escape codes */
-
-// Log Error to File and Console
+/**
+ * @brief Logs error to stderr and file
+ * 
+ * @param val_errno Value of errno
+ * @param message Location of Call: ex. "client/main"
+ */
 void log_err(int val_errno, const char *message) {
 
     fprintf(stderr, LOG_ERR);   // paint the terminal in blood (color text red)
@@ -78,7 +96,7 @@ void log_err(int val_errno, const char *message) {
     if (log_file != NULL) {
         fprintf(log_file, "\n\t~~~~ FATAL ERROR DETECTED ~~~~\n");
         log_timestamp(log_file);
-        fprintf(log_file, "%s: %s\n", message, strerror(val_errno));
+        fprintf(log_file, "[%s/ERROR]: %s\n", message, strerror(val_errno));
     }
     
     fflush(stderr);
@@ -87,14 +105,19 @@ void log_err(int val_errno, const char *message) {
     return;
 }
 
-/* Log Warrning to File and Console*/
+/**
+ * @brief Log warning to stderr and file
+ * 
+ * @param val_errno Value of errno
+ * @param message_source Location of Call: ex. "client/main"
+ */
 void log_warn(int val_errno, const char *message_source) {
     log_timestamp(stderr);
-    fprintf(stderr, LOG_WARN "[%s/WARN]: %s\n" LOG_RESET, message_source, strerror(val_errno));    // console
+    fprintf(stderr, LOG_WARN "[%s/WARNING]: %s\n" LOG_RESET, message_source, strerror(val_errno));    // console
 
     if (log_file != NULL) {
         log_timestamp(log_file);
-        fprintf(log_file, "%s: %s", message_source, strerror(val_errno));    // file
+        fprintf(log_file, "[%s/WARNING]: %s", message_source, strerror(val_errno));    // file
     }
 
     fflush(stderr);
