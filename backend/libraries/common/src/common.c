@@ -5,7 +5,7 @@
 #define LOGSTR_INTERPRETPACKET "common/interpret_packet"
 
 static struct pollfd ufds[COMMON_MAX_CONNECTIONS] = {0};
-static int total_connections = NULL;
+static int total_connections = 0;
 
 /**
  * @brief Setsup connections to server
@@ -66,7 +66,7 @@ int send_packet(const int connection_socket, const uint8_t send_buffer[]) {
  * @return int Returns -1 if Error, 0 Else
  */
 int recieve_packet(const int connection_socket, uint8_t recieve_buffer[]) {  
-    int recive_size = NULL;
+    int recive_size = 0;
     int packet_length = 0;
     
     recive_size = (int) recv(connection_socket, &recieve_buffer[0], 10, 0);
@@ -83,7 +83,7 @@ int recieve_packet(const int connection_socket, uint8_t recieve_buffer[]) {
 
     packet_length = getPacketSize(recieve_buffer);
     if(packet_length == 10) {
-        return;
+        return 0;
     }
     else {
         recive_size = (int) recv(connection_socket, &recieve_buffer[10], packet_length-10, 0);

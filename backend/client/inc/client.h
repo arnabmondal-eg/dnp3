@@ -12,6 +12,7 @@
 #include "freqPackets.h"
 #include "packet.h"
 #include "log.h"
+#include "network.h"
 
 #ifndef client_h
 #define client_h

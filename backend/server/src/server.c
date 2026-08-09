@@ -1,9 +1,9 @@
 #include "server.h"
 
-#define LOG_STRING_RECIVEPACKET "serve/recievePacket"
-#define LOG_STRING_SENDREPLY "serve/sendReply"
-#define LOG_STRING_PROCESSDLC "serve/processDLC"
-#define LOG_STRING_MAIN "serve/main"
+#define LOGSTR_RECIVEPACKET "serve/recievePacket"
+#define LOGSTR_SENDREPLY "serve/sendReply"
+#define LOGSTR_PROCESSDLC "serve/processDLC"
+#define LOGSTR_MAIN "serve/main"
 
 void recivePacket(int server_sock, uint8_t buffer[]) {
     header_st *header_sp = {0};
@@ -20,11 +20,11 @@ void recivePacket(int server_sock, uint8_t buffer[]) {
 
     if(ret == 0) {
         errno = 110;
-        log_err(errno, LOG_STRING_RECIVEPACKET);
+        log_err(errno, LOGSTR_RECIVEPACKET);
         return;
     }
     else if(ret < 0) {
-        log_err(errno, LOG_STRING_RECIVEPACKET);
+        log_err(errno, LOGSTR_RECIVEPACKET);
         return;
     }
     else {
@@ -33,7 +33,7 @@ void recivePacket(int server_sock, uint8_t buffer[]) {
             log_info(INFO_CONSOLE, "Socket is Ready for Reading\n");
         }
         else {
-            log_warn(errno, LOG_STRING_RECIVEPACKET);
+            log_warn(errno, LOGSTR_RECIVEPACKET);
             return;
         }
     }
@@ -41,11 +41,11 @@ void recivePacket(int server_sock, uint8_t buffer[]) {
     // First Read 10 bytes and then read remaining if any left
     recvSize = recv(server_sock, &buffer[0], 10, 0);
     if(recvSize == -1) {
-        log_err(errno, LOG_STRING_RECIVEPACKET);
+        log_err(errno, LOGSTR_RECIVEPACKET);
     }
     else if(recvSize == 0) {
         errno = 61;
-        log_warn(errno, LOG_STRING_RECIVEPACKET);
+        log_warn(errno, LOGSTR_RECIVEPACKET);
     }
 
     packetLength = getPacketSize(buffer);
@@ -65,7 +65,7 @@ void sendReply(int client_sock, uint8_t response[]) {
 
     sendStatus = send(client_sock, response, getPacketSize(response), 0);
     if(sendStatus == -1) {
-        log_err(errno, LOG_STRING_SENDREPLY);
+        log_err(errno, LOGSTR_SENDREPLY);
     }
 
     return;
@@ -121,28 +121,15 @@ int main(int args, char** argv) {
         port = PORT;
     }
 
-   // setup server socket
-    server_sock = socket(AF_INET, SOCK_STREAM, 0);
-    if(server_sock == -1) {
-        log_err(errno, LOG_STRING_MAIN);
+    if(setup_server(&server, &server_sock, port, 1) != 0) {
+        log_err(errno, LOGSTR_MAIN);
+        return -1;
     }
 
-    // configure server
-    server.sin_family = AF_INET;
-    server.sin_addr.s_addr = INADDR_ANY;
-    server.sin_port = htons(port);
-
-    // bind socket to port
-    if(bind(server_sock, (struct sockaddr*)&server, sizeof(server)) == -1) {
-        log_err(errno, LOG_STRING_MAIN);
+    if(connect_to_client(server_sock, client_sock) != 0) {
+        log_err(errno, LOGSTR_MAIN);
+        return -1;
     }
-
-    // start listening
-    listen(server_sock, 1);
-    log_info(INFO_BOTH, "Server listening on port %d...\n", port);
-
-    client_sock = accept(server_sock, NULL, NULL);  // allocate the cliet port (i think)
-    log_info(INFO_BOTH, "Client Connected\n");
     
     for(int i = 0; i<2; i++) {
         recivePacket(client_sock, buffer);

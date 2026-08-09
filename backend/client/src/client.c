@@ -145,32 +145,8 @@ int main(int args, char **argv) {
         address = "127.0.0.1";
     }
 
-    // setup server
-    server.sin_family = AF_INET;
-    server.sin_port = htons(port);
-
-    // setup server address
-    int addrStatus =  inet_pton(AF_INET, address, &server.sin_addr);
-    if (addrStatus <= 0) {
-        if(addrStatus == 0) errno = 14;
-        
+    if(connect_to_server(&server, &sock, address, port) != 0) {
         log_err(errno, "client/main");
-
-        return -1;
-    }
-    
-
-    // setup socket
-    sock = socket(AF_INET, SOCK_STREAM, 0);
-
-    // attempt to connect to server
-    log_info(INFO_BOTH, "Attempting to Connect to Server...\n");
-
-    if(connect(sock, (struct sockaddr *)&server, sizeof(server)) == -1) {      // deref should give correct size
-        
-        log_err(errno, "client [main]");
-
-        close(sock);
         return 0;
     }
 

@@ -45,6 +45,7 @@ target_include_directories(dnp3_common
 
 target_link_libraries(dnp3_common
     PRIVATE
+        dnp3_parser
         dnp3_logging
 )
 

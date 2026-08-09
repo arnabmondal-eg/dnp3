@@ -1,8 +1,12 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <poll.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <netinet/in.h>
 
 #include "log.h"
 #include "packet.h"
