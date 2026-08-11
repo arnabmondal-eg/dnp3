@@ -1,81 +1,35 @@
 #include "client.h"
 
-void sendPacket(int sock, uint8_t request[]) {
-    log_info(INFO_FILE, "Sending Request...\n");
+int choose_server(int total_servers) {
+    int server_num = 0;
+    
+    printf("Server for Request, or 0 to End: ");
+    scanf("%d", &server_num);
+    printf("\n");
 
-    if(send(sock, request, getPacketSize(request), 0) == -1) {
-        log_err(errno, "client/sendPacket");
-        return;
-    }
-
-    log_info(INFO_FILE, "Successfuly Sent %d Bytes\n", getPacketSize(request));
-
-    return;
+    return server_num;
 }
 
-void recivePacket(int server_sock, uint8_t buffer[]) {
-    header_st *header_sp = {0};
-    ssize_t recvSize = 0;
-    int packetLength = 0;
-    fd_set read_fds;
-    int ret = 0;
+int choose_request() {
+    int request_num = 0;
 
-    FD_ZERO(&read_fds);
-    FD_SET(server_sock, &read_fds);
+    printf("Choose Request Type: \n");
+    printf("1. Reset Link\n");
+    printf("2. Analog Read\n");
+    printf("3. Digital Read\n");
+    printf("4. Back\n");
+    printf(": ");
+    scanf("%d", &request_num);
+    printf("\n");
 
-    log_info(INFO_FILE, "Waiting for Data...\n");
-    ret = select(server_sock+1, &read_fds, NULL, NULL, NULL); //wait till data is sent
-
-    if(ret == 0) {
-        errno = 110;
-        log_err(errno, "client/recievePacket");
-
-        return;
-    }
-    else if(ret < 0) {
-        log_err(errno, "client/recievePacket");
-
-        return;
-    }
-    else {
-        if(FD_ISSET(server_sock, &read_fds)) {
-            log_info(INFO_FILE, "Socket is Ready for Reading\n");
-        }
-        else {
-            log_info(INFO_FILE, "Socket is not Ready for Reading\n");
-
-            return;
-        }
-    }
-    
-    // First Read 10 bytes and then read remaining if any left
-    recvSize = recv(server_sock, &buffer[0], 10, 0);
-    if(recvSize == -1) {
-        log_err(errno, "client/recievePacket");
-
-    }
-    else if(recvSize == 0) {
-        errno  = 61;
-        log_warn(errno, "client/recievePacket");
-    }
-
-    packetLength = getPacketSize(buffer);
-
-    if(packetLength == 10) {
-        return;
-    } 
-    else {
-        recvSize = recv(server_sock, &buffer[10], packetLength-10, 0);
-    }
-
-    return;
+    return request_num;
 }
 
 int main(int args, char **argv) {
     errno = 0;
     
-    uint8_t requestBuffer[296];
-    uint8_t replyBuffer[296];
+    uint8_t send_buffer[296];
+    uint8_t recieve_buffer[296];
     uint8_t request1[] = {
         0x05, 0x64, 0x0D, 0xC4, 0xC8, 
         0x00, 0x01, 0x00, 0x6E, 0x78, 
@@ -106,96 +60,113 @@ int main(int args, char **argv) {
         0x07, 0x87
     };
     
-    FILE *temp_fptr;
+    header_st header_s = {0};
 
-    int sock;
-    int length;
-    struct sockaddr_in server;
     char* end;
     int port = 0;
     char* address = {0};
 
-    header_st header_s = {0};
+    int menu_input = 0;
+    int menu_server = 0;
 
-    int input = 0;
-    int src = 0;
-    int des = 1;
+    int total_servers = 0;
+    struct sockaddr_in server[COMMON_MAX_CONNECTIONS];
+    struct pollfd server_poll[COMMON_MAX_CONNECTIONS];
     
     // setup logging
-    if(log_init("log/client_log.txt") == -1) {
-        return -1;
-    };
+    if(log_init("log/client_log.txt") == -1) return -1;
 
+    // log start
     log_program_start("Client");
+    
+    // setup connection amount
+    if(args >= 2) {
+        total_servers = strtol(argv[1], &end, 0);
+        if(total_servers <= 0) total_servers = 1;
+        log_info(INFO_BOTH, "Using custom number of  connections: %d\n", total_servers);
+    }
+    else total_servers = 1;
 
-    if (args >= 2) {
-        port = strtol(argv[1], &end, 0);
+    // set port
+    if (args >= 3) {
+        port = strtol(argv[2], &end, 0);
         log_info(INFO_BOTH, "Using Custom Port: %d\n", port);
     }
-    else {
-        port = PORT;
-    }
+    else port = PORT;
 
     // check and set custom address
-    if (args >= 3) {
-        address = argv[2];
+    if (args >= 4) {
+        address = argv[3];
         log_info(INFO_BOTH, "Using Custom Server Adress: %s\n", address);
     }
-    else {
-        address = "127.0.0.1";
+    else address = "127.0.0.1";
+
+
+    // setup all connections
+    log_info(INFO_BOTH, "Setting up %d connection(s)\n", total_servers);
+    for(int i=0; i<total_servers; i++) {
+
+        // get port
+        printf("Port for Server %d: ", i+1);
+        scanf("%d", &port);
+        printf("\n");
+
+        log_info(INFO_BOTH, "Attempting to connect to Server %d at %s:%d\n", i, address, port);
+        if(connect_to_server(&(server[i]), &(server_poll[i].fd), address, port) != 0) {
+            log_warn(errno, "client/main");
+            close(server_poll[i].fd);
+        }
     }
 
-    if(connect_to_server(&server, &sock, address, port) != 0) {
-        log_err(errno, "client/main");
-        return 0;
-    }
+    menu_server = choose_server(total_servers);
 
-    while(input != 4) {
-        printf("Choose Request Type: \n");
-        printf("1. Reset Link\n");
-        printf("2. Analog Read\n");
-        printf("3. Digital Read\n");
-        printf("4. End\n");
-        printf(": ");
-        scanf("%d", &input);
+    while(menu_server != 0) {
+        poll_connections(server_poll, total_servers, 500);
 
-        switch(input) {
+        if(menu_input == 4) {
+            menu_server = choose_server(total_servers);
 
-            case 1:
-                header_s = dnp3Lib_mkResetLink(des, src);
-                sendPacket(sock, (uint8_t *) &header_s);
-                log_info(INFO_FILE, "Client Sent: \n");
+            if(menu_server == 0) break;
+        }
+        menu_input = choose_request();
 
-                // change stream
-                temp_fptr = stdout;
-                stdout = log_get_file();
-                printRawPacket((uint8_t *) &header_s);
-                stdout = temp_fptr;
-
-                recivePacket(sock, requestBuffer);
-                log_info(INFO_FILE, "Client Recieved: \n");
-
-                temp_fptr = stdout;
-                stdout = log_get_file();
-                printRawPacket(requestBuffer);
-                stdout = temp_fptr;
+        switch (menu_input)
+        {
+        case 0:
             break;
+        case 1:
+            header_s = dnp3Lib_mkResetLink(1, 0);
+            log_info(INFO_BOTH, "Sending Packet to Server %d", menu_server);
+            if(send_packet(server_poll[menu_server-1].fd, (uint8_t *)&header_s) != 0) {
+                log_info(INFO_BOTH, "Failed to Send Packet\n");
+                continue;
+            }
 
-            case 2:
+            poll_connections(server_poll, total_servers, 100);
+            if(server_poll[menu_server-1].revents == POLLIN) {
+                if(recieve_packet(server_poll[menu_server-1].fd, recieve_buffer) != 0) {
+                    log_info(INFO_BOTH, "Failed to Recieve Packet\n");
+                    continue;
+                }
+
+                log_info(INFO_BOTH, "Recived Packet\n");
+                printRawPacket(recieve_buffer);
+            }
+            else {
+                errno = 61;
+                log_warn(errno, "client/main");
+            }
                 
             break;
-            
-            case 3:
-
-            break;
-
-            case 4:
-            default:
+        
+        default:
             break;
         }
     }
 
-    close(sock);
+    for(int i = 0; i < total_servers; i++) {
+        close(server_poll[i].fd);
+    }
 
     log_program_terminate("Client");
 

@@ -117,7 +117,7 @@ void log_warn(int val_errno, const char *message_source) {
 
     if (log_file != NULL) {
         log_timestamp(log_file);
-        fprintf(log_file, "[%s/WARNING]: %s", message_source, strerror(val_errno));    // file
+        fprintf(log_file, "[%s/WARNING]: %s\n", message_source, strerror(val_errno));    // file
     }
 
     fflush(stderr);

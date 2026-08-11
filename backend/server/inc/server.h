@@ -12,6 +12,7 @@
 #include "rawPacketHelper.h"
 #include "log.h"
 #include "network.h"
+#include "common.h"
 
 #ifndef server_h
 #define server_h

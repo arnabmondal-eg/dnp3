@@ -13,6 +13,7 @@
 #include "packet.h"
 #include "log.h"
 #include "network.h"
+#include "common.h"
 
 #ifndef client_h
 #define client_h

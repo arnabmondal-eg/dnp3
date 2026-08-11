@@ -18,9 +18,11 @@
 #ifndef common_h
 #define common_h
 
-int init_connection(int, int[]);
+int init_connection(int, struct pollfd[]);
 int send_packet(const int, const uint8_t []);
 int recieve_packet(const int, uint8_t []);
 int interpret_packet(uint8_t [], uint8_t []);
+
+int poll_connections(struct pollfd*, int, const int);
 
 #endif
