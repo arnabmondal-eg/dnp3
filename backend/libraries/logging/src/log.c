@@ -146,7 +146,7 @@ void log_info(int type, const char *message, ...) {
 
         va_end(console_cpy);
     }
-    else if((type == INFO_FILE || type == INFO_BOTH) && log_file != NULL) {
+    if((type == INFO_FILE || type == INFO_BOTH) && log_file != NULL) {
         va_list file_cpy;
         va_copy(file_cpy, parameters);
 
