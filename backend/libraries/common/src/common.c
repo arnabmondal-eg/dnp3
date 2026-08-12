@@ -70,7 +70,7 @@ int recieve_packet(const int connection_socket, uint8_t recieve_buffer[]) {
     
     recive_status = (int) recv(connection_socket, &recieve_buffer[0], 10, 0);
     if(recive_status == -1) {
-        log_err(errno, LOGSTR_RECIEVEPACKET);
+        log_warn(errno, LOGSTR_RECIEVEPACKET);
         return -1;
     }
     else if(recive_status == 0) {
@@ -92,7 +92,7 @@ int recieve_packet(const int connection_socket, uint8_t recieve_buffer[]) {
     }
 
     if(recive_status == -1) {
-        log_err(errno, LOGSTR_RECIEVEPACKET);
+        log_warn(errno, LOGSTR_RECIEVEPACKET);
         return -1;
     }
 

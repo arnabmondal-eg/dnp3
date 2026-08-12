@@ -3,6 +3,7 @@
 #include <time.h>
 #include <string.h>
 #include <stdarg.h>
+#include <sys/stat.h>
 
 #define LOG_ERR    "\033[31m"
 #define LOG_WARN "\033[33m"

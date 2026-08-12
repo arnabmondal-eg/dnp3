@@ -51,14 +51,27 @@ int main(int args, char** argv) {
     init_connection(num_connections, connections);
     
     while(1) {
+        errno = 0;
+
         poll_status = poll_connections(connections, num_connections, -1);
         if(poll_status == -1 || poll_status == 0) {
             continue;
         }
 
-        recieve_packet(connections[0].fd, recieve_buffer);
-        interpret_packet(recieve_buffer, response_buffer);
-        send_packet(client_sock, response_buffer);
+        if(recieve_packet(connections[0].fd, recieve_buffer) != 0) {
+            log_info(INFO_BOTH, "Recieve Failed, closing\n");
+            break;
+        }
+
+        if(interpret_packet(recieve_buffer, response_buffer) != 0) {
+            log_info(INFO_BOTH, "Interpret Failed, continuing\n");
+            continue;
+        };
+
+        if(send_packet(client_sock, response_buffer) != 0) {
+            log_info(INFO_BOTH, "Send Failed, closing\n");
+            break;
+        };
     }
 
     log_program_terminate("Server");

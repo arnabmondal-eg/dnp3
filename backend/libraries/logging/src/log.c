@@ -32,6 +32,12 @@ static void log_timestamp(FILE *stream) {
  * @return int -1 on error, 0 else
  */
 int log_init(const char *file_path) {
+    struct stat st = {0};
+
+    if(stat("log", &st) == -1) {
+        mkdir("log", 0755);
+    }
+
     log_file = fopen(file_path, "a");
 
     if(log_file == NULL) {

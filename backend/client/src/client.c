@@ -93,6 +93,7 @@ int main(int args, char **argv) {
     if(failed_connections == total_servers) {
         log_info(INFO_BOTH, "Could not Connect to any Servers!\n");
         close_client(server_poll, total_servers);
+        return 0;
     }
 
     menu_server = choose_server(total_servers);
@@ -141,11 +142,7 @@ int main(int args, char **argv) {
         }
     }
 
-    for(int i = 0; i < total_servers; i++) {
-        close(server_poll[i].fd);
-    }
-
-    log_program_terminate("Client");
+    close_client(server_poll, total_servers);
 
     return 0;
 }
