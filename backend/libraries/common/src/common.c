@@ -112,13 +112,16 @@ int recieve_packet(const int connection_socket, uint8_t recieve_buffer[]) {
 int interpret_packet(uint8_t recieve_buffer[], uint8_t send_buffer[]) {
     header_st *header_sp = {0};
     dlc_st *dlc_sp = {0};
+    header_st ack_s = {0};
 
     header_sp = (header_st *) recieve_buffer;   // map recieve to header struct
     dlc_sp = (dlc_st *)&(header_sp->dlc);
+    
 
     switch (header_sp->dlc) {
+
         case 0xC0:
-            header_st ack_s = {0};
+            {
 
             ack_s = dnp3Lib_mkAck(
                 !(dlc_sp->dirBit),      // reverse the dlc bit
@@ -126,6 +129,7 @@ int interpret_packet(uint8_t recieve_buffer[], uint8_t send_buffer[]) {
                 header_sp->des          // switch des with src
             );
             memcpy(send_buffer, &ack_s, 10);
+            }
             break;
         
         default:

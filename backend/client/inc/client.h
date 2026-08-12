@@ -14,12 +14,11 @@
 #include "log.h"
 #include "network.h"
 #include "common.h"
+#include "client_helper.h"
 
 #ifndef client_h
 #define client_h
 
 #define PORT 48188  // https://www.random.org/ (0-65535)
-
-void sendPacket(int, uint8_t[]);
 
 #endif

@@ -1,30 +1,5 @@
 #include "client.h"
 
-int choose_server(int total_servers) {
-    int server_num = 0;
-    
-    printf("Server for Request, or 0 to End: ");
-    scanf("%d", &server_num);
-    printf("\n");
-
-    return server_num;
-}
-
-int choose_request() {
-    int request_num = 0;
-
-    printf("Choose Request Type: \n");
-    printf("1. Reset Link\n");
-    printf("2. Analog Read\n");
-    printf("3. Digital Read\n");
-    printf("4. Back\n");
-    printf(": ");
-    scanf("%d", &request_num);
-    printf("\n");
-
-    return request_num;
-}
-
 int main(int args, char **argv) {
     errno = 0;
     
@@ -64,12 +39,13 @@ int main(int args, char **argv) {
 
     char* end;
     int port = 0;
-    char* address = {0};
+    char address[20] = {0};
 
     int menu_input = 0;
     int menu_server = 0;
 
     int total_servers = 0;
+    int failed_connections = 0;
     struct sockaddr_in server[COMMON_MAX_CONNECTIONS];
     struct pollfd server_poll[COMMON_MAX_CONNECTIONS];
     
@@ -87,21 +63,6 @@ int main(int args, char **argv) {
     }
     else total_servers = 1;
 
-    // set port
-    if (args >= 3) {
-        port = strtol(argv[2], &end, 0);
-        log_info(INFO_BOTH, "Using Custom Port: %d\n", port);
-    }
-    else port = PORT;
-
-    // check and set custom address
-    if (args >= 4) {
-        address = argv[3];
-        log_info(INFO_BOTH, "Using Custom Server Adress: %s\n", address);
-    }
-    else address = "127.0.0.1";
-
-
     // setup all connections
     log_info(INFO_BOTH, "Setting up %d connection(s)\n", total_servers);
     for(int i=0; i<total_servers; i++) {
@@ -109,13 +70,29 @@ int main(int args, char **argv) {
         // get port
         printf("Port for Server %d: ", i+1);
         scanf("%d", &port);
+
+        // get adress
+        printf("Server Adress (0 for Local): ");
+        scanf("%s", address);
+        if(strcmp(address, "0") == 0) {
+            strcpy(address, "127.0.0.1");
+        }
+
         printf("\n");
 
         log_info(INFO_BOTH, "Attempting to connect to Server %d at %s:%d\n", i, address, port);
         if(connect_to_server(&(server[i]), &(server_poll[i].fd), address, port) != 0) {
             log_warn(errno, "client/main");
             close(server_poll[i].fd);
+
+            failed_connections++;
         }
+    }
+
+    // make sure at least 1 server was connected to
+    if(failed_connections == total_servers) {
+        log_info(INFO_BOTH, "Could not Connect to any Servers!\n");
+        close_client(server_poll, total_servers);
     }
 
     menu_server = choose_server(total_servers);
