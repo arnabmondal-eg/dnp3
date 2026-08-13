@@ -48,6 +48,7 @@ int main(int args, char **argv) {
     int failed_connections = 0;
     struct sockaddr_in server[COMMON_MAX_CONNECTIONS];
     struct pollfd server_poll[COMMON_MAX_CONNECTIONS];
+    server_def_st server_info[COMMON_MAX_CONNECTIONS];
     
     // setup logging
     if(log_init("log/client_log.txt") == -1) return -1;
@@ -78,8 +79,6 @@ int main(int args, char **argv) {
             strcpy(address, "127.0.0.1");
         }
 
-        printf("\n");
-
         log_info(INFO_BOTH, "Attempting to connect to Server %d at %s:%d\n", i, address, port);
         if(connect_to_server(&(server[i]), &(server_poll[i].fd), address, port) != 0) {
             log_warn(errno, "client/main");
@@ -94,6 +93,18 @@ int main(int args, char **argv) {
         log_info(INFO_BOTH, "Could not Connect to any Servers!\n");
         close_client(server_poll, total_servers);
         return 0;
+    }
+
+    // collect server data from each server
+    log_info(INFO_BOTH, "Attempting to Receive Server Information\n");
+    for(int i = 0; i < total_servers; i++) {
+        recv(server_poll[i].fd, (uint8_t *) &server_info[i], sizeof(server_def_st), 0);
+        server_info[i].num = i;
+
+        log_info(INFO_BOTH, "Server %d: \n", i);
+        log_info(INFO_BOTH, "\tType: %d\n", server_info[i].type);
+        log_info(INFO_BOTH, "\tStart: %d\n", server_info[i].start);
+        log_info(INFO_BOTH, "\tEnd: %d\n", server_info[i].end);
     }
 
     menu_server = choose_server(total_servers);
@@ -113,7 +124,7 @@ int main(int args, char **argv) {
         case 0:
             break;
         case 1:
-            header_s = dnp3Lib_mkResetLink(1, 0);
+            header_s = dnp3Lib_mkResetLink(server_info[menu_server-1].num, 0);
             log_info(INFO_BOTH, "Sending Packet to Server %d", menu_server);
             if(send_packet(server_poll[menu_server-1].fd, (uint8_t *)&header_s) != 0) {
                 log_info(INFO_BOTH, "Failed to Send Packet\n");

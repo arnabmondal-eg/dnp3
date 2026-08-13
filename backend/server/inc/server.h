@@ -13,6 +13,7 @@
 #include "log.h"
 #include "network.h"
 #include "common.h"
+#include "server_helper.h"
 
 #ifndef server_h
 #define server_h

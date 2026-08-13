@@ -18,6 +18,14 @@
 #ifndef common_h
 #define common_h
 
+typedef struct server_def_sd {
+    int type;
+    int start;
+    int end;
+
+    int num;
+} server_def_st;
+
 int init_connection(int, struct pollfd[]);
 int send_packet(const int, const uint8_t []);
 int recieve_packet(const int, uint8_t []);

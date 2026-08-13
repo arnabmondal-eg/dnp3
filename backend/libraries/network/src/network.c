@@ -1,8 +1,5 @@
 #include "network.h"
 
-#define DEBUG 1
-
-
 #define LOGSTR_CONNECT_TO_SERVER "network/connect_to_server"
 
 #define LOGSTR_CONNECT_TO_CLIENT "network/connect_to_client"
@@ -35,7 +32,7 @@ int connect_to_server(struct sockaddr_in *server_sp, int *server_socket, const c
     // setup socket
     *server_socket = socket(AF_INET, SOCK_STREAM, 0);
 
-    if(DEBUG) log_info(INFO_BOTH, "Connecting to Server...\n");
+    log_info(INFO_BOTH, "Connecting to Server...\n");
     if(connect(*server_socket, (struct sockeaddr *)server_sp, sizeof(struct sockaddr_in)) == -1) {
         log_warn(errno, LOGSTR_CONNECT_TO_SERVER);
 
@@ -43,7 +40,7 @@ int connect_to_server(struct sockaddr_in *server_sp, int *server_socket, const c
         return -1;
     }
 
-    if(DEBUG) log_info(INFO_BOTH, "Connected to Server: %s:%d\n", server_adress, port);
+    log_info(INFO_BOTH, "Connected to Server: %s:%d\n", server_adress, port);
 
     return 0;
 }
@@ -60,7 +57,7 @@ int connect_to_server(struct sockaddr_in *server_sp, int *server_socket, const c
 int setup_server(struct sockaddr_in *server_sp, int *server_socket, const int port, const int max_connections) {
     // configure server socket
     *server_socket = socket(AF_INET, SOCK_STREAM, 0);
-    if(server_socket == -1) {
+    if(*server_socket == -1) {
         log_warn(errno, LOGSTR_SETUP_SERVER);
         return -1;
     }
@@ -81,7 +78,7 @@ int setup_server(struct sockaddr_in *server_sp, int *server_socket, const int po
         log_warn(errno, LOGSTR_SETUP_SERVER);
         return -1;
     };
-    if(DEBUG) log_info(INFO_BOTH, "Server Listening on Port: %d\n", port);
+    log_info(INFO_BOTH, "Server Listening on Port: %d\n", port);
 
     return 0;
 }
@@ -94,7 +91,7 @@ int setup_server(struct sockaddr_in *server_sp, int *server_socket, const int po
  * @return int -1 on error, 0 else
  */
 int connect_to_client(int *server_socket, int *client_socket) {
-    if(DEBUG) log_info(INFO_BOTH, "Connecting to Client\n");
+    log_info(INFO_BOTH, "Connecting to Client\n");
 
     *client_socket = accept(*server_socket, NULL, NULL);
     if(*client_socket == -1) {
@@ -102,7 +99,7 @@ int connect_to_client(int *server_socket, int *client_socket) {
         return -1;
     }
 
-    if(DEBUG) log_info(INFO_BOTH, "Connected to Client\n");
+    log_info(INFO_BOTH, "Connected to Client\n");
 
     return 0;
 }

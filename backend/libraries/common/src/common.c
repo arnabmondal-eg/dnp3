@@ -43,7 +43,7 @@ int init_connection(int num_connections, struct pollfd ufds[]) {
 int send_packet(const int connection_socket, const uint8_t send_buffer[]) {
     int send_status = 0;
 
-    log_info(INFO_CONSOLE, "Sending Packet\n");
+    log_info(INFO_BOTH, "Sending Packet\n");
 
     send_status = send(connection_socket, send_buffer, getPacketSize(send_buffer), 0);
     if(send_status == -1) {
@@ -84,7 +84,7 @@ int recieve_packet(const int connection_socket, uint8_t recieve_buffer[]) {
 
     packet_length = getPacketSize(recieve_buffer);
     if(packet_length == 10) {
-        log_info(INFO_CONSOLE, "Recieved %d Bytes\n", total_recieve);
+        log_info(INFO_BOTH, "Recieved %d Bytes\n", total_recieve);
         return 0;
     }
     else {
@@ -97,7 +97,7 @@ int recieve_packet(const int connection_socket, uint8_t recieve_buffer[]) {
     }
 
     total_recieve += recive_status;
-    log_info(INFO_CONSOLE, "Recieved %d Bytes\n", total_recieve);
+    log_info(INFO_BOTH, "Recieved %d Bytes\n", total_recieve);
 
     return 0;
 }

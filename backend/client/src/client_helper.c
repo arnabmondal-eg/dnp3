@@ -14,6 +14,13 @@ int choose_server(int total_servers) {
     
     printf("Server for Request, or 0 to End: ");
     scanf("%d", &server_num);
+
+    if(server_num > total_servers) {
+        errno = 19;
+        log_warn(errno, "client_helper/choose_server");
+        return -1;
+    }
+
     printf("\n");
 
     return server_num;
