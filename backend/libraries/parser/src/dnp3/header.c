@@ -7,7 +7,7 @@
  * @param hexInput Hex Sequence to Transform
  * @return header_st New var
  */
-header_st mkHeader(uint8_t hexInput[], int *caretPosition) {
+header_st header(uint8_t hexInput[], int *caretPosition) {
     header_st header_s = {0};
 
     memcpy(&header_s, hexInput, sizeof(header_s));

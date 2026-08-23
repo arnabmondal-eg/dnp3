@@ -3,59 +3,59 @@
 objectHeader_st mkObjectHeader(uint8_t hexInput[], int *caretPosition) 
 {
     const int RANGE_SIZE[12] = {2, 4, 8, 1, 2, 4, 0, 1, 2, 4, 0, 0};  // 10 is not a range code, 11 is undefined
-    objectHeader_st objectHeader_s = {0};
+    objectHeader_st object_header_s = {0};
     int shiftAmnt = 0;
 
     // int temp;    
     // dlc_st dlc_s = mkDLC(hexInput, &temp);
 
-    // int dir = dlc_s.dirBit != 0 ? 1 : 0;
+    // int dir = dlc_s.dir != 0 ? 1 : 0;
     int dir = 1;
 
     // no inn bytes in applheader
     if(dir) shiftAmnt = 2;  // if from primary, shift by 2 as there are no inn bytes
 
-    memcpy(&objectHeader_s, &hexInput[*caretPosition], 2); // set group and variation
+    memcpy(&object_header_s, &hexInput[*caretPosition], 2); // set group and variation
         *caretPosition += 2;
     
-    objectHeader_s.qualPrefix = hexInput[*caretPosition] >> 4;    // capture first 4 bits
-    objectHeader_s.qualRangeCode = hexInput[*caretPosition];      // capture last 4 bits
+    object_header_s.qualPrefix = hexInput[*caretPosition] >> 4;    // capture first 4 bits
+    object_header_s.qualRangeCode = hexInput[*caretPosition];      // capture last 4 bits
         *caretPosition += 1;
     //fill range bytes
-    // memcpy(&objectHeader_s.range, &hexInput[RANGE_START-shiftAmnt], RANGE_SIZE[objectHeader_s.qualRangeCode]);
+    // memcpy(&object_header_s.range, &hexInput[RANGE_START-shiftAmnt], RANGE_SIZE[object_header_s.qualRangeCode]);
 
     // start index
-    if(objectHeader_s.qualRangeCode <= 3) {
-        memcpy(&objectHeader_s.rangeStart, &hexInput[*caretPosition], RANGE_SIZE[objectHeader_s.qualRangeCode]/2);
-            *caretPosition += RANGE_SIZE[objectHeader_s.qualRangeCode]/2;
-        memcpy(&objectHeader_s.rangeStop, &hexInput[*caretPosition], RANGE_SIZE[objectHeader_s.qualRangeCode]/2);
-            *caretPosition += RANGE_SIZE[objectHeader_s.qualRangeCode]/2;
+    if(object_header_s.qualRangeCode <= 3) {
+        memcpy(&object_header_s.rangeStart, &hexInput[*caretPosition], RANGE_SIZE[object_header_s.qualRangeCode]/2);
+            *caretPosition += RANGE_SIZE[object_header_s.qualRangeCode]/2;
+        memcpy(&object_header_s.rangeStop, &hexInput[*caretPosition], RANGE_SIZE[object_header_s.qualRangeCode]/2);
+            *caretPosition += RANGE_SIZE[object_header_s.qualRangeCode]/2;
         
-        objectHeader_s.numberOfPoints = objectHeader_s.rangeStop - objectHeader_s.rangeStart + 1;
+        object_header_s.numberOfPoints = object_header_s.rangeStop - object_header_s.rangeStart + 1;
         
-        // printf("Range Index: %01X\n", objectHeader_s.qualPrefix);
-        // printf("Range Code: %01X\n", objectHeader_s.qualRangeCode);
+        // printf("Range Index: %01X\n", object_header_s.qualPrefix);
+        // printf("Range Code: %01X\n", object_header_s.qualRangeCode);
 
-        // printf("Range Size: %d\n", RANGE_SIZE[objectHeader_s.qualRangeCode]);
-        // // printf("Range Size: %lu\n", objectHeader_s.numberOfPoints);
-        // printf("Range Start: %02x\n", objectHeader_s.rangeStart);
-        // printf("Range Stop: %02x\n", objectHeader_s.rangeStop);
+        // printf("Range Size: %d\n", RANGE_SIZE[object_header_s.qualRangeCode]);
+        // // printf("Range Size: %lu\n", object_header_s.numberOfPoints);
+        // printf("Range Start: %02x\n", object_header_s.rangeStart);
+        // printf("Range Stop: %02x\n", object_header_s.rangeStop);
     }
     else {
-        memcpy(&objectHeader_s.rangeStart, &hexInput[*caretPosition], RANGE_SIZE[objectHeader_s.qualRangeCode]);
-            *caretPosition += RANGE_SIZE[objectHeader_s.qualRangeCode];
+        memcpy(&object_header_s.rangeStart, &hexInput[*caretPosition], RANGE_SIZE[object_header_s.qualRangeCode]);
+            *caretPosition += RANGE_SIZE[object_header_s.qualRangeCode];
         
-        objectHeader_s.numberOfPoints = objectHeader_s.rangeStart;
+        object_header_s.numberOfPoints = object_header_s.rangeStart;
         
-        objectHeader_s.rangeStart = 0;
-        objectHeader_s.rangeStop = 0;
+        object_header_s.rangeStart = 0;
+        object_header_s.rangeStop = 0;
     }
 
 
     // stop index
 
     
-    return objectHeader_s;
+    return object_header_s;
 }
 
 void printObjectHeader(objectHeader_st objHeader_s) {

@@ -124,7 +124,7 @@ int interpret_packet(uint8_t recieve_buffer[], uint8_t send_buffer[]) {
             {
 
             ack_s = dnp3Lib_mkAck(
-                !(dlc_sp->dirBit),      // reverse the dlc bit
+                !(dlc_sp->dir),      // reverse the dlc bit
                 header_sp->src,         // switch src with des
                 header_sp->des          // switch des with src
             );

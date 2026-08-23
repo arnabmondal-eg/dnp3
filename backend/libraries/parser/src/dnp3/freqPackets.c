@@ -2,7 +2,7 @@
 #include "crc.h"
 
 dnp3p_st dnp3Lib_setNavigation(dnp3p_st packet_s, int destination, int source, int direction) {
-    packet_s.dlc_s.dirBit = direction;
+    packet_s.dlc_s.dir = direction;
     
     packet_s.header_s.des = destination;
     packet_s.header_s.src = source;

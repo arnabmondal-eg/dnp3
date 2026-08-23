@@ -22,10 +22,10 @@ const char INN2_RESPONSES[8][17] = {
     "ALREADY EXECU", "BAD CONFIG", "RESERVED", "RESERVED"
 };
 
-applicationHeader_st mkApplicationHeader(uint8_t hexInput[], inn_st *inn_sp, int *caretPosition, dlc_st *dlc_sp, int *inn_active) {
-    applicationHeader_st applHeader_s;
+application_header_st application_header(uint8_t hexInput[], inn_st *inn_sp, int *caretPosition, dlc_st *dlc_sp, int *inn_active) {
+    application_header_st applHeader_s;
 
-    int dir = dlc_sp -> dirBit != 0 ? 1 : 0;
+    int dir = dlc_sp -> dir != 0 ? 1 : 0;
     
     memcpy(&applHeader_s, &hexInput[*caretPosition], 2);
     *caretPosition += 2;
@@ -41,7 +41,7 @@ applicationHeader_st mkApplicationHeader(uint8_t hexInput[], inn_st *inn_sp, int
     return applHeader_s;
 }
 
-void printApplicationHeader(applicationHeader_st applHeader_s, inn_st inn_s, int inn_active) {
+void print_application_header(application_header_st applHeader_s, inn_st inn_s, int inn_active) {
     printf("---- Application Header ----\n");
 
     // Application Control Byte

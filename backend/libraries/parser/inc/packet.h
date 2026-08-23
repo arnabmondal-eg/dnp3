@@ -28,17 +28,16 @@ typedef struct dnp3p_sd {
     
     header_st header_s;
     dlc_st dlc_s;
-    transportHeader_st transportHeader_s;
-    applicationHeader_st applicationHeader_s;
+    transport_header_st transport_header_s;
+    application_header_st application_header_s;
     inn_st inn_s;
-    objectHeader_st objectHeader_s;
+    objectHeader_st object_header_s;
     
     uint8_t *hexInput;
     
-    int packetValidity;
+    int packetValidity; 
     int caretPosition;
     int innActive;
-    
 } dnp3p_st;
 
 typedef struct dnp3_data_request_sd {
@@ -51,8 +50,8 @@ typedef struct dnp3_data_request_sd {
     uint16_t header_crc;        // crc for header
 
     /* Data Block Information */
-    transportHeader_st transport_header;        // information about packet transport
-    applicationHeader_st application_header_s;  // information about packet
+    transport_header_st transport_header;        // information about packet transport
+    application_header_st application_header_s;  // information about packet
     objectHeader_st object_header_s;            // information about request
 } dnp3_data_request_st;
 
@@ -66,8 +65,8 @@ typedef struct dnp3_data_reply_sd {
     uint16_t header_crc;        // crc for header
 
     /* Data Block Information */
-    transportHeader_st transport_header;        // information about packet transport
-    applicationHeader_st application_header_s;  // information about packet
+    transport_header_st transport_header;        // information about packet transport
+    application_header_st application_header_s;  // information about packet
     inn_st inn_s;                               // application flags
     objectHeader_st object_header_s;            // information about reply
 } dnp3_data_reply_st;

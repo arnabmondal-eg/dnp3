@@ -26,7 +26,7 @@ typedef struct header_sd {
     uint16_t crc;  // cyclic redundancy check byte
 } header_st;
 
-header_st mkHeader(uint8_t [], int*);
+header_st header(uint8_t [], int*);
 // checks start bytes and crc byte to determine packet validity
 int checkHeaderValidity(header_st);
 

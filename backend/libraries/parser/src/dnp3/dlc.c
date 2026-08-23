@@ -38,45 +38,45 @@ void printDLCData(dlc_st dlc_s) {
     printf("---- DLC ----\n");
 
     printf("Direction: [%d] %s\n", 
-        dlc_s.dirBit, 
-        dlc_s.dirBit == 1 ? "From Master" : "From Outstation"
+        dlc_s.dir, 
+        dlc_s.dir == 1 ? "From Master" : "From Outstation"
     );
 
     printf("Primarity: [%d] %s\n",
-        dlc_s.prmBit, 
-        dlc_s.prmBit == 1 ? "Initiating" : "Responding"
+        dlc_s.prm, 
+        dlc_s.prm == 1 ? "Initiating" : "Responding"
     );
 
     printf("%s: [%d]\n",
-        dlc_s.prmBit == 1 ? "Frame Count" : "Zero-Bit",
-        dlc_s.fcbBit
+        dlc_s.prm == 1 ? "Frame Count" : "Zero-Bit",
+        dlc_s.fcb
     );
 
     // bit 4
-    if (dlc_s.prmBit) {
+    if (dlc_s.prm) {
         printf("Frame Count Valid: [%d] %s\n",
-            dlc_s.fcv_dfcBit,
-            dlc_s.fcv_dfcBit == 1 ? "Yes" : "No"
+            dlc_s.fcv_dfc,
+            dlc_s.fcv_dfc == 1 ? "Yes" : "No"
         );
     }
     else {
         printf("Data Flow Control: [%d] %s\n",
-            dlc_s.fcv_dfcBit,
-            dlc_s.fcv_dfcBit == 1 ? "Receive Buffer Full" : "Recieve Buffer Availible"
+            dlc_s.fcv_dfc,
+            dlc_s.fcv_dfc == 1 ? "Receive Buffer Full" : "Recieve Buffer Availible"
         );
     }
 
     //function codes
-    if(dlc_s.prmBit) {
+    if(dlc_s.prm) {
         printf("Primary Function Code: [0x%01X] %s\n", 
-            dlc_s.fncCodeBits,
-            strcmp(PRIMARY_FNC_CODES[dlc_s.fncCodeBits], "\0") ? PRIMARY_FNC_CODES[dlc_s.fncCodeBits] : "No Matching Function Code"
+            dlc_s.function_code,
+            strcmp(PRIMARY_FNC_CODES[dlc_s.function_code], "\0") ? PRIMARY_FNC_CODES[dlc_s.function_code] : "No Matching Function Code"
         );
     }
     else {
         printf("Secondary Function Code: [0x%01X] %s\n", 
-            dlc_s.fncCodeBits,
-            strcmp(SECONDARY_FNC_CODES[dlc_s.fncCodeBits], "\0") ? SECONDARY_FNC_CODES[dlc_s.fncCodeBits] : "No Matching Function Code"
+            dlc_s.function_code,
+            strcmp(SECONDARY_FNC_CODES[dlc_s.function_code], "\0") ? SECONDARY_FNC_CODES[dlc_s.function_code] : "No Matching Function Code"
         );
     }
 }
