@@ -68,14 +68,3 @@ header_st dnp3Lib_mkNack(int direction, int destination, int source) {
 
     return packet_s;
 }
-
-dnp3p_st dnp3Lib_mkAnalogReadRequest(int destination, int source, int start, int stop, int variation) {
-    dnp3p_st packet_s = {0};
-    int indexSize = 0;
-
-    packet_s.header_s.des = destination;
-    packet_s.header_s.src = source;
-
-    packet_s.objectHeader_s.group = 30;     // continious
-    packet_s.objectHeader_s.variation = variation;
-}

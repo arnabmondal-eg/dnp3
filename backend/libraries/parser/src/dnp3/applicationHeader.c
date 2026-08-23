@@ -22,26 +22,26 @@ const char INN2_RESPONSES[8][17] = {
     "ALREADY EXECU", "BAD CONFIG", "RESERVED", "RESERVED"
 };
 
-applicationHeader_st mkApplicationHeader(uint8_t hexInput[], int *caretPosition, dlc_st *dlc_sp) {
+applicationHeader_st mkApplicationHeader(uint8_t hexInput[], inn_st *inn_sp, int *caretPosition, dlc_st *dlc_sp, int *inn_active) {
     applicationHeader_st applHeader_s;
 
     int dir = dlc_sp -> dirBit != 0 ? 1 : 0;
     
+    memcpy(&applHeader_s, &hexInput[*caretPosition], 2);
+    *caretPosition += 2;
     if(dir == 1) {
-        memcpy(&applHeader_s, &hexInput[*caretPosition], 2);
-        *caretPosition += 2;
-        applHeader_s.innActive = 0;
+        *inn_active = 0;
     }
     else {
-        memcpy(&applHeader_s, &hexInput[*caretPosition], 4);    // if rtu to main, get inn bytes
-        *caretPosition += 4;
-        applHeader_s.innActive = 1;
+        memcpy(inn_sp, &hexInput[*caretPosition], 2);    // if rtu to main, get inn bytes
+        *caretPosition += 2;
+        *inn_active = 1;
     }
 
     return applHeader_s;
 }
 
-void printApplicationHeader(applicationHeader_st applHeader_s) {
+void printApplicationHeader(applicationHeader_st applHeader_s, inn_st inn_s, int inn_active) {
     printf("---- Application Header ----\n");
 
     // Application Control Byte
@@ -90,13 +90,13 @@ void printApplicationHeader(applicationHeader_st applHeader_s) {
         }
     }
 
-    if(applHeader_s.innActive) {
+    if(inn_active) {
         printf("Internal Indications:\n");
         uint8_t inn1Binary[8] = {0};
         uint8_t inn2Binary[8] = {0};
 
-        uint8_t temp1 [] = {applHeader_s.inn1};
-        uint8_t temp2 [] = {applHeader_s.inn2};
+        uint8_t temp1 [] = {inn_s.inn1};
+        uint8_t temp2 [] = {inn_s.inn2};
 
 
         hexToBinary(temp1, sizeof(temp1), inn1Binary);

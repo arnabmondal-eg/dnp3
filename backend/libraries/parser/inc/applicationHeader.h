@@ -22,15 +22,16 @@ typedef struct applicationHeader_sd {
 
     uint8_t applicationFunctionCode;
 
-    // internal indications
-    uint8_t inn1;  // gota read these bit by bit
-    uint8_t inn2;   // each bit indicates something (im gonna die)
-    int innActive;
-    
 } applicationHeader_st;
 
-applicationHeader_st mkApplicationHeader(uint8_t [], int*, dlc_st*);
-void printApplicationHeader(applicationHeader_st);
+typedef struct inn_sd {
+    // internal indications
+    uint8_t inn1;
+    uint8_t inn2;
+} inn_st;
+
+applicationHeader_st mkApplicationHeader(uint8_t [], inn_st*, int*, dlc_st*, int*);
+void printApplicationHeader(applicationHeader_st, inn_st, int);
 void getApplicationHeaderBit(applicationHeader_st);
 
 #endif
