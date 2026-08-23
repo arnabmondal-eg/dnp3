@@ -30,25 +30,10 @@ objectHeader_st mkObjectHeader(uint8_t hexInput[], int *caretPosition)
             *caretPosition += RANGE_SIZE[object_header_s.qualRangeCode]/2;
         memcpy(&object_header_s.rangeStop, &hexInput[*caretPosition], RANGE_SIZE[object_header_s.qualRangeCode]/2);
             *caretPosition += RANGE_SIZE[object_header_s.qualRangeCode]/2;
-        
-        object_header_s.numberOfPoints = object_header_s.rangeStop - object_header_s.rangeStart + 1;
-        
-        // printf("Range Index: %01X\n", object_header_s.qualPrefix);
-        // printf("Range Code: %01X\n", object_header_s.qualRangeCode);
-
-        // printf("Range Size: %d\n", RANGE_SIZE[object_header_s.qualRangeCode]);
-        // // printf("Range Size: %lu\n", object_header_s.numberOfPoints);
-        // printf("Range Start: %02x\n", object_header_s.rangeStart);
-        // printf("Range Stop: %02x\n", object_header_s.rangeStop);
     }
     else {
         memcpy(&object_header_s.rangeStart, &hexInput[*caretPosition], RANGE_SIZE[object_header_s.qualRangeCode]);
             *caretPosition += RANGE_SIZE[object_header_s.qualRangeCode];
-        
-        object_header_s.numberOfPoints = object_header_s.rangeStart;
-        
-        object_header_s.rangeStart = 0;
-        object_header_s.rangeStop = 0;
     }
 
 
@@ -88,8 +73,7 @@ void printObjectHeader(objectHeader_st objHeader_s) {
     printf("Prefix: [%01X] %s\n", objHeader_s.qualPrefix, PREFIX[objHeader_s.qualPrefix]);
     printf("Range Code: [%01X] %s\n", objHeader_s.qualRangeCode, RANGE_CODE[objHeader_s.qualRangeCode]);
 
-    printf("Range Start: %02x\n", objHeader_s.rangeStart);
-    printf("Range Stop: %02x\n", objHeader_s.rangeStop);
-    printf("Number of Points: %lu\n", objHeader_s.numberOfPoints);
+    printf("Range Start: [%d] %0x\n", objHeader_s.rangeStart, objHeader_s.rangeStart);
+    printf("Range Stop: [%d] %0x\n", objHeader_s.rangeStop, objHeader_s.rangeStop);
 }
 

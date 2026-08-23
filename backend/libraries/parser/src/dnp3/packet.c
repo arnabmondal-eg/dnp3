@@ -8,10 +8,18 @@ dnp3p_st mkPacketAuto(uint8_t input[]) {
 
     packet_s.header_s = header(input, &packet_s.caretPosition);
     //mkHeader1(hexInput, &packet_s);
-    packet_s.dlc_s = mkDLC(input, &packet_s.caretPosition);
     packet_s.transport_header_s = transport_header(input, &packet_s.caretPosition);
-    packet_s.application_header_s = application_header(input, &packet_s.inn_s, &packet_s.caretPosition, &packet_s.dlc_s, &packet_s.innActive);
+    packet_s.application_header_s = application_header(input, &packet_s.inn_s, &packet_s.caretPosition, &packet_s.header_s.dlc_s, &packet_s.innActive);
     packet_s.object_header_s = mkObjectHeader(input, &packet_s.caretPosition);
+    if(packet_s.object_header_s.qualRangeCode <= 3) {
+        packet_s.total_points = packet_s.object_header_s.rangeStop - packet_s.object_header_s.rangeStart + 1;
+    }
+    else {
+        packet_s.total_points = packet_s.object_header_s.rangeStart;
+        
+        packet_s.object_header_s.rangeStart = 0;
+        packet_s.object_header_s.rangeStop = 0;
+    }
 
     return packet_s;
 }
@@ -30,7 +38,7 @@ dnp3p_st dnp3lib_mkpacket_manual(int destination, int source, int group, int var
         packet_s.object_header_s.rangeStart = 0;
         packet_s.object_header_s.rangeStop = 0;
 
-        packet_s.object_header_s.numberOfPoints = (stopIndex - startIndex + 1);
+        packet_s.total_points = (stopIndex - startIndex + 1);
     }
     else {
         packet_s.object_header_s.rangeStart = startIndex;
@@ -91,11 +99,11 @@ dnp3p_st dnp3lib_mkpacket_manual(int destination, int source, int group, int var
 
 void printPacket(dnp3p_st packet_s) {
     printHeader(packet_s.header_s);
-    printDLCData(packet_s.dlc_s);
+    printDLCData(packet_s.header_s.dlc_s);
     print_transport_header(packet_s.transport_header_s);
     print_application_header(packet_s.application_header_s, packet_s.inn_s, packet_s.innActive);
     printObjectHeader(packet_s.object_header_s);
-    if(packet_s.dlc_s.dir != 1) printData(packet_s.hexInput, &packet_s.caretPosition, &packet_s.object_header_s);
+    if(packet_s.header_s.dlc_s.dir != 1) printData(packet_s.hexInput, &packet_s.caretPosition, &packet_s.object_header_s, packet_s.total_points);
 
     // printf("Data 1: %d", ((data0101_st*)packet_s.data_s)->data);
 

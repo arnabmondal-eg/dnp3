@@ -4,12 +4,14 @@
 
 // main functionality
 #include "packet.h"
+#include "freqPackets.h"
 
 //helpers
 #include "crc.h"
 #include "binaryHelper.h"
 
 int main() {
+    /*
     uint8_t request[] = {
         0x05, 0x64, 0x0D, 0xC4, 0xC8, 
         0x00, 0x01, 0x00, 0x6E, 0x78, 
@@ -60,7 +62,15 @@ int main() {
     printPacket(request_s);
     printf("\n\n-------- Reply Packet --------\n");
     printPacket(reply_s);
-
+    */
     
+    uint8_t request[192] = {0};
+    dnp3p_st request_s = {0};
+    request_data(request, 1, 1, 0, 16, 0, 1);
+    printRawPacket(request);
+    request_s = mkPacketAuto(request);
+    printPacket(request_s);
+
+
     return 0;
 }

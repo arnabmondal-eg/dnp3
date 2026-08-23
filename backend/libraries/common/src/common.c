@@ -115,10 +115,10 @@ int interpret_packet(uint8_t recieve_buffer[], uint8_t send_buffer[]) {
     header_st ack_s = {0};
 
     header_sp = (header_st *) recieve_buffer;   // map recieve to header struct
-    dlc_sp = (dlc_st *)&(header_sp->dlc);
+    dlc_sp = (dlc_st *)&(header_sp->dlc_s);
     
 
-    switch (header_sp->dlc) {
+    switch (*(uint8_t*)&(header_sp->dlc_s)) {
 
         case 0xC0:
             {

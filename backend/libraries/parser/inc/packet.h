@@ -27,7 +27,6 @@ typedef struct dnp3p_sd {
     //TODO: Add other portions of packet
     
     header_st header_s;
-    dlc_st dlc_s;
     transport_header_st transport_header_s;
     application_header_st application_header_s;
     inn_st inn_s;
@@ -38,6 +37,7 @@ typedef struct dnp3p_sd {
     int packetValidity; 
     int caretPosition;
     int innActive;
+    int total_points;
 } dnp3p_st;
 
 typedef struct dnp3_data_request_sd {

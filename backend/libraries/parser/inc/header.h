@@ -5,6 +5,7 @@
 #include "crc.h"
 #include "splitTwoByte.h"
 #include "binaryHelper.h"
+#include "dlc.h"
 
 #ifndef header_h
 #define header_h
@@ -17,7 +18,8 @@ typedef struct header_sd {
     uint8_t s2;   // start byte
 
     uint8_t len;   // length byte
-    uint8_t dlc;  // data link control byte
+
+    dlc_st dlc_s;   // dlc
 
     uint16_t des;  // destination byte
 

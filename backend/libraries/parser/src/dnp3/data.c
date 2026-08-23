@@ -1,6 +1,6 @@
 #include "data.h"
 
-void printData(uint8_t hexInput[], int *caretPosition, objectHeader_st *objectHeader_sp) {
+void printData(uint8_t hexInput[], int *caretPosition, objectHeader_st *objectHeader_sp, int total_points) {
     int temp = 0;
 
     int startIndex = 0;
@@ -19,7 +19,7 @@ void printData(uint8_t hexInput[], int *caretPosition, objectHeader_st *objectHe
 
     
     printf("---- Values of Data ----\n");
-    datapoints = objectHeader_sp -> numberOfPoints;
+    datapoints = total_points;
 
     switch (objectHeader_sp -> group) {
         

@@ -14,5 +14,6 @@ header_st dnp3Lib_mkAck(int, int, int);
 header_st dnp3Lib_mkNack(int, int, int);
 
 dnp3p_st dnp3Lib_mkAnalogReadRequest(int, int, int, int, int);  // des, src, start, stop, varr
+int request_data(uint8_t *, int, int, int, int, int, int);
 
 #endif
