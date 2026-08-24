@@ -11,6 +11,7 @@ add_compile_options(
     -g
     -Wall
     -Wextra
+    -Wpadded
 )
 
 # Logging Library

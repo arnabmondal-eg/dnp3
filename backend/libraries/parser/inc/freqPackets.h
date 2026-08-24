@@ -3,6 +3,7 @@
 #include <errno.h>
 
 #include "packet.h"
+#include "log.h"
 
 #ifndef freqPackets_h
 #define freqPackets_h
@@ -13,7 +14,7 @@ header_st dnp3Lib_mkResetLink(int, int);
 header_st dnp3Lib_mkAck(int, int, int);
 header_st dnp3Lib_mkNack(int, int, int);
 
-dnp3p_st dnp3Lib_mkAnalogReadRequest(int, int, int, int, int);  // des, src, start, stop, varr
 int request_data(uint8_t *, int, int, int, int, int, int);
+int write_data(uint8_t *, uint8_t, int[], int);
 
 #endif
