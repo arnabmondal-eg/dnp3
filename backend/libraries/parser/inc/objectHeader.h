@@ -22,7 +22,7 @@ typedef struct objectHeader_sd {
 
     uint32_t rangeStart;
     uint32_t rangeStop;
-} objectHeader_st;
+} __attribute__((packed)) objectHeader_st;
 
 objectHeader_st mkObjectHeader(uint8_t[], int*);
 void printObjectHeader(objectHeader_st);

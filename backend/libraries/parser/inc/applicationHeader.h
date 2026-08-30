@@ -22,13 +22,13 @@ typedef struct application_header_sd {
 
     uint8_t applicationFunctionCode;
 
-} application_header_st;
+} __attribute__((packed)) application_header_st;
 
 typedef struct inn_sd {
     // internal indications
     uint8_t inn1;
     uint8_t inn2;
-} inn_st;
+} __attribute__((packed)) inn_st;
 
 application_header_st application_header(uint8_t [], inn_st*, int*, dlc_st*, int*);
 void print_application_header(application_header_st, inn_st, int);

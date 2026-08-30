@@ -26,7 +26,7 @@ typedef struct header_sd {
     uint16_t src;  // source byte
 
     uint16_t crc;  // cyclic redundancy check byte
-} header_st;
+} __attribute__((packed)) header_st;
 
 header_st header(uint8_t [], int*);
 // checks start bytes and crc byte to determine packet validity

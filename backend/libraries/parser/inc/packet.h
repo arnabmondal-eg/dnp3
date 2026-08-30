@@ -38,7 +38,7 @@ typedef struct dnp3p_sd {
     int caretPosition;
     int innActive;
     int total_points;
-} dnp3p_st;
+} __attribute__((packed)) dnp3p_st;
 
 typedef struct dnp3_data_request_sd {
     /* Header */
@@ -53,7 +53,7 @@ typedef struct dnp3_data_request_sd {
     transport_header_st transport_header;        // information about packet transport
     application_header_st application_header_s;  // information about packet
     objectHeader_st object_header_s;            // information about request
-} dnp3_data_request_st;
+} __attribute__((packed)) dnp3_data_request_st;
 
 typedef struct dnp3_data_reply_sd {
     /* Header */
@@ -69,7 +69,7 @@ typedef struct dnp3_data_reply_sd {
     application_header_st application_header_s;  // information about packet
     inn_st inn_s;                               // application flags
     objectHeader_st object_header_s;            // information about reply
-} dnp3_data_reply_st;
+} __attribute__((packed)) dnp3_data_reply_st;
 
 dnp3p_st mkPacketAuto(uint8_t[]);
 

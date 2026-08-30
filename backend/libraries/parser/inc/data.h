@@ -51,24 +51,20 @@ typedef struct data3001_sd {
     uint8_t reserved:1;     // always 0
     
     int32_t value;
-} data3001_st;
+} __attribute__((packed)) data3001_st;
 
 typedef struct data3002_sd {
-
-    uint32_t online:1;
-    uint32_t restart:1;
-    uint32_t commLost:1;
-    uint32_t remoteForced:1;
-    uint32_t localForced:1;
-    uint32_t overRange:1;
-    uint32_t referenceErr:1;
-    uint32_t reserved:1;     // always 0
+    uint8_t online:1;
+    uint8_t restart:1;
+    uint8_t commLost:1;
+    uint8_t remoteForced:1;
+    uint8_t localForced:1;
+    uint8_t overRange:1;
+    uint8_t referenceErr:1;
+    uint8_t reserved:1;     // always 0
     
-    uint32_t value:16;
-
-    uint32_t spare;
-
-} data3002_st;
+    uint16_t value;
+} __attribute__((packed)) data3002_st;
 
 
 

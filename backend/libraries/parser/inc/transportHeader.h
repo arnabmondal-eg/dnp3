@@ -16,7 +16,7 @@ typedef struct transport_header_sd {
     uint8_t segmentSequence:6;
     uint8_t first:1;
     uint8_t final:1;
-} transport_header_st;
+} __attribute__((packed)) transport_header_st;
 
 transport_header_st transport_header(uint8_t [], int*);
 void print_transport_header(transport_header_st);

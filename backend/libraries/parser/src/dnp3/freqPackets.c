@@ -111,14 +111,12 @@ int request_data(uint8_t *send_buffer, int group, int variation, int data_start,
     request_sp->application_header_s.acUnsolicited = 0;
     request_sp->application_header_s.acFragmentSequence = 0;
     request_sp->application_header_s.applicationFunctionCode = 1;
-    request_sp = (dnp3_data_request_st *)((uint8_t *)request_sp - 3);   // padding solution
 
     request_sp->object_header_s.group = group >= 1 ? group : 1;
     request_sp->object_header_s.variation = variation > 0 ? variation : 1;
     request_sp->object_header_s.qualPrefix = 0;
     request_sp->object_header_s.qualRangeCode = 2;
 
-    request_sp = (dnp3_data_request_st *)((uint8_t *)request_sp - 1);   // bandaid solution for issues with padding
     request_sp->object_header_s.rangeStart = data_start >= 0 ? data_start : 0;
     request_sp->object_header_s.rangeStop = data_stop > data_start ? data_stop : data_start+1;
 
@@ -129,23 +127,32 @@ int request_data(uint8_t *send_buffer, int group, int variation, int data_start,
     return 0;
 }
 
-int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, int points[], int total_points) {
-    dnp3_data_reply_st *packet_sp;
+/**
+ * @brief Writes data
+ * 
+ * @param send_buffer 
+ * @param recieve_buffer 
+ * @param points Pass pointer to 8 byte array
+ * @param total_points 
+ * @return int 
+ */
+int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, uint64_t points[], int total_points) {
+    dnp3_data_reply_st *packet_sp = send_buffer;
     
     header_st *recieve_header_sp = recieve_buffer;
     objectHeader_st *recieve_object_sp = recieve_buffer + 13;
 
-    data0101_st *data0101_sp;
-    data0102_st *data0102_sp;
-    data3001_st *data3001_sp;
-    data3002_st *data3002_sp;
+    data0101_st *data0101_sp = {0};
+    data0102_st *data0102_sp = {0};
+    data3001_st *data3001_sp = {0};
+    data3002_st *data3002_sp = {0};
 
+    uint16_t crc = 0;
     int group = 0;
     int variation = 0;
     int extra_length = 0;
 
     int data_size = 0;
-    int total_points = 0;
     int left_over = 0;
 
     // find size of new packet
@@ -153,11 +160,8 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, int points[], int 
     variation = recieve_object_sp->variation;
     switch(group) {
         case 1:
-            if(variation == 1) {
-                data_size = sizeof(data0101_st);
-            }
-            else if(variation == 2) {
-                data_size = sizeof(data0102_st);
+            if(variation == 1 || variation == 2) {
+                data_size = 1;
             }
             else {
                 return -1;
@@ -166,10 +170,10 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, int points[], int 
             break;
         case 30:
             if(variation == 1) {
-                data_size = sizeof(data3001_st);
+                data_size = 5;
             }
             else if(variation == 2) {
-                data_size = sizeof(data3002_st);
+                data_size = 3;
             }
             else {
                 return -1;
@@ -180,9 +184,9 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, int points[], int 
             return -1;
             break;
     }
-    total_points = recieve_object_sp->rangeStop - recieve_object_sp->rangeStart;
+
     extra_length = 2;
-    if(group == 1 && variation == 2) {
+    if(group == 1 && variation == 1) {
         extra_length += total_points/8 + 1;
     }
     else {
@@ -224,6 +228,8 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, int points[], int 
     packet_sp->object_header_s.variation = variation > 0 ? variation : 1;
     packet_sp->object_header_s.qualPrefix = 0;
     packet_sp->object_header_s.qualRangeCode = 2;
+    packet_sp->object_header_s.rangeStart = recieve_object_sp->rangeStart;
+    packet_sp->object_header_s.rangeStop = recieve_object_sp->rangeStop;
 
     send_buffer += sizeof(dnp3_data_reply_st);
     
@@ -231,85 +237,87 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, int points[], int 
     switch(group) {
         case 1:
             if(variation == 1) {
-                data0101_sp = points;
-                for(int i = 14; i < total_points + 14; i++) {
+                data0101_sp = (data0101_st *) points;
+                for(int i = 14; i < (total_points / 8) + 14; i++) {
                     // add crc every 16 bytes
-                    if(total_points % 16 == 0) {
-                        *send_buffer = calculateCRC(send_buffer-16, 16) >> 8;
-                        send_buffer++;
-                        *send_buffer = calculateCRC(send_buffer-17, 16);
-                        send_buffer++;
+                    if((i / 8) % 16 == 0) {
+                        crc = calculateCRC(send_buffer-16, 16);
+                        memcpy(send_buffer, &crc, 2);
+                        send_buffer +=2;
                     }
                     
                     // add data
-                    *send_buffer = *(uint8_t *)data0101_sp;
-                    data0101_sp += sizeof(int);
+                    memcpy(send_buffer, data0101_sp, 1);
+
+                    points += 1;
+                    data0101_sp = (data0101_st *) points;
                     send_buffer++;
                     
                 }
             }
             else if(variation == 2) {
                 left_over = total_points % 8;
-                data0102_sp = points;
-                for(int i = 14; i < (total_points / 8) + 14; i +=8) {
+                data0102_sp = (data0102_st *) points;
+                for(int i = 14; i < total_points + 14; i++) {
                     // add crc every 16 bytes
-                    if((total_points / 8) % 16 == 0) {
-                        *send_buffer = calculateCRC(send_buffer-16, 16) >> 8;
-                        send_buffer++;
-                        *send_buffer = calculateCRC(send_buffer-17, 16);
-                        send_buffer++;
+                    if(i % 16 == 0) {
+                        crc = calculateCRC(send_buffer-16, 16);
+                        memcpy(send_buffer, &crc, 2);
+                        send_buffer +=2;
                     }
 
-                    *send_buffer = *(uint8_t *)data0102_sp;
-                    data0102_sp += sizeof(int);
+                    // add data
+                    memcpy(send_buffer, data0102_sp, 1);
+
+                    // next data point
+                    points += 1;
+                    data0102_sp = (data0102_st *) points;
                     send_buffer++;
                 }
             }
-
-            // add last 2 crc bytes
-            *send_buffer = calculateCRC(send_buffer-16, 16) >> 8;
-            send_buffer++;
-            *send_buffer = calculateCRC(send_buffer-17, 16);
-            send_buffer++;
-
             break;
         case 30:
             if(variation == 1) {
-                data3001_sp = points;
+                data3001_sp = (data3001_st *) points;
                 for(int i = 14; i < total_points + 14; i++) {
                     // add crc every 16 bytes
-                    if((total_points / 8) % 16 == 0) {
-                        *send_buffer = calculateCRC(send_buffer-16, 16) >> 8;
-                        send_buffer++;
-                        *send_buffer = calculateCRC(send_buffer-17, 16);
-                        send_buffer++;
+                    if(i % 16 == 0) {
+                        crc = calculateCRC(send_buffer-16, 16);
+                        memcpy(send_buffer, &crc, 2);
+                        send_buffer +=2;
                     }
                     
-                    *send_buffer = *(uint8_t *)data3001_sp >> 48;   // flags
-                        send_buffer++;
-                    *send_buffer = *(uint8_t *)data3001_sp << 16;   // first byte of value
-                        send_buffer++;
-                    *send_buffer = *(uint8_t *)data3001_sp >> 8;    // last byte of value
-                        send_buffer++;
-                    
-                    data3001_sp = (data3001_st *)((uint8_t *)data3001_sp + 8);  // move up 8 bytes
+                    // copy point data into packet
+                    memcpy(send_buffer, data3001_sp, 5);
+
+                    send_buffer += 5;
+                    points +=1;
+                    data3001_sp = (data3001_st *) points;
                 }
             }
             else if(variation == 2) {
-                data3002_sp = points;
+                data3002_sp = (data3002_st *) points;
                 for(int i = 14; i < total_points + 14; i++) {
                     // add crc every 16 bytes
-                    if((total_points / 8) % 16 == 0) {
-                        *send_buffer = calculateCRC(send_buffer-16, 16) >> 8;
-                        send_buffer++;
-                        *send_buffer = calculateCRC(send_buffer-17, 16);
-                        send_buffer++;
+                    if(i % 16 == 0) {
+                        crc = calculateCRC(send_buffer-16, 16);
+                        memcpy(send_buffer, &crc, 2);
+                        send_buffer +=2;
                     }
                     
-                    *send_buffer = *(uint8_t *)data3002_sp >> 48;
-                    data3001_sp ;
+                    memcpy(send_buffer, data3002_sp, 3);
+
                     send_buffer += 3;
+                    points += 1;
+                    data3002_sp = (data3002_st *) points;
                 }                
             }
+            break;
     }
+
+    // add crc
+    crc = calculateCRC(send_buffer-16, 16);
+    memcpy(send_buffer, &crc, 2);
+    send_buffer +=2;
+    return 0;
 }
