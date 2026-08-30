@@ -171,6 +171,7 @@ int main() {
     printf("\n");
 
     write_data(reply, request, points, 16);
+    printf("\n\n");
     printRawPacket(reply);
     reply_s = mkPacketAuto(reply);
 

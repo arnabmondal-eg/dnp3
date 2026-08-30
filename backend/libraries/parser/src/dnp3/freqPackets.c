@@ -1,6 +1,24 @@
 #include "freqPackets.h"
 #include "crc.h"
 
+static void _add_crc(uint8_t *stream, int extra_bytes) {
+    uint8_t temp[16] = {0};
+    uint16_t crc = 0;
+
+    // save extra
+    stream -= extra_bytes;
+    memcpy(&temp, stream, extra_bytes);
+
+    // calculate crc
+    crc = calculateCRC(stream-16, 16);
+    memcpy(stream, &crc, 2);
+    printf("%04x ", crc);
+
+    // add extra stuff back
+    stream += 2;
+    memcpy(stream, &temp, extra_bytes);
+}
+
 dnp3p_st dnp3Lib_setNavigation(dnp3p_st packet_s, int destination, int source, int direction) {
     packet_s.header_s.dlc_s.dir = direction;
     
@@ -153,7 +171,7 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, uint64_t points[],
     int extra_length = 0;
 
     int data_size = 0;
-    int left_over = 0;
+    int bytes_since_crc = 16;
 
     // find size of new packet
     group = recieve_object_sp->group;
@@ -238,78 +256,79 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, uint64_t points[],
         case 1:
             if(variation == 1) {
                 data0101_sp = (data0101_st *) points;
-                for(int i = 14; i < (total_points / 8) + 14; i++) {
-                    // add crc every 16 bytes
-                    if((i / 8) % 16 == 0) {
-                        crc = calculateCRC(send_buffer-16, 16);
-                        memcpy(send_buffer, &crc, 2);
-                        send_buffer +=2;
+                for(int i = 0; i < (total_points / 8); i++) {
+                    // check and add crc
+                    if(bytes_since_crc >= 16) {
+                        bytes_since_crc -= 16;
+                        _add_crc(send_buffer, bytes_since_crc);
+                        send_buffer += 2;
                     }
-                    
-                    // add data
-                    memcpy(send_buffer, data0101_sp, 1);
+
+                    memcpy(send_buffer, data0101_sp, 1);    // copy data
 
                     points += 1;
                     data0101_sp = (data0101_st *) points;
                     send_buffer++;
-                    
+                    bytes_since_crc++;
                 }
             }
             else if(variation == 2) {
-                left_over = total_points % 8;
                 data0102_sp = (data0102_st *) points;
-                for(int i = 14; i < total_points + 14; i++) {
-                    // add crc every 16 bytes
-                    if(i % 16 == 0) {
-                        crc = calculateCRC(send_buffer-16, 16);
-                        memcpy(send_buffer, &crc, 2);
-                        send_buffer +=2;
+                for(int i = 0; i < total_points; i++) {
+                    // check and add crc
+                    if(bytes_since_crc >= 16) {
+                        bytes_since_crc -= 16;
+                        _add_crc(send_buffer, bytes_since_crc);
+                        send_buffer += 2;
                     }
 
-                    // add data
-                    memcpy(send_buffer, data0102_sp, 1);
+                    memcpy(send_buffer, data0102_sp, 1);    // copy data
 
                     // next data point
                     points += 1;
                     data0102_sp = (data0102_st *) points;
                     send_buffer++;
+                    bytes_since_crc++;
                 }
             }
             break;
         case 30:
             if(variation == 1) {
                 data3001_sp = (data3001_st *) points;
-                for(int i = 14; i < total_points + 14; i++) {
-                    // add crc every 16 bytes
-                    if(i % 16 == 0) {
-                        crc = calculateCRC(send_buffer-16, 16);
-                        memcpy(send_buffer, &crc, 2);
-                        send_buffer +=2;
+                for(int i = 0; i < total_points; i++) {
+                    // check and add crc
+                    if(bytes_since_crc >= 16) {
+                        bytes_since_crc -= 16;
+                        _add_crc(send_buffer, bytes_since_crc);
+                        send_buffer += 2;
                     }
-                    
+
                     // copy point data into packet
                     memcpy(send_buffer, data3001_sp, 5);
 
                     send_buffer += 5;
                     points +=1;
                     data3001_sp = (data3001_st *) points;
+                    bytes_since_crc += 5;
                 }
             }
             else if(variation == 2) {
                 data3002_sp = (data3002_st *) points;
-                for(int i = 14; i < total_points + 14; i++) {
-                    // add crc every 16 bytes
-                    if(i % 16 == 0) {
-                        crc = calculateCRC(send_buffer-16, 16);
-                        memcpy(send_buffer, &crc, 2);
-                        send_buffer +=2;
+                for(int i = 0; i < total_points; i++) {
+                    // check and add crc
+                    if(bytes_since_crc >= 16) {
+                        bytes_since_crc -= 16;
+                        _add_crc(send_buffer, bytes_since_crc);
+                        send_buffer += 2;
                     }
-                    
+
+                    // copy point data
                     memcpy(send_buffer, data3002_sp, 3);
 
                     send_buffer += 3;
                     points += 1;
                     data3002_sp = (data3002_st *) points;
+                    bytes_since_crc += 3;
                 }                
             }
             break;
