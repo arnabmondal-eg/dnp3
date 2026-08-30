@@ -5,36 +5,7 @@ int main(int args, char **argv) {
     
     uint8_t send_buffer[296];
     uint8_t recieve_buffer[296];
-    uint8_t request1[] = {
-        0x05, 0x64, 0x0D, 0xC4, 0xC8, 
-        0x00, 0x01, 0x00, 0x6E, 0x78, 
-        0xD9, 0xCA, 0x01, 0x1E, 0x02, 
-        0x00, 0x01, 0x22, 0x70, 0xA6
-    };
-    uint8_t reply[] = {
-        0x05, 0x64, 0x55, 0x44, 0x01,
-        0x00, 0x49, 0x03, 0x67, 0x21,
-        0xCC, 0xC9, 0x81, 0x00, 0x00,
-        0x1e, 0x02, 0x01, 0x01, 0x00,
-        0x22, 0x00, 0x01, 0x40, 0x5c,
-        0x01, 0xfa, 0x56, 0x88, 0x33,
-        0x01, 0xA8, 0x39, 0x01, 0x28,
-        0x5c, 0x01, 0xA0, 0x19, 0x01,
-        0xD8, 0x19, 0x01, 0x00, 0x43,
-        0x30, 0x00, 0x01, 0x70, 0x00,
-        0x01, 0xA8, 0x00, 0x01, 0x12,
-        0x00, 0x01, 0x00, 0x06, 0x01,
-        0x84, 0x00, 0xC6, 0x02, 0x01,
-        0xA1, 0x00, 0x01, 0x00, 0x00,
-        0x01, 0x16, 0x00, 0x01, 0x14,
-        0x00, 0x01, 0x80, 0x06, 0x01,
-        0xC5, 0xA2, 0x83, 0x74, 0x01,
-        0x20, 0x18, 0x01, 0x97, 0x48,
-        0x01, 0x6D, 0x79, 0x01, 0x56,
-        0x77, 0x01, 0xCC, 0xFA, 0x16,
-        0x07, 0x87
-    };
-    
+
     header_st header_s = {0};
 
     char* end;
@@ -86,6 +57,8 @@ int main(int args, char **argv) {
 
             failed_connections++;
         }
+
+        server_poll[i].events = POLLIN;
     }
 
     // make sure at least 1 server was connected to
@@ -110,9 +83,9 @@ int main(int args, char **argv) {
     menu_server = choose_server(total_servers);
 
     while(menu_server != 0) {
-        poll_connections(server_poll, total_servers, 500);
+        // poll_connections(server_poll, total_servers, 500);
 
-        if(menu_input == 4) {
+        if(menu_input == 3) {
             menu_server = choose_server(total_servers);
 
             if(menu_server == 0) break;
@@ -124,30 +97,69 @@ int main(int args, char **argv) {
         case 0:
             break;
         case 1:
-            header_s = dnp3Lib_mkResetLink(server_info[menu_server-1].num, 0);
-            log_info(INFO_BOTH, "Sending Packet to Server %d", menu_server);
-            if(send_packet(server_poll[menu_server-1].fd, (uint8_t *)&header_s) != 0) {
-                log_info(INFO_BOTH, "Failed to Send Packet\n");
-                continue;
-            }
-
-            poll_connections(server_poll, total_servers, 100);
-            if(server_poll[menu_server-1].revents == POLLIN) {
-                if(recieve_packet(server_poll[menu_server-1].fd, recieve_buffer) != 0) {
-                    log_info(INFO_BOTH, "Failed to Recieve Packet\n");
+            {
+                header_s = dnp3Lib_mkResetLink(server_info[menu_server-1].num, 0);
+                log_info(INFO_BOTH, "Sending Packet to Server %d", menu_server);
+                if(send_packet(server_poll[menu_server-1].fd, (uint8_t *)&header_s) != 0) {
+                    log_info(INFO_BOTH, "Failed to Send Packet\n");
                     continue;
                 }
 
-                log_info(INFO_BOTH, "Recived Packet\n");
-                printRawPacket(recieve_buffer);
+                poll_connections(server_poll, total_servers, 100);
+                if(server_poll[menu_server-1].revents == POLLIN) {
+                    if(recieve_packet(server_poll[menu_server-1].fd, recieve_buffer) != 0) {
+                        log_info(INFO_BOTH, "Failed to Recieve Packet\n");
+                        continue;
+                    }
+
+                    log_info(INFO_BOTH, "Recived Packet\n");
+
+                    printf("\n Raw Packet:\n");
+                    printRawPacket(recieve_buffer);
+                }
+                else {
+                    errno = 61;
+                    log_warn(errno, "client/main");
+                }
+                    
+                break;
             }
-            else {
-                errno = 61;
-                log_warn(errno, "client/main");
-            }
-                
-            break;
         
+        case 2:
+            {
+                request_data(
+                    send_buffer, 
+                    server_info[menu_server-1].type,
+                    server_info[menu_server-1].variation,
+                    server_info[menu_server-1].start,
+                    server_info[menu_server-1].end,
+                    0,
+                    server_info[menu_server].num
+                );
+                log_info(INFO_BOTH, "Sending request to server %d for data\n", menu_server);
+                if(send_packet(server_poll[menu_server-1].fd, send_buffer) != 0) {
+                    log_info(INFO_BOTH, "Failed to send packet\n");
+                    continue;
+                }
+
+                if(poll_connections(&server_poll[menu_server-1], 1, 1000) > 0) {
+                    if(server_poll[menu_server-1].revents & POLLIN) {
+                        if(recieve_packet(server_poll[menu_server-1].fd, recieve_buffer) != 0) {
+                            log_info(INFO_BOTH, "Failed to Recieve Packet\n");
+                            continue;
+                        }
+
+                        log_info(INFO_BOTH, "Recived Packet\n");
+                        printRawPacket(recieve_buffer);
+                    }
+                }
+                else {
+                    errno = 61;
+                    log_warn(errno, "client/main");
+                }
+
+                break;
+            }
         default:
             break;
         }

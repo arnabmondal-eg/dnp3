@@ -16,7 +16,7 @@ int getPacketSize(uint8_t input[]) {
 }
 
 void printRawPacket(uint8_t packet[]) {
-    const int rowLength = 10;
+    const int rowLength = 16;
 
     int length = 0;
     int extra = 0;

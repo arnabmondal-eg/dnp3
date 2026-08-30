@@ -103,46 +103,6 @@ int recieve_packet(const int connection_socket, uint8_t recieve_buffer[]) {
 }
 
 /**
- * @brief Interprets Packet and Creates response (or hands off to other function)
- * 
- * @param recieve_buffer Packet to Interpret
- * @param send_buffer Created Packet
- * @return int Returns -1 if Error, 0 Else
- */
-int interpret_packet(uint8_t recieve_buffer[], uint8_t send_buffer[]) {
-    header_st *header_sp = {0};
-    dlc_st *dlc_sp = {0};
-    header_st ack_s = {0};
-
-    header_sp = (header_st *) recieve_buffer;   // map recieve to header struct
-    dlc_sp = (dlc_st *)&(header_sp->dlc_s);
-    
-
-    switch (*(uint8_t*)&(header_sp->dlc_s)) {
-
-        case 0xC0:
-            {
-
-            ack_s = dnp3Lib_mkAck(
-                !(dlc_sp->dir),      // reverse the dlc bit
-                header_sp->src,         // switch src with des
-                header_sp->des          // switch des with src
-            );
-            memcpy(send_buffer, &ack_s, 10);
-            }
-            break;
-        
-        default:
-            errno = 22;
-            log_warn(errno, LOGSTR_INTERPRETPACKET);
-
-            break;
-    }
-
-    return 0;
-}
-
-/**
  * @brief Polls connections in ufds for data
  * 
  * @param ufds Array containing connections

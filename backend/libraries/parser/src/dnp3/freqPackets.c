@@ -12,7 +12,7 @@ static void _add_crc(uint8_t *stream, int extra_bytes) {
     // calculate crc
     crc = calculateCRC(stream-16, 16);
     memcpy(stream, &crc, 2);
-    printf("%04x ", crc);
+    // printf("%04x ", crc);
 
     // add extra stuff back
     stream += 2;
@@ -36,7 +36,7 @@ header_st dnp3Lib_mkResetLink(int destination, int source) {
     packet_s.s2 = 0x64;
 
     packet_s.len = 5;
-    packet_s.dlc_s = *(dlc_st *) 0xC0;
+    memset(&packet_s.dlc_s, 0xC0, 1);
 
     packet_s.des = (uint16_t) destination;
     packet_s.src = (uint16_t) source;
@@ -56,7 +56,7 @@ header_st dnp3Lib_mkAck(int direction, int destination, int source) {
     packet_s.s2 = 0x64;
 
     packet_s.len = 5;
-    packet_s.dlc_s = *(dlc_st *) (direction == 1 ? 0x80 : 0x00);    // master: 80, remote 00
+    memset(&packet_s.dlc_s, (direction == 1 ? 0x80 : 0x00), 1);    // master: 80, remote 00
 
     packet_s.des = (uint16_t) destination;
     packet_s.src = (uint16_t) source;
@@ -75,7 +75,7 @@ header_st dnp3Lib_mkNack(int direction, int destination, int source) {
     packet_s.s1 = 0x05;
     packet_s.s2 = 0x64;
     packet_s.len = 5;
-    packet_s.dlc_s = *(dlc_st *) (direction == 1 ? 0x81 : 0x01);    // master: 80, remote 00
+    memset(&packet_s.dlc_s, (direction == 1 ? 0x81 : 0x01), 1);
 
     packet_s.des = (uint16_t) destination;
     packet_s.src = (uint16_t) source;

@@ -32,7 +32,7 @@ int main(int args, char** argv) {
     int poll_status = 0;
 
     server_def_st server_s = {0};
-    int points[MAX_POINTS];
+    uint64_t points[MAX_POINTS];
     int total_points = 0;
 
 
@@ -61,6 +61,16 @@ int main(int args, char** argv) {
             server_s.type = 1;
         }
         log_info(INFO_BOTH, "Server point type: %d\n", server_s.type);
+
+        // get variation
+        printf("Data point variation: ");
+        scanf("%d", &server_s.variation);
+        if(server_s.variation < 0) {
+            log_info(INFO_BOTH, "Invalid Variation: %d\n", server_s.variation);
+            log_info(INFO_BOTH, "Setting to defualt: Variation 2\n");
+            server_s.variation = 1;
+        }
+        log_info(INFO_BOTH, "Server point variation: %d\n", server_s.variation);
 
         // get start
         printf("Point Start: ");
@@ -125,14 +135,14 @@ int main(int args, char** argv) {
         }
 
         // create data
-        refresh_data(server_s.type, total_points, points);
+        refresh_data(server_s.type, server_s.variation, total_points, points);
 
         if(recieve_packet(connections[0].fd, recieve_buffer) != 0) {
             log_info(INFO_BOTH, "Recieve Failed, closing\n");
             break;
         }
 
-        if(interpret_packet(recieve_buffer, response_buffer) != 0) {
+        if(server_interpret(recieve_buffer, response_buffer, total_points, points) != 0) {
             log_info(INFO_BOTH, "Interpret Failed, continuing\n");
             continue;
         };

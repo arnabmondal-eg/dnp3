@@ -20,6 +20,7 @@
 
 typedef struct server_def_sd {
     int type;
+    int variation;
     int start;
     int end;
 
