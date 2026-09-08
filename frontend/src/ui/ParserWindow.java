@@ -18,7 +18,7 @@ import javax.swing.JTree;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 
-public class parserWindow extends JFrame {
+public class ParserWindow extends JFrame {
     private final String title;
     private final int[] INITAL_SIZE;
     private boolean visible;    // may be used later
@@ -39,7 +39,7 @@ public class parserWindow extends JFrame {
     private JLabel vaildLabel;      // label for vaildIndicator
     private JLabel rightLabel;
 
-    public parserWindow() {
+    public ParserWindow() {
         title = "Parser";
         INITAL_SIZE = new int[] { 800, 600 };
         setTitle(title);

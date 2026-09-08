@@ -1,7 +1,9 @@
-import ui.parserWindow;
+import ui.ClientWindow;
+import ui.ParserWindow;
  
 public class Main {
     public static void main(String[] args) {
-        new parserWindow();
+        new ParserWindow();
+        new ClientWindow();
     }
 }
