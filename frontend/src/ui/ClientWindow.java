@@ -3,6 +3,7 @@ package ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 
 import javax.swing.JFrame;
@@ -21,12 +22,15 @@ public class ClientWindow extends JFrame{
 
     private JSplitPane splitPane;
     private JPanel infoPanel;
+    private JPanel packetPanel;
+    private JLabel packetPanelTitle;
     private JTextArea packetInfo;
     private JScrollPane packetScroller;
     
     private JScrollPane serverScroller;
     private JPanel serverPanel;
-    private JPanel server1;
+    private JPanel[] servers;
+    private int totalServers;
     
 
     public ClientWindow() {
@@ -44,6 +48,10 @@ public class ClientWindow extends JFrame{
         // left pane
         infoPanel = new JPanel();
         infoPanel.setLayout(new BorderLayout());
+        packetPanel = new JPanel();
+        packetPanel.setLayout(new BorderLayout());
+        packetPanelTitle = new JLabel("Recent Packets");
+        packetPanelTitle.setAlignmentY(LEFT_ALIGNMENT);
         packetInfo = new JTextArea();
         packetInfo.setEditable(false);
         packetScroller = new JScrollPane(
@@ -51,19 +59,18 @@ public class ClientWindow extends JFrame{
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
             JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED
         );
+        packetPanel.add(packetScroller, BorderLayout.CENTER);
+        packetPanel.add(packetPanelTitle, BorderLayout.NORTH);
         splitPane = new JSplitPane(
             JSplitPane.VERTICAL_SPLIT, 
             infoPanel, 
-            packetScroller
+            packetPanel
         );
 
         // right pane
-        serverPanel = new JPanel();
-        server1 = new JPanel();
-        server1.setBackground(Color.GREEN);
-        server1.setPreferredSize(new Dimension(150, 50));
-        server1.add(new JLabel("Server 1"));
-        serverPanel.add(server1);
+        serverPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        serverPanel.
+        servers = new JPanel[16];
         serverScroller = new JScrollPane(serverPanel);
 
 
@@ -77,5 +84,30 @@ public class ClientWindow extends JFrame{
 
         splitPane.setDividerLocation(0.7);
     }
-    
+
+    public void updateRecentPackets(String packet) {
+        this.packetInfo.append("\n" + packet);
+    }
+
+    public void addNewServer(int serverNumber) {
+        if(this.totalServers > 15) {
+            System.out.println("Too many servers!");
+            return;
+        }
+        servers[totalServers] = new JPanel();
+        servers[totalServers].setBackground(Color.GREEN);
+        servers[totalServers].setPreferredSize(new Dimension(150, 50));
+        servers[totalServers].add(new JLabel("Server " + serverNumber));
+
+        this.serverPanel.add(servers[totalServers]);
+        repaint();
+
+        this.totalServers++;
+    }
+
+    public void removeServer(int serverNumber) {
+        servers[totalServers].setBackground(Color.RED);
+        totalServers--;
+    }
+
 }
