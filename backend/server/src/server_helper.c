@@ -11,8 +11,6 @@
 void refresh_data(int group, int varriation, int total_points, uint64_t *points) {
     const uint8_t FLAGS = 0x80;
     
-    int counter = 0;
-
     uint32_t value = 0;
     uint32_t min = 0;
     uint32_t max = 0;
