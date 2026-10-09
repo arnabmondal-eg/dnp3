@@ -4,10 +4,6 @@ This project is an attempt to simulate the **dnp3** protocol often used for comm
 There are no plans to impelemtent the entire spec however, as this protol is far to large. Only specifc, commonly used parts will be implemented, such that a common packet can be parsed succesfuly.
 
 ## Goals
-* Pure Swing UI implementiation of;
-    * Packet Parser
-    * Master Client
-    * Child Client
 * Fast, Memory Efficient Proccesing
 * Most of spec (much will have to be skipped however)
 
@@ -17,7 +13,7 @@ dnp3/
 │                                                                 
 ├──── .vscode/           // settings and configurations for vscode
 │                                                                 
-├───┬ backend/           // all parser logic (C)                  
+├───┬ backend/           // all parser logic                 
 │   │                                                             
 │   ├──── build/         // build files, binaries, etc.           
 │   │                                                             
@@ -29,24 +25,11 @@ dnp3/
 │       │                                                         
 │       ├──── helper/    // helper functions                      
 │       │                                                         
-│       └──── main.c     // backend start                         
-│                                                                 
-├───┬ frontend/          // all ui (Java Swing)                   
-│   │                                                             
-│   ├──── build/                                                  
-│   │                                                             
-│   └───┐ src/                                                    
-│       │                                                         
-│       ├──── ui/        // window create                         
-│       │                                                         
-│       ├──── helper/    // helper functions                      
-│       │                                                         
-│       └──── Main.java  // frontend start                        
+│       └──── main.c     // backend start                                           
 │                                                                 
 └──── log/               // logs from backend                     
 ```
 ## Curently Implmented
-* Parser UI (not hooked up to backend)
 * Parsing of dnp3:
     * Header
     * DLC
@@ -55,18 +38,16 @@ dnp3/
     * First Object Header
 
 ## Usage
-The easiest method to run either the frontend or backend is to open the repo in VsCode and use the built in tasks. Manual Methods are also avalible.
-
-Currently, backend and frontend are not linked. Plans are to use Network Sockets to avoid using JNI or JNA
+The easiest method to run the backend is to open the repo in VsCode and use the built in tasks. Manual Methods are also avalible.
 
 ### General
 * Clone the repository
 * Install both a C compiler, JDK, and CMake
-    * I used Clang and Java 25
+    * I used Clang on MacOS and on Debian through WSL
 
 
 ### Backend
-Contains Parser Logic.
+Contains Parser, Client, Server, as well as 4 libraries
 
 #### vscode Task
 1. Hit `Ctrl + Shift + P` and type `Tasks: Run Task`
@@ -80,26 +61,9 @@ Backend is compiled with CMake to make your life a little easier
     cmake -S backend -B backend/build
     cmake --build backend/build --config Debug
     ```
-2. Run the built binary:
+2. Run the built binary(s):
     ```bash
-    ./backend/build/bin/dnp3
-    ```
-
-### Frontend
-Contains UI with Some simulated Data (for now...)
-
-#### vscode Task
-1. Hit `Ctrl + Shift + P` and type `Tasks: Run Task`
-2. Select `Java Compile` or `Run Java Frontend`, depending on your goal
-3. Select `Clean Frontend` or `Clean All` to remove build dir
-
-#### Manual
-Frontend Compiled with `javac`
-1. Compile:
-    ```bash
-    javac -d bin frontend/src/**/*.java
-    ```
-2. Run the bult binary:
-    ```bash
-    java -cp frontend/bin Main
+    ./backend/build/bin/paser
+    ./backend/build/bin/client
+    ./backend/build/bin/server
     ```
