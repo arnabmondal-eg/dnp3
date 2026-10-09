@@ -1,12 +1,4 @@
 {
-    "java.project.sourcePaths": [
-        "frontend/src",
-    ],
-    "java.project.outputPath": "frontend/bin",
-    "java.project.referencedLibraries": [
-        "lib/**/*.jar"
-    ],
-
     "cmake.sourceDirectory": "${workspaceFolder}/backend",
     "cmake.buildDirectory": "${workspaceFolder}/backend/build",
     "C_Cpp.default.compilerPath": "/usr/bin/clang++",
