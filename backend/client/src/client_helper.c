@@ -62,14 +62,14 @@ int client_interpret(uint8_t recieve_buffer[], uint8_t send_buffer[]) {
                 log_info(INFO_BOTH, "Recived reset link, not responding\n");
                 return -1;
             }
-            else if(prm = 0) {
+            else if(prm == 0) {
                 log_info(INFO_BOTH, "Recived ACK\n");
             }
             break;
             
         case 3:
         case 4:
-            if(prm = 1) {
+            if(prm == 1) {
                 log_info(INFO_BOTH, "Recieved response with server data\n");
             }
 
