@@ -1,7 +1,5 @@
 #include "common.h"
 
-#define DEBUG 0
-
 #define LOGSTR_SENDPACKET "common/send_packet"
 #define LOGSTR_RECIEVEPACKET "common/recieve_packet"
 #define LOGSTR_INTERPRETPACKET "common/interpret_packet"
@@ -110,7 +108,7 @@ int recieve_packet(const int connection_socket, uint8_t recieve_buffer[]) {
  * @param timeout Time to wait
  * @return int -1 on poll error, Number of connections with data else
  */
-int poll_connections(struct pollfd ufds[], int total_connections, const int timeout) {
+int poll_connections(struct pollfd ufds[], const int total_connections, const int timeout) {
     int poll_status;
     
     poll_status = poll(ufds, total_connections, timeout < -1 ? 0 : timeout);    // -1 timeout is infinite
