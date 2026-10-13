@@ -34,7 +34,7 @@ void refresh_data(int group, int varriation, int total_points, uint64_t *points)
     uint32_t min = 0;
     uint32_t max = 0;
 
-    uint8_t *point_writer = points;
+    uint8_t *point_writer = (uint8_t*) points;
 
     srand(time(NULL));
 
