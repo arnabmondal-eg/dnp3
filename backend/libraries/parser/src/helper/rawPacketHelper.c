@@ -1,6 +1,6 @@
 #include "rawPacketHelper.h"
 
-int getPacketSize(uint8_t input[]) {
+int getPacketSize(const uint8_t input[]) {
     int decSize = 0;
     int trueSize = 0;
     int numberOfCRC = 0;

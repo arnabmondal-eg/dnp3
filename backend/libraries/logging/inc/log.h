@@ -5,6 +5,7 @@
 #include <stdarg.h>
 #include <sys/stat.h>
 
+// colors the text in terminal
 #define LOG_ERR    "\033[31m"
 #define LOG_WARN "\033[33m"
 #define LOG_START "\033[32m"

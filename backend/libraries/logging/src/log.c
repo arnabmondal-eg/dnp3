@@ -84,7 +84,22 @@ void log_program_terminate(const char *message) {
     return;
 }
 
-void log_program_crash(const char *message) {}
+/**
+ * @brief Logs program crash with time
+ * 
+ * @param message Name of program
+ */
+void log_program_crash(const char *message) {
+    time_t currentTime;
+    time(&currentTime);
+
+    fprintf(stdout, LOG_ERR "\n%s Crashed!" LOG_RESET " at %s", message, ctime(&currentTime));
+    fprintf(log_file, "\n%s Crashed! at %s", message, ctime(&currentTime));
+
+    fclose(log_file);
+
+    return;
+}
 
 /**
  * @brief Logs error to stderr and file

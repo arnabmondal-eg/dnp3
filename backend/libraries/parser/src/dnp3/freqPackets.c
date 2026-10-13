@@ -102,7 +102,7 @@ header_st dnp3Lib_mkNack(int direction, int destination, int source) {
 int request_data(uint8_t *send_buffer, int group, int variation, int data_start, int data_stop, int source, int destination) {
     dnp3_data_request_st *request_sp;
 
-    request_sp = send_buffer;       // write directly to buffer
+    request_sp = (dnp3_data_request_st*) send_buffer;       // write directly to buffer
 
     request_sp->start = 0x6405;
     request_sp->length = 19;
@@ -155,10 +155,10 @@ int request_data(uint8_t *send_buffer, int group, int variation, int data_start,
  * @return int 
  */
 int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, uint64_t points[], int total_points) {
-    dnp3_data_reply_st *packet_sp = send_buffer;
+    dnp3_data_reply_st *packet_sp = (dnp3_data_reply_st*) send_buffer;
     
-    header_st *recieve_header_sp = recieve_buffer;
-    objectHeader_st *recieve_object_sp = recieve_buffer + 13;
+    header_st *recieve_header_sp = (header_st*) recieve_buffer;
+    objectHeader_st *recieve_object_sp = (objectHeader_st*) recieve_buffer + 13;
 
     data0101_st *data0101_sp = {0};
     data0102_st *data0102_sp = {0};
