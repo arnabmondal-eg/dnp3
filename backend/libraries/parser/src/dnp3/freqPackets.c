@@ -158,7 +158,7 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, uint64_t points[],
     dnp3_data_reply_st *packet_sp = (dnp3_data_reply_st*) send_buffer;
     
     header_st *recieve_header_sp = (header_st*) recieve_buffer;
-    objectHeader_st *recieve_object_sp = (objectHeader_st*) recieve_buffer + 13;
+    objectHeader_st *recieve_object_sp = (objectHeader_st*) (recieve_buffer + 13);
 
     data0101_st *data0101_sp = {0};
     data0102_st *data0102_sp = {0};
