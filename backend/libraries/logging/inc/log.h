@@ -18,9 +18,6 @@
 #ifndef log_h
 #define log_h
 
-static void log_timestamp(FILE*);
-static void log_vprintf(FILE *, const char *, va_list);
-
 int log_init(const char *);
 FILE* log_get_file();
 
