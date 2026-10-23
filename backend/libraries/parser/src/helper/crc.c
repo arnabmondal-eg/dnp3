@@ -45,8 +45,11 @@ uint16_t calculateCRC(uint8_t hexInput[], int length) {
     
     // Invert output
     crc ^= 0xFFFF;
+}
 
-    return (crc << 8) | (crc >> 8);
+void write_crc(uint8_t *destination, uint16_t value) {
+    destination[0] = (uint8_t)value;
+    destination[1] = (uint8_t)(value >> 8);     // byte shift 8 to get other
 }
 
 void removeCRC(uint8_t in[], uint8_t out[]) {
