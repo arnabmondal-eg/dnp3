@@ -88,7 +88,7 @@ int main(int args, char **argv) {
     menu_server = choose_server(total_servers);
     if(menu_server == -1) {
         log_info(INFO_BOTH, "Invalid or Malformed Server Chosen, Defaulting to 1\n");
-        menu_server == 1;
+        menu_server = 1;
     }
     server_index = menu_server - 1;
 
@@ -97,7 +97,7 @@ int main(int args, char **argv) {
             menu_server = choose_server(total_servers);
             if(menu_server == -1) {
                 log_info(INFO_BOTH, "Invalid or Malformed Server Chosen, Defaulting to 1\n");
-                menu_server == 1;
+                menu_server = 1;
             }
             
             server_index = menu_server - 1;

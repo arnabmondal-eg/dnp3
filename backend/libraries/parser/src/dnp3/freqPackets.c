@@ -139,7 +139,7 @@ int request_data(uint8_t *send_buffer, int group, int variation, int data_start,
     request_sp->object_header_s.rangeStop = data_stop > data_start ? data_stop : data_start+1;
 
     // add final crc
-    write_crc(send_buffer[24] ,calculateCRC(&send_buffer[10], 14));
+    write_crc(&send_buffer[24] ,calculateCRC(&send_buffer[10], 14));
 
     return 0;
 }
