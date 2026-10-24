@@ -45,8 +45,8 @@ typedef struct dnp3_data_request_sd {
     uint16_t start;             // Contains 0x05 0x64
     uint8_t length;             // contains packet length not including start, length, or any crc bytes
     dlc_st dlc_s;               // contains data link information
-    uint16_t source;            // source of packet
     uint16_t destination;       // destination of packet
+    uint16_t source;            // source of packet
     uint16_t header_crc;        // crc for header
 
     /* Data Block Information */
@@ -60,8 +60,8 @@ typedef struct dnp3_data_reply_sd {
     uint16_t start;             // Contains 0x05 0x64
     uint8_t length;             // contains packet length not including start, length, or any crc bytes
     dlc_st dlc_s;               // contains data link information
-    uint16_t source;            // source of packet
     uint16_t destination;       // destination of packet
+    uint16_t source;            // source of packet
     uint16_t header_crc;        // crc for header
 
     /* Data Block Information */

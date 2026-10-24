@@ -10,6 +10,7 @@
 
 
 uint16_t calculateCRC(uint8_t*, int);
+void write_crc(uint8_t*, uint16_t);
 void removeCRC(uint8_t [], uint8_t []);
 
 #endif

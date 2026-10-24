@@ -11,7 +11,7 @@ static void _add_crc(uint8_t *stream, int extra_bytes) {
 
     // calculate crc
     crc = calculateCRC(stream-16, 16);
-    memcpy(stream, &crc, 2);
+    write_crc(stream, crc);
     // printf("%04x ", crc);
 
     // add extra stuff back
@@ -139,8 +139,7 @@ int request_data(uint8_t *send_buffer, int group, int variation, int data_start,
     request_sp->object_header_s.rangeStop = data_stop > data_start ? data_stop : data_start+1;
 
     // add final crc
-    send_buffer[24] = calculateCRC(&send_buffer[10], 16) >> 8;
-    send_buffer[25] = calculateCRC(&send_buffer[10], 16);
+    write_crc(&send_buffer[24] ,calculateCRC(&send_buffer[10], 14));
 
     return 0;
 }
@@ -238,7 +237,7 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, uint64_t points[],
     packet_sp->application_header_s.acApplConfirm = 0;
     packet_sp->application_header_s.acUnsolicited = 0;
     packet_sp->application_header_s.acFragmentSequence = 0;
-    packet_sp->application_header_s.applicationFunctionCode = 1;
+    packet_sp->application_header_s.applicationFunctionCode = 0x81;
     packet_sp->inn_s.inn1 = 0;
     packet_sp->inn_s.inn2 = 0;
 
@@ -336,7 +335,7 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, uint64_t points[],
 
     // add crc
     crc = calculateCRC(send_buffer-16, 16);
-    memcpy(send_buffer, &crc, 2);
+    write_crc(send_buffer, crc);
     send_buffer +=2;
     return 0;
 }

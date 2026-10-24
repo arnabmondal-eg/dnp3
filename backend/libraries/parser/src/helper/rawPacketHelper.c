@@ -1,20 +1,17 @@
 #include "rawPacketHelper.h"
 
 int getPacketSize(const uint8_t input[]) {
-    int decSize = 0;
-    int trueSize = 0;
-    int numberOfCRC = 0;
+    int link_length = input[2];
 
-    decSize = input[2];
-    numberOfCRC = (decSize - 5) / 16;
-    if (decSize > 5) trueSize = (numberOfCRC * 18) + 10 + ((decSize - 5) % 16) + 2;
-    else trueSize = 10;
+    if (link_length < 5) {
+        return -1;  // invalid length; callers must handle this
+    }
 
-    // each crc "block" has 2 crc bytes, 10 from header, any left over
+    int payload_bytes = link_length - 5;
+    int crc_blocks = (payload_bytes + 15) / 16;
 
-    return trueSize;
+    return 10 + payload_bytes + 2 * crc_blocks;
 }
-
 void printRawPacket(uint8_t packet[]) {
     const int rowLength = 16;
 
