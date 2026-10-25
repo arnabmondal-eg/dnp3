@@ -113,7 +113,7 @@ int main(int args, char **argv) {
         case 1:
             {
                 header_s = dnp3Lib_mkResetLink(server_info[server_index].num, 0);
-                log_info(INFO_BOTH, "Sending Packet to Server %d", menu_server);
+                log_info(INFO_BOTH, "Sending Packet to Server %d\n", menu_server);
                 if(send_packet(server_poll[server_index].fd, (uint8_t *)&header_s) != 0) {
                     log_info(INFO_BOTH, "Failed to Send Packet\n");
                     continue;
