@@ -2,11 +2,6 @@
 
 static FILE *log_file = NULL;
 
-static void log_vprint(FILE *stream, const char *message, va_list args) {
-    log_timestamp(stream);
-    vfprintf(stream, message, args);
-}
-
 static void log_timestamp(FILE *stream) {
     time_t currentTime;
     struct tm *t;
@@ -23,6 +18,11 @@ static void log_timestamp(FILE *stream) {
             t -> tm_sec
         );
     }
+}
+
+static void log_vprint(FILE *stream, const char *message, va_list args) {
+    log_timestamp(stream);
+    vfprintf(stream, message, args);
 }
 
 /**

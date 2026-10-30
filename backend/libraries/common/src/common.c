@@ -62,39 +62,55 @@ int send_packet(const int connection_socket, const uint8_t send_buffer[]) {
  * @return int Returns -1 if Error, 0 Else
  */
 int recieve_packet(const int connection_socket, uint8_t recieve_buffer[]) {  
+    int desired_recieveamnt = 0;
+    int total_recieve = 0;
+
     int recive_status = 0;
     int packet_length = 0;
-    int total_recieve = 0;
     
-    recive_status = (int) recv(connection_socket, &recieve_buffer[0], 10, 0);
-    if(recive_status == -1) {
-        log_warn(errno, LOGSTR_RECIEVEPACKET);
-        return -1;
+    // get packet header
+    desired_recieveamnt = 10;
+    while(total_recieve < 10) {
+        recive_status = (int) recv(connection_socket, recieve_buffer+total_recieve, 10-total_recieve, 0);
+        if(recive_status == -1) {
+            log_warn(errno, LOGSTR_RECIEVEPACKET);
+            return -1;
+        }
+        else if(recive_status == 0) {
+            errno  = 61;
+            log_warn(errno, LOGSTR_RECIEVEPACKET);
+    
+            return -1;
+        }
+        else total_recieve += recive_status;
     }
-    else if(recive_status == 0) {
-        errno  = 61;
-        log_warn(errno, LOGSTR_RECIEVEPACKET);
 
-        return -1;
-    }
-
-    total_recieve = recive_status;
-
+    // get packet length
     packet_length = getPacketSize(recieve_buffer);
     if(packet_length == 10) {
         log_info(INFO_BOTH, "Recieved %d Bytes\n", total_recieve);
         return 0;
     }
     else {
-        recive_status = (int) recv(connection_socket, &recieve_buffer[10], packet_length-10, 0);
+        desired_recieveamnt = packet_length;
+        while(total_recieve < desired_recieveamnt) {
+            recive_status = (int) recv(connection_socket, &recieve_buffer[total_recieve], packet_length-total_recieve, 0);
+            if(recive_status > 0) {
+                total_recieve += recive_status;
+            }
+            else if(recive_status <= 0) {
+                if(errno == EINTR) {
+                    // retry
+                    errno = 0;
+                }
+                else {
+                    log_warn(errno, LOGSTR_RECIEVEPACKET);
+                    return -1;
+                }
+            }
+        }
     }
 
-    if(recive_status == -1) {
-        log_warn(errno, LOGSTR_RECIEVEPACKET);
-        return -1;
-    }
-
-    total_recieve += recive_status;
     log_info(INFO_BOTH, "Recieved %d Bytes\n", total_recieve);
 
     return 0;
@@ -118,8 +134,7 @@ int poll_connections(struct pollfd ufds[], const int total_connections, const in
         return -1;
     }
     else if(poll_status == 0) {
-        errno = 61; // no data availible
-        log_warn(errno, LOGSTR_POLLCONNECTIONS);
+        log_info(INFO_BOTH, "No response within 1000 ms\n");
     }
 
     log_info(INFO_BOTH, "Polled %d connections, %d have data\n", total_connections, poll_status);

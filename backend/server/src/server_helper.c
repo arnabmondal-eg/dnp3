@@ -17,8 +17,6 @@ void refresh_data(int group, int varriation, int total_points, uint64_t *points)
 
     uint8_t *point_writer = (uint8_t*) points;
 
-    srand(time(NULL));
-
     if(group == 1) {
         max = 1;
     }
@@ -83,7 +81,7 @@ int server_interpret(uint8_t *recieve_buffer, uint8_t  *send_buffer, int total_p
     header_sp = (header_st *) recieve_buffer;   // map recieve to header struct
     
 
-    printf("Func Code: %d\n", header_sp->dlc_s.function_code);
+    // printf("Func Code: %d\n", header_sp->dlc_s.function_code);
     switch (header_sp->dlc_s.function_code) {
 
         case 0:

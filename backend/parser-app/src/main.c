@@ -28,8 +28,6 @@
 void refresh_data(int group, int varriation, int total_points, uint64_t *points) {
     const uint8_t FLAGS = 0x80;
     
-    int counter = 0;
-
     uint32_t value = 0;
     uint32_t min = 0;
     uint32_t max = 0;
@@ -74,7 +72,7 @@ void refresh_data(int group, int varriation, int total_points, uint64_t *points)
             else if(varriation == 1) {
                 
                 /* 
-                Increidle lazy move by me
+                Increidble lazy move by me
                 I am aware
                 I could have done it better
                 I dont really care
@@ -175,9 +173,9 @@ int main() {
     printRawPacket(reply);
     reply_s = mkPacketAuto(reply);
 
-    // printf("\n\n");
-    // printPacket(request_s);
-    // printPacket(reply_s);
+    printf("\n\n");
+    printPacket(request_s);
+    printPacket(reply_s);
 
 
     return 0;

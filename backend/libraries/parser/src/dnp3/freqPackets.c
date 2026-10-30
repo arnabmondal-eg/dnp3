@@ -11,7 +11,7 @@ static void _add_crc(uint8_t *stream, int extra_bytes) {
 
     // calculate crc
     crc = calculateCRC(stream-16, 16);
-    memcpy(stream, &crc, 2);
+    write_crc(stream, crc);
     // printf("%04x ", crc);
 
     // add extra stuff back
@@ -139,8 +139,7 @@ int request_data(uint8_t *send_buffer, int group, int variation, int data_start,
     request_sp->object_header_s.rangeStop = data_stop > data_start ? data_stop : data_start+1;
 
     // add final crc
-    send_buffer[24] = calculateCRC(&send_buffer[10], 16) >> 8;
-    send_buffer[25] = calculateCRC(&send_buffer[10], 16);
+    write_crc(&send_buffer[24] ,calculateCRC(&send_buffer[10], 14));
 
     return 0;
 }
@@ -178,24 +177,14 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, uint64_t points[],
     variation = recieve_object_sp->variation;
     switch(group) {
         case 1:
-            if(variation == 1 || variation == 2) {
-                data_size = 1;
-            }
-            else {
-                return -1;
-            }
+            if(variation == 1 || variation == 2) data_size = 1;
+            else return -1;
 
             break;
         case 30:
-            if(variation == 1) {
-                data_size = 5;
-            }
-            else if(variation == 2) {
-                data_size = 3;
-            }
-            else {
-                return -1;
-            }
+            if(variation == 1) data_size = 5;
+            else if(variation == 2) data_size = 3;
+            else return -1;
 
             break;
         default:
@@ -205,7 +194,7 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, uint64_t points[],
 
     extra_length = 2;
     if(group == 1 && variation == 1) {
-        extra_length += total_points/8 + 1;
+        extra_length += (total_points +7) /8;
     }
     else {
         extra_length += total_points * data_size;
@@ -217,7 +206,7 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, uint64_t points[],
     
     // set dlc info
     packet_sp->dlc_s.dir = 0;
-    packet_sp->dlc_s.prm = 0;
+    packet_sp->dlc_s.prm = 1;
     packet_sp->dlc_s.fcb = 0;
     packet_sp->dlc_s.fcv_dfc = 0;
     packet_sp->dlc_s.function_code = 4;    // request user data
@@ -238,7 +227,7 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, uint64_t points[],
     packet_sp->application_header_s.acApplConfirm = 0;
     packet_sp->application_header_s.acUnsolicited = 0;
     packet_sp->application_header_s.acFragmentSequence = 0;
-    packet_sp->application_header_s.applicationFunctionCode = 1;
+    packet_sp->application_header_s.applicationFunctionCode = 0x81;
     packet_sp->inn_s.inn1 = 0;
     packet_sp->inn_s.inn2 = 0;
 
@@ -256,6 +245,7 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, uint64_t points[],
         case 1:
             if(variation == 1) {
                 data0101_sp = (data0101_st *) points;
+
                 for(int i = 0; i < (total_points / 8); i++) {
                     // check and add crc
                     if(bytes_since_crc >= 16) {
@@ -270,6 +260,13 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, uint64_t points[],
                     data0101_sp = (data0101_st *) points;
                     send_buffer++;
                     bytes_since_crc++;
+                }
+
+                if(total_points % 8 > 0) {
+                    memcpy(send_buffer, data0101_sp, 1);
+                    bytes_since_crc++;
+                    send_buffer++;
+                    points += 1;
                 }
             }
             else if(variation == 2) {
@@ -335,8 +332,8 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, uint64_t points[],
     }
 
     // add crc
-    crc = calculateCRC(send_buffer-16, 16);
-    memcpy(send_buffer, &crc, 2);
-    send_buffer +=2;
+    crc = calculateCRC(send_buffer-bytes_since_crc, bytes_since_crc);
+    write_crc(send_buffer, crc);
+
     return 0;
 }
