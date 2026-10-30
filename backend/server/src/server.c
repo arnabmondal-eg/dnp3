@@ -85,12 +85,13 @@ int main(int args, char** argv) {
         // get end
         printf("Point End (Inclusive): ");
         scanf("%d", &server_s.end);
-        if(server_s.end < 0 || server_s.end <= server_s.start) {
+        if(server_s.end < 0 || server_s.end < server_s.start) {
             log_info(INFO_BOTH, "End too Small: %d\n", server_s.end);
             log_info(INFO_BOTH, "Setting to Default: %d\n", server_s.start+10);
             server_s.end = server_s.start + 10;
         }
-        else if(server_s.end - server_s.start > MAX_POINTS) {
+        
+        if(server_s.end - server_s.start >= MAX_POINTS) {
             log_info(INFO_BOTH, "End too Large, max of %d points supported\n", MAX_POINTS);
             log_info(INFO_BOTH, "Setting to Max: %d\n", server_s.start + MAX_POINTS);
             server_s.end = server_s.start + MAX_POINTS;
@@ -123,6 +124,8 @@ int main(int args, char** argv) {
     if(send(client_sock, (uint8_t *)&server_s, sizeof(server_def_st), 0) == -1) {
         log_err(errno, "Server");
         close_server(server_sock, client_sock);
+
+        return -1;
     }
 
     // seed random num generator
@@ -139,7 +142,7 @@ int main(int args, char** argv) {
         }
 
         // zero then refresh data
-        memset(points, 0, MAX_POINTS);
+        memset(points, 0, sizeof(points));
         refresh_data(server_s.type, server_s.variation, total_points, points);
 
         if(recieve_packet(connections[0].fd, recieve_buffer) != 0) {

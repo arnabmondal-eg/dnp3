@@ -194,8 +194,7 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, uint64_t points[],
 
     extra_length = 2;
     if(group == 1 && variation == 1) {
-        extra_length += total_points/8;
-        if(total_points%8!=0) extra_length += 1;
+        extra_length += (total_points +7) /8;
     }
     else {
         extra_length += total_points * data_size;
@@ -272,7 +271,7 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, uint64_t points[],
             }
             else if(variation == 2) {
                 data0102_sp = (data0102_st *) points;
-                for(int i = 0; i <= total_points; i++) {
+                for(int i = 0; i < total_points; i++) {
                     // check and add crc
                     if(bytes_since_crc >= 16) {
                         bytes_since_crc -= 16;
@@ -293,7 +292,7 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, uint64_t points[],
         case 30:
             if(variation == 1) {
                 data3001_sp = (data3001_st *) points;
-                for(int i = 0; i <= total_points; i++) {
+                for(int i = 0; i < total_points; i++) {
                     // check and add crc
                     if(bytes_since_crc >= 16) {
                         bytes_since_crc -= 16;
@@ -312,7 +311,7 @@ int write_data(uint8_t *send_buffer, uint8_t *recieve_buffer, uint64_t points[],
             }
             else if(variation == 2) {
                 data3002_sp = (data3002_st *) points;
-                for(int i = 0; i <= total_points; i++) {
+                for(int i = 0; i < total_points; i++) {
                     // check and add crc
                     if(bytes_since_crc >= 16) {
                         bytes_since_crc -= 16;
