@@ -3,8 +3,8 @@
 int main(int args, char **argv) {
     errno = 0;
     
-    uint8_t send_buffer[296];
-    uint8_t recieve_buffer[296];
+    uint8_t send_buffer[296] = {0};
+    uint8_t recieve_buffer[296] = {0};
 
     header_st header_s = {0};
 
@@ -44,7 +44,7 @@ int main(int args, char **argv) {
     for(int i=0; i<total_servers; i++) {
 
         // get port
-        printf("Port for Server %d: ", i+1);
+        printf("Port for Server %d: ", i);
         scanf("%d", &port);
 
         // get adress
@@ -108,7 +108,7 @@ int main(int args, char **argv) {
             break;
         case 1:
             {
-                header_s = dnp3Lib_mkResetLink(server_info[menu_server].num, 0);
+                header_s = dnp3Lib_mkResetLink(server_info[menu_server].num, UINT32_MAX);
                 log_info(INFO_BOTH, "Sending Packet to Server %d\n", menu_server);
                 if(send_packet(server_poll[menu_server].fd, (uint8_t *)&header_s) != 0) {
                     log_info(INFO_BOTH, "Failed to Send Packet\n");
@@ -146,6 +146,9 @@ int main(int args, char **argv) {
                     0,
                     server_info[menu_server].num
                 );
+
+                printRawPacket(send_buffer);
+
                 log_info(INFO_BOTH, "Sending request to server %d for data\n", menu_server);
                 if(send_packet(server_poll[menu_server].fd, send_buffer) != 0) {
                     log_info(INFO_BOTH, "Failed to send packet\n");

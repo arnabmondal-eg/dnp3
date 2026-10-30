@@ -94,12 +94,12 @@ int recieve_packet(const int connection_socket, uint8_t recieve_buffer[]) {
     else {
         desired_recieveamnt = packet_length;
         while(total_recieve < desired_recieveamnt) {
-            recive_status = (int) recv(connection_socket, &recieve_buffer[total_recieve-1], packet_length-total_recieve, 0);
+            recive_status = (int) recv(connection_socket, &recieve_buffer[total_recieve], packet_length-total_recieve, 0);
             if(recive_status > 0) {
                 total_recieve += recive_status;
             }
             else if(recive_status <= 0) {
-                if(errno = EINTR) {
+                if(errno == EINTR) {
                     // retry
                     errno = 0;
                 }
