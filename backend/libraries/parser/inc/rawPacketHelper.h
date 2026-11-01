@@ -4,7 +4,7 @@
 #ifndef rawPacketHelper_h
 #define rawPacketHelper_h
 
-int getPacketSize(uint8_t[]);
+int getPacketSize(const uint8_t[]);
 void printRawPacket(uint8_t[]);
 
 #endif

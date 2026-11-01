@@ -29,14 +29,14 @@ typedef struct data0101_sd {
  * Group, Varriation (0x): 01 02
  */
 typedef struct data0102_sd {
-    uint8_t state:1;
-    uint8_t reserved:1;     // always 0
-    uint8_t chatterFiler:1;
-    uint8_t localForced:1;
-    uint8_t remoteForced:1;
-    uint8_t commLost:1;
-    uint8_t restart:1;
     uint8_t online:1;
+    uint8_t restart:1;
+    uint8_t commLost:1;
+    uint8_t remoteForced:1;
+    uint8_t localForced:1;
+    uint8_t chatterFiler:1;
+    uint8_t reserved:1;     // always 0
+    uint8_t state:1;
 } data0102_st;
 
 

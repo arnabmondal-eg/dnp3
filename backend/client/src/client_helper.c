@@ -12,10 +12,11 @@ void close_client(struct pollfd server_poll[], int total_servers) {
 int choose_server(int total_servers) {
     int server_num = 0;
     
-    printf("Server for Request, or 0 to End: ");
+    printf("Server for Request, or -1 to End: ");
     scanf("%d", &server_num);
 
-    if(server_num > total_servers) {
+    if(server_num == -1) return -2;
+    else if(server_num > total_servers-1 || server_num < 0) {
         errno = 19;
         log_warn(errno, "client_helper/choose_server");
         return -1;
@@ -62,14 +63,14 @@ int client_interpret(uint8_t recieve_buffer[], uint8_t send_buffer[]) {
                 log_info(INFO_BOTH, "Recived reset link, not responding\n");
                 return -1;
             }
-            else if(prm = 0) {
+            else if(prm == 0) {
                 log_info(INFO_BOTH, "Recived ACK\n");
             }
             break;
             
         case 3:
         case 4:
-            if(prm = 1) {
+            if(prm == 1) {
                 log_info(INFO_BOTH, "Recieved response with server data\n");
             }
 

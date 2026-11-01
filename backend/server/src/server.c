@@ -18,7 +18,7 @@ int main(int args, char** argv) {
     errno = 0;
     
     uint8_t recieve_buffer[296] = {0};
-    uint8_t response_buffer[296] = {0};
+    uint8_t send_buffer[296] = {0};
 
     int server_sock = 0;
     int client_sock = 0;
@@ -73,7 +73,7 @@ int main(int args, char** argv) {
         log_info(INFO_BOTH, "Server point variation: %d\n", server_s.variation);
 
         // get start
-        printf("Point Start: ");
+        printf("Point Start (Inclusive): ");
         scanf("%d", &server_s.start);
         if(server_s.start < 0) {
             log_info(INFO_BOTH, "Start too Small: %d\n", server_s.start);
@@ -83,21 +83,22 @@ int main(int args, char** argv) {
         log_info(INFO_BOTH, "Server point start: %d\n", server_s.start);
 
         // get end
-        printf("Point End: ");
+        printf("Point End (Inclusive): ");
         scanf("%d", &server_s.end);
-        if(server_s.end < 0 || server_s.end <= server_s.start) {
+        if(server_s.end < 0 || server_s.end < server_s.start) {
             log_info(INFO_BOTH, "End too Small: %d\n", server_s.end);
             log_info(INFO_BOTH, "Setting to Default: %d\n", server_s.start+10);
             server_s.end = server_s.start + 10;
         }
-        else if(server_s.end - server_s.start > MAX_POINTS) {
+        
+        if(server_s.end - server_s.start >= MAX_POINTS) {
             log_info(INFO_BOTH, "End too Large, max of %d points supported\n", MAX_POINTS);
             log_info(INFO_BOTH, "Setting to Max: %d\n", server_s.start + MAX_POINTS);
             server_s.end = server_s.start + MAX_POINTS;
         }
         log_info(INFO_BOTH, "Server point end: %d\n", server_s.end);
 
-        total_points = server_s.end - server_s.start;
+        total_points = server_s.end - server_s.start + 1;
 
 
     log_info(INFO_BOTH, "Finished Configuring Server\n");
@@ -123,7 +124,13 @@ int main(int args, char** argv) {
     if(send(client_sock, (uint8_t *)&server_s, sizeof(server_def_st), 0) == -1) {
         log_err(errno, "Server");
         close_server(server_sock, client_sock);
+
+        return -1;
     }
+
+    // seed random num generator
+    srand(time(NULL));
+
     
     while(1) {
         errno = 0;
@@ -134,7 +141,8 @@ int main(int args, char** argv) {
             continue;
         }
 
-        // create data
+        // zero then refresh data
+        memset(points, 0, sizeof(points));
         refresh_data(server_s.type, server_s.variation, total_points, points);
 
         if(recieve_packet(connections[0].fd, recieve_buffer) != 0) {
@@ -142,12 +150,17 @@ int main(int args, char** argv) {
             break;
         }
 
-        if(server_interpret(recieve_buffer, response_buffer, total_points, points) != 0) {
+        // print raw to console
+        printf("Raw Packet:\n");
+        printRawPacket(recieve_buffer);
+
+
+        if(server_interpret(recieve_buffer, send_buffer, total_points, points) != 0) {
             log_info(INFO_BOTH, "Interpret Failed, continuing\n");
             continue;
         };
 
-        if(send_packet(client_sock, response_buffer) != 0) {
+        if(send_packet(client_sock, send_buffer) != 0) {
             log_info(INFO_BOTH, "Send Failed, closing\n");
             break;
         };

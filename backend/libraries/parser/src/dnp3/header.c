@@ -42,7 +42,7 @@ int checkHeaderValidity(header_st header_s) {
         valid = 0;
     }
 
-    valid = header_s.crc == calculateCRC(&header_s, CRC_HEADER) && valid == 1 ? 1 : 0;
+    valid = header_s.crc == calculateCRC((uint8_t*)&header_s, CRC_HEADER) && valid == 1 ? 1 : 0;
 
     return valid;
 }

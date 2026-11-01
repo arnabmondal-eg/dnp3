@@ -99,8 +99,8 @@ void print_application_header(application_header_st applHeader_s, inn_st inn_s, 
         uint8_t temp2 [] = {inn_s.inn2};
 
 
-        hexToBinary(temp1, sizeof(temp1), inn1Binary);
-        hexToBinary(temp2, sizeof(temp2), inn2Binary);
+        hexToBinary(temp1, sizeof(temp1), (char*) inn1Binary);
+        hexToBinary(temp2, sizeof(temp2), (char*) inn2Binary);
 
         printf("-- INN 1 --\n");
         for(int i = 0; i < 8; i++) {

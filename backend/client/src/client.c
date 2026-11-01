@@ -1,10 +1,15 @@
 #include "client.h"
+#include <unistd.h>
+
+#define CLIENT_LOG "log/client_log.txt"\
 
 int main(int args, char **argv) {
     errno = 0;
+
+    int mode = 0;
     
-    uint8_t send_buffer[296];
-    uint8_t recieve_buffer[296];
+    uint8_t send_buffer[296] = {0};
+    uint8_t recieve_buffer[296] = {0};
 
     header_st header_s = {0};
 
@@ -12,17 +17,19 @@ int main(int args, char **argv) {
     int port = 0;
     char address[20] = {0};
 
-    int menu_input = 0;
     int menu_server = 0;
+    int menu_input = 0;
 
     int total_servers = 0;
     int failed_connections = 0;
     struct sockaddr_in server[COMMON_MAX_CONNECTIONS];
     struct pollfd server_poll[COMMON_MAX_CONNECTIONS];
     server_def_st server_info[COMMON_MAX_CONNECTIONS];
+
+    FILE* temp;
     
     // setup logging
-    if(log_init("log/client_log.txt") == -1) return -1;
+    if(log_init(CLIENT_LOG) == -1) return -1;
 
     // log start
     log_program_start("Client");
@@ -31,21 +38,32 @@ int main(int args, char **argv) {
     if(args >= 2) {
         total_servers = strtol(argv[1], &end, 0);
         if(total_servers <= 0) total_servers = 1;
+        else if(total_servers > COMMON_MAX_CONNECTIONS) {
+            total_servers = COMMON_MAX_CONNECTIONS;
+            log_info(INFO_BOTH, "Only %d Connections supported\n", COMMON_MAX_CONNECTIONS);
+        }
         log_info(INFO_BOTH, "Using custom number of  connections: %d\n", total_servers);
     }
     else total_servers = 1;
+    if(args >= 3) {
+        if(strtol(argv[2], &end, 0) != 0) {
+            mode = 1;
+            log_info(INFO_BOTH, "Using Pick and Chose Mode\n");
+        }
+        else log_info(INFO_BOTH, "Using Client Server Loop Mode\n");
+    }
 
     // setup all connections
     log_info(INFO_BOTH, "Setting up %d connection(s)\n", total_servers);
     for(int i=0; i<total_servers; i++) {
 
         // get port
-        printf("Port for Server %d: ", i+1);
+        printf("Port for Server %d: ", i);
         scanf("%d", &port);
 
         // get adress
-        printf("Server Adress (0 for Local): ");
-        scanf("%s", address);
+        printf("Server Adress (0 for Localhost): ");
+        scanf("%19s", address);
         if(strcmp(address, "0") == 0) {
             strcpy(address, "127.0.0.1");
         }
@@ -80,76 +98,85 @@ int main(int args, char **argv) {
         log_info(INFO_BOTH, "\tEnd: %d\n", server_info[i].end);
     }
 
-    menu_server = choose_server(total_servers);
+    // loop mode
+    if(mode == 0) {
 
-    while(menu_server != 0) {
-        // poll_connections(server_poll, total_servers, 500);
+        log_info(INFO_BOTH, "Checking Server Connection (Reset Link)...\n");
+        for(int i = 0; i < total_servers; i++) {
+            log_info(INFO_BOTH, "Checking Server %d\n", i);
+            sleep(1);     // dont do each instantly
 
-        if(menu_input == 3) {
-            menu_server = choose_server(total_servers);
+            // make packet
+            header_s = dnp3Lib_mkResetLink(server_info[i].num, UINT32_MAX);
+            
+            // send packet
+            if(send_packet(server_poll[i].fd, (uint8_t *)&header_s) != 0) {
+                log_info(INFO_BOTH, "Failed to Send Packet\n");
+                continue;
+            }
 
-            if(menu_server == 0) break;
-        }
-        menu_input = choose_request();
-
-        switch (menu_input)
-        {
-        case 0:
-            break;
-        case 1:
-            {
-                header_s = dnp3Lib_mkResetLink(server_info[menu_server-1].num, 0);
-                log_info(INFO_BOTH, "Sending Packet to Server %d", menu_server);
-                if(send_packet(server_poll[menu_server-1].fd, (uint8_t *)&header_s) != 0) {
-                    log_info(INFO_BOTH, "Failed to Send Packet\n");
+            // recieve response
+            poll_connections(server_poll, total_servers, 100);
+            if(server_poll[i].revents == POLLIN) {
+                if(recieve_packet(server_poll[i].fd, recieve_buffer) != 0) {
+                    log_info(INFO_BOTH, "Failed to Recieve Packet\n");
                     continue;
                 }
 
-                poll_connections(server_poll, total_servers, 100);
-                if(server_poll[menu_server-1].revents == POLLIN) {
-                    if(recieve_packet(server_poll[menu_server-1].fd, recieve_buffer) != 0) {
-                        log_info(INFO_BOTH, "Failed to Recieve Packet\n");
-                        continue;
-                    }
+                log_info(INFO_BOTH, "Recived Packet\n");
 
-                    log_info(INFO_BOTH, "Recived Packet\n");
-
-                    printf("\n Raw Packet:\n");
-                    printRawPacket(recieve_buffer);
-                }
-                else {
-                    errno = 61;
-                    log_warn(errno, "client/main");
-                }
-                    
-                break;
+                log_info(INFO_BOTH, "Response:\n");
+                temp = stdout;
+                stdout = log_get_file();
+                printRawPacket(recieve_buffer);
+                stdout = temp;
+                // print to console
+                printRawPacket(recieve_buffer);
             }
-        
-        case 2:
-            {
+            else {
+                errno = 61;
+                log_warn(errno, "client/main");
+            }
+        }
+
+        log_info(INFO_BOTH, "Starting data loop...\n");
+        while(1) {
+            for(int i = 0; i < total_servers; i++) {
+                log_info(INFO_BOTH, "Sending request to server %d for data\n", i);
+                sleep(1);
+                
+                // make request
                 request_data(
                     send_buffer, 
-                    server_info[menu_server-1].type,
-                    server_info[menu_server-1].variation,
-                    server_info[menu_server-1].start,
-                    server_info[menu_server-1].end,
+                    server_info[i].type,
+                    server_info[i].variation,
+                    server_info[i].start,
+                    server_info[i].end,
                     0,
-                    server_info[menu_server].num
+                    server_info[i].num
                 );
-                log_info(INFO_BOTH, "Sending request to server %d for data\n", menu_server);
-                if(send_packet(server_poll[menu_server-1].fd, send_buffer) != 0) {
+
+                
+                if(send_packet(server_poll[i].fd, send_buffer) != 0) {
                     log_info(INFO_BOTH, "Failed to send packet\n");
                     continue;
                 }
 
-                if(poll_connections(&server_poll[menu_server-1], 1, 1000) > 0) {
-                    if(server_poll[menu_server-1].revents & POLLIN) {
-                        if(recieve_packet(server_poll[menu_server-1].fd, recieve_buffer) != 0) {
+                if(poll_connections(&server_poll[i], 1, 1000) > 0) {
+                    if(server_poll[i].revents & POLLIN) {
+                        if(recieve_packet(server_poll[i].fd, recieve_buffer) != 0) {
                             log_info(INFO_BOTH, "Failed to Recieve Packet\n");
                             continue;
                         }
 
                         log_info(INFO_BOTH, "Recived Packet\n");
+                        log_info(INFO_BOTH, "Response:\n");
+                        // print to log
+                        temp = stdout;
+                        stdout = log_get_file();
+                        printRawPacket(recieve_buffer);
+                        stdout = temp;
+                        // print to console
                         printRawPacket(recieve_buffer);
                     }
                 }
@@ -157,11 +184,104 @@ int main(int args, char **argv) {
                     errno = 61;
                     log_warn(errno, "client/main");
                 }
+            }
+        }
+    }
+    
+    // pick and choose mode
+    else {
+        menu_server = choose_server(total_servers);
+        if(menu_server == -1 || menu_server == -2) {
+            log_info(INFO_BOTH, "Invalid or Malformed Server Chosen, Defaulting to Server 0\n");
+            menu_server = 0;
+        }
 
+        while(menu_server != -2) {
+            if(menu_input == 3) {
+                menu_server = choose_server(total_servers);
+                if(menu_server == -1) {
+                    log_info(INFO_BOTH, "Invalid or Malformed Server Chosen, Defaulting to Server 0\n");
+                    menu_server = 10;
+                }
+                
+                if(menu_server == -2) break;
+            }
+            menu_input = choose_request();
+
+            switch (menu_input)
+            {
+            case 0:
+                break;
+            case 1:
+                {
+                    header_s = dnp3Lib_mkResetLink(server_info[menu_server].num, UINT32_MAX);
+                    log_info(INFO_BOTH, "Sending Packet to Server %d\n", menu_server);
+                    if(send_packet(server_poll[menu_server].fd, (uint8_t *)&header_s) != 0) {
+                        log_info(INFO_BOTH, "Failed to Send Packet\n");
+                        continue;
+                    }
+
+                    poll_connections(server_poll, total_servers, 100);
+                    if(server_poll[menu_server].revents == POLLIN) {
+                        if(recieve_packet(server_poll[menu_server].fd, recieve_buffer) != 0) {
+                            log_info(INFO_BOTH, "Failed to Recieve Packet\n");
+                            continue;
+                        }
+
+                        log_info(INFO_BOTH, "Recived Packet\n");
+
+                        printf("\n Raw Packet:\n");
+                        printRawPacket(recieve_buffer);
+                    }
+                    else {
+                        errno = 61;
+                        log_warn(errno, "client/main");
+                    }
+                        
+                    break;
+                }
+            
+            case 2:
+                {
+                    request_data(
+                        send_buffer, 
+                        server_info[menu_server].type,
+                        server_info[menu_server].variation,
+                        server_info[menu_server].start,
+                        server_info[menu_server].end,
+                        0,
+                        server_info[menu_server].num
+                    );
+
+                    printRawPacket(send_buffer);
+
+                    log_info(INFO_BOTH, "Sending request to server %d for data\n", menu_server);
+                    if(send_packet(server_poll[menu_server].fd, send_buffer) != 0) {
+                        log_info(INFO_BOTH, "Failed to send packet\n");
+                        continue;
+                    }
+
+                    if(poll_connections(&server_poll[menu_server], 1, 1000) > 0) {
+                        if(server_poll[menu_server].revents & POLLIN) {
+                            if(recieve_packet(server_poll[menu_server].fd, recieve_buffer) != 0) {
+                                log_info(INFO_BOTH, "Failed to Recieve Packet\n");
+                                continue;
+                            }
+
+                            log_info(INFO_BOTH, "Recived Packet\n");
+                            printRawPacket(recieve_buffer);
+                        }
+                    }
+                    else {
+                        errno = 61;
+                        log_warn(errno, "client/main");
+                    }
+
+                    break;
+                }
+            default:
                 break;
             }
-        default:
-            break;
         }
     }
 

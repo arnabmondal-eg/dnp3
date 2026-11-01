@@ -2,11 +2,6 @@
 
 static FILE *log_file = NULL;
 
-static void log_vprint(FILE *stream, const char *message, va_list args) {
-    log_timestamp(stream);
-    vfprintf(stream, message, args);
-}
-
 static void log_timestamp(FILE *stream) {
     time_t currentTime;
     struct tm *t;
@@ -23,6 +18,11 @@ static void log_timestamp(FILE *stream) {
             t -> tm_sec
         );
     }
+}
+
+static void log_vprint(FILE *stream, const char *message, va_list args) {
+    log_timestamp(stream);
+    vfprintf(stream, message, args);
 }
 
 /**
@@ -84,7 +84,22 @@ void log_program_terminate(const char *message) {
     return;
 }
 
-void log_program_crash(const char *message) {}
+/**
+ * @brief Logs program crash with time
+ * 
+ * @param message Name of program
+ */
+void log_program_crash(const char *message) {
+    time_t currentTime;
+    time(&currentTime);
+
+    fprintf(stdout, LOG_ERR "\n%s Crashed!" LOG_RESET " at %s", message, ctime(&currentTime));
+    fprintf(log_file, "\n%s Crashed! at %s", message, ctime(&currentTime));
+
+    fclose(log_file);
+
+    return;
+}
 
 /**
  * @brief Logs error to stderr and file
