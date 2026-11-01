@@ -33,7 +33,7 @@ int connect_to_server(struct sockaddr_in *server_sp, int *server_socket, const c
     *server_socket = socket(AF_INET, SOCK_STREAM, 0);
 
     log_info(INFO_BOTH, "Connecting to Server...\n");
-    if(connect(*server_socket, (struct sockeaddr *)server_sp, sizeof(struct sockaddr_in)) == -1) {
+    if(connect(*server_socket, (struct sockaddr *)server_sp, sizeof(struct sockaddr_in)) == -1) {
         log_warn(errno, LOGSTR_CONNECT_TO_SERVER);
 
         close(*server_socket);
