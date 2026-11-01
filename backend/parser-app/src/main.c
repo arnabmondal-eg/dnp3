@@ -1,182 +1,269 @@
-#include <stdio.h>
-#include <stdbool.h>
+#include <ctype.h>
 #include <stdint.h>
-
-// main functionality
-#include "packet.h"
-#include "freqPackets.h"
-
-//helpers
-#include "crc.h"
-#include "binaryHelper.h"
-
-
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <string.h>
 
-#include "log.h"
+#include "packet.h"
 
-/**
- * @brief Creates an array of data, each index in the array id
- * 
- * @param group Supports either 1 or 30
- * @param varriation Either 1 or 2
- * @param total_points Total points to generate
- * @param points Array to fill, must be uint64
- */
-void refresh_data(int group, int varriation, int total_points, uint64_t *points) {
-    const uint8_t FLAGS = 0x80;
-    
-    uint32_t value = 0;
-    uint32_t min = 0;
-    uint32_t max = 0;
+// input includes the header CRC and all data CRC bytes
+#define MAX_PACKET_SIZE 292
 
-    uint8_t *point_writer = (uint8_t*) points;
-
-    srand(time(NULL));
-
-    if(group == 1) {
-        max = 1;
-    }
-    else if(group == 30) {
-        if(varriation == 1) {
-            max = UINT32_MAX;
-        }
-        else if(varriation == 2) {
-            max = UINT16_MAX;
-        }
-    }
-    else return;
-
-
-    for(int i = 1; i <= total_points; i++) {
-        if(group == 30) {
-            // generate value
-            value = (uint32_t) (rand() % (max - min)) + min;
-            
-            *point_writer++ = FLAGS;
-
-            memcpy(point_writer, &value, 4);
-            point_writer += 7;    // move to next space
-        }
-        else if(group == 1) {
-
-            if (varriation == 2) {
-                // generate value
-                value = rand() % 2;
-    
-                ((data0102_st *) point_writer)->online = 1;
-                ((data0102_st *) point_writer)->state = value;
-            }
-            else if(varriation == 1) {
-                
-                /* 
-                Increidble lazy move by me
-                I am aware
-                I could have done it better
-                I dont really care
-
-                Wait why does that rhyme
-                They should call me thyme
-                The way Im writing these lines
-                All of the time (yo im genuinly the goat)
-                */
-
-                value = rand() % 256;   // acutally a kinda terrible generator, but idc
-                memcpy(point_writer, &value, 1);
-            }
-
-            // go to next cell
-            point_writer += 8;
-        }
-    }
+static int parser_error(const char *message) {
+    printf("Error: %s\n", message);
+    return -1;
 }
 
+static int hex_to_int(int input_char) {
+    if(input_char >= '0' && input_char <= '9') {
+        return input_char - '0';
+    }
+    input_char = tolower((unsigned char)input_char);
+    if(input_char >= 'a' && input_char <= 'f') {
+        return input_char - 'a' + 10;
+    }
 
-int main() {
-    /*
-    uint8_t request[] = {
-        0x05, 0x64, 0x0D, 0xC4, 0xC8, 
-        0x00, 0x01, 0x00, 0x6E, 0x78, 
-        0xD9, 0xCA, 0x01, 0x1E, 0x02, 
-        0x00, 0x01, 0x22, 0x70, 0xA6
-    };
+    return -1;
+}
 
-    uint8_t reply[] = {
-        0x05, 0x64, 0x55, 0x44, 0x01,
-        0x00, 0x49, 0x03, 0x67, 0x21,
-        0xCC, 0xC9, 0x81, 0x00, 0x00,
-        0x1e, 0x02, 0x01, 0x01, 0x00,
-        0x22, 0x00, 0x01, 0x40, 0x5c,
-        0x01, 0xfa, 0x56, 0x88, 0x33,
-        0x01, 0xA8, 0x39, 0x01, 0x28,
-        0x5c, 0x01, 0xA0, 0x19, 0x01,
-        0xD8, 0x19, 0x01, 0x00, 0x43,
-        0x30, 0x00, 0x01, 0x70, 0x00,
-        0x01, 0xA8, 0x00, 0x01, 0x12,
-        0x00, 0x01, 0x00, 0x06, 0x01,
-        0x84, 0x00, 0xC6, 0x02, 0x01,
-        0xA1, 0x00, 0x01, 0x00, 0x00,
-        0x01, 0x16, 0x00, 0x01, 0x14,
-        0x00, 0x01, 0x80, 0x06, 0x01,
-        0xC5, 0xA2, 0x83, 0x74, 0x01,
-        0x20, 0x18, 0x01, 0x97, 0x48,
-        0x01, 0x6D, 0x79, 0x01, 0x56,
-        0x77, 0x01, 0xCC, 0xFA, 0x16,
-        0x07, 0x87
-    };
+static int read_packet(const char *input_str, uint8_t *packet) {
+    int length = 0;
+    while (*input_str) {
+        while(isspace((unsigned char)*input_str)) {
+            ++input_str;
+        }
+        if(!*input_str) {
+            break;
+        }
+        if(length == MAX_PACKET_SIZE) {
+            return parser_error("packet is too large");
+        }
+        int first_digit = hex_to_int((unsigned char)*input_str++);
+        if(first_digit < 0 || !*input_str) {
+            return parser_error("use pairs of hex digits, e.g. 05 64");
+        }
+        int second_digit = hex_to_int((unsigned char)*input_str++);
+        if(second_digit < 0) {
+            return parser_error("use pairs of hex digits, e.g. 05 64");
+        }
+        packet[length++] = (uint8_t)((first_digit << 4) | second_digit);
+    }
+    return length;
+}
 
-    uint8_t cleanedRequest[getPacketSize(request)];
-    removeCRC(request, cleanedRequest);
+static uint32_t read_value(const uint8_t *bytes, int length) {
+    uint32_t value = 0;
+    for(int i = 0; i < length; ++i) {
+        value |= (uint32_t)bytes[i] << (8 * i);
+    }
+    return value;
+}
 
-    uint8_t cleanedReply[getPacketSize(reply)];
-    removeCRC(reply, cleanedReply);
+// CRC bytes are stored low byte first in the packet
+static uint16_t calculate_wire_crc(const uint8_t *bytes, int length) {
+    uint16_t crc = 0;
+    for (int i = 0; i < length; ++i) {
+        crc ^= bytes[i];
+        for (int bit = 0; bit < 8; ++bit) {
+            crc = (uint16_t)((crc >> 1) ^ ((crc & 1) ? 0xa6bc : 0));
+        }
+    }
+    return (uint16_t)(crc ^ 0xffff);
+}
 
-    dnp3p_st request_s = mkPacketAuto(cleanedRequest);
-    dnp3p_st reply_s = mkPacketAuto(cleanedReply);
+static int interpret_packet(uint8_t *packet, int size) {
+    uint8_t cleaned_packet[MAX_PACKET_SIZE] = {0};
+    if(size < 10) {
+        return parser_error("link header needs 10 bytes");
+    }
+    if (packet[0] != 0x05 || packet[1] != 0x64) {
+        return parser_error("expected start bytes 05 64");
+    }
+    if(packet[2] < 5) {
+        return parser_error("link length must be at least 5");
+    }
 
-    if(freopen("log/log.txt", "w", stdout) == NULL) {
+    int payload = packet[2] - 5;
+    int expected = 10 + payload + 2 * ((payload + 15) / 16);
+    if (size != expected) {
+        printf("Error: length requires %d bytes; received %d\n",
+                expected, size);
+        return -1;
+    }
+    if (calculate_wire_crc(packet, 8) != read_value(packet + 8, 2)) {
+        return parser_error("invalid link header CRC");
+    }
 
-        printf("Error Occurred while writing to file\nCreate log/ folder if missing");
+    memcpy(cleaned_packet, packet, 10);
+    int input_position = 10;
+    int cleaned_length = 10;
+    int remaining = payload;
+    while (remaining) {
+        int block = remaining > 16 ? 16 : remaining;
+        if (calculate_wire_crc(packet + input_position, block) !=
+            read_value(packet + input_position + block, 2))
+            return parser_error("invalid payload block CRC");
+        memcpy(cleaned_packet + cleaned_length, packet + input_position, block);
+        cleaned_length += block;
+        input_position += block + 2;
+        remaining -= block;
+    }
+
+    printf("\nCRC checks passed.\n");
+    int caretPosition = 0;
+    header_st header_s = header(cleaned_packet, &caretPosition);
+    printHeader(header_s);
+    printDLCData(header_s.dlc_s);
+    if(!payload) {
         return 0;
     }
 
-    printf("-------- Request Packet --------\n");
-    printPacket(request_s);
-    printf("\n\n-------- Reply Packet --------\n");
-    printPacket(reply_s);
-    */
-    
-    uint8_t request[192] = {0};
-    uint8_t reply[192] = {0};
-    uint64_t points[16] = {0};
-
-    dnp3p_st request_s = {0};
-    dnp3p_st reply_s = {0};
-
-
-    request_data(request, 1, 1, 0, 16, 0, 1);
-    printRawPacket(request);
-    request_s = mkPacketAuto(request);
-    printf("\n");
-    
-    refresh_data(1, 1, 16, points);
-    for(int i = 1; i <= 16; i++) {
-        printf("%lu ", points[i-1]);
-        if(i % 4 == 0) printf("\n");
+    if(cleaned_length < 13) {
+        return parser_error("missing transport/application header");
     }
-    printf("\n");
+    if ((cleaned_packet[10] & 0xc0) != 0xc0 || (cleaned_packet[11] & 0xc0) != 0xc0) {
+        return parser_error("fragment reassembly is not supported by this app");
+    }
 
-    write_data(reply, request, points, 16);
-    printf("\n\n");
-    printRawPacket(reply);
-    reply_s = mkPacketAuto(reply);
+    unsigned function = cleaned_packet[12];
+    int response = function == 0x81 || function == 0x82;
+    if (function != 1 && !response) {
+        return parser_error("this app supports READ and RESPONSE application packets");
+    }
+    // application_header uses direction to check for internal indications
+    if (((packet[3] & 0x80) == 0) != response) {
+        return parser_error("link direction does not match this app's request/response layout");
+    }
 
-    printf("\n\n");
-    printPacket(request_s);
-    printPacket(reply_s);
+    int object = response ? 15 : 13;
+    if(cleaned_length < object) {
+        return parser_error("missing response indications");
+    }
+    print_transport_header(transport_header(cleaned_packet, &caretPosition));
+    inn_st inn_s = {0};
+    int inn_active = 0;
+    application_header_st application_header_s = application_header(
+        cleaned_packet, &inn_s, &caretPosition, &header_s.dlc_s, &inn_active);
+    print_application_header(application_header_s, inn_s, inn_active);
+    if (cleaned_length == object) {
+        printf("No objects.\n");
+        return 0;
+    }
+    if(cleaned_length - object < 3) {
+        return parser_error("incomplete object header");
+    }
 
+    unsigned qualifier = cleaned_packet[object + 2];
+    if (qualifier > 2) {
+        return parser_error("this app supports qualifiers 00, 01, 02 (start/stop)");
+    }
+    int width = 1 << qualifier;
+    int data = object + 3 + 2 * width;
+    if(cleaned_length < data) {
+        return parser_error("incomplete object range");
+    }
+    uint32_t first = read_value(cleaned_packet + object + 3, width);
+    uint32_t last = read_value(cleaned_packet + object + 3 + width, width);
+    if (last < first || last > INT_MAX || last - first >= INT_MAX) {
+        return parser_error("invalid or unsupported point range");
+    }
+    int count = (int)(last - first) + 1;
+
+    objectHeader_st object_header_s = mkObjectHeader(cleaned_packet, &caretPosition);
+    printObjectHeader(object_header_s);
+    if (!response) {
+        if(cleaned_length != data) {
+            return parser_error("only one object header per READ is supported");
+        }
+        return 0;
+    }
+
+    unsigned group = cleaned_packet[object], variation = cleaned_packet[object + 1];
+    int required;
+    if (count > (cleaned_length - data) * 8) {
+        return parser_error("not enough bytes for the requested point count");
+    }
+    if(group == 1 && variation == 1) {
+        required = (count + 7) / 8;
+    }
+    else if(group == 1 && variation == 2) {
+        required = count;
+    }
+    else if(group == 30 && variation == 1) {
+        required = count * 5;
+    }
+    else if(group == 30 && variation == 2) {
+        required = count * 3;
+    }
+    else {
+        return parser_error("supported data: G1v1, G1v2, G30v1, G30v2");
+    }
+    if (cleaned_length - data != required) {
+        return parser_error("point data length mismatch; only one object block is supported");
+    }
+
+    printf("---- Points ----\n");
+    for (int i = 0; i < count; ++i) {
+        printf("Point %u: ", (unsigned int)(first + (uint32_t)i));
+        if (group == 1 && variation == 1) {
+            printf("%u\n", (cleaned_packet[data + i / 8] >> (i % 8)) & 1);
+        } else if (group == 1) {
+            unsigned flags = cleaned_packet[data + i];
+            printf("%u  flags=0x%02X\n", flags >> 7, flags);
+        } else {
+            int bytes = variation == 1 ? 4 : 2;
+            const uint8_t *point = cleaned_packet + data + i * (bytes + 1);
+            uint32_t raw_value = read_value(point + 1, bytes);
+            int64_t value = raw_value;
+            if (raw_value & (((uint32_t)1) << (bytes * 8 - 1))) {
+                value -= 1LL << (bytes * 8);
+            }
+            printf("%lld  flags=0x%02X\n", (long long)value, point[0]);
+        }
+    }
+    return 0;
+}
+
+int main() {
+    char input[4096];
+    uint8_t packet[MAX_PACKET_SIZE] = {0};
+    int failed = 0;
+    printf("Paste one complete DNP3 hex frame per line (including CRCs).\n");
+    printf("Example format: 05 64 ...   Type q to quit; Ctrl-D ends input.\n");
+    for (;;) {
+        printf("\nPacket: ");
+        fflush(stdout);
+        if(!fgets(input, sizeof(input), stdin)) {
+            break;
+        }
+        if (!strchr(input, '\n') && !feof(stdin)) {
+            int ch;
+            while ((ch = getchar()) != '\n' && ch != EOF) {}
+            parser_error("input line is too long");
+            failed = 1;
+            continue;
+        }
+        const char *input_str = input;
+        while(isspace((unsigned char)*input_str)) {
+            ++input_str;
+        }
+        if ((*input_str == 'q' || *input_str == 'Q') &&
+            (input_str[1] == '\0' || input_str[1] == '\n' || input_str[1] == '\r')) break;
+        int length = read_packet(input_str, packet);
+        if(length < 0) {
+            failed = 1;
+        }
+        else if(length > 0 && interpret_packet(packet, length) != 0) {
+            failed = 1;
+        }
+    }
+    if(ferror(stdin)) {
+        return 1;
+    }
+    if(failed) {
+        return 1;
+    }
 
     return 0;
 }
